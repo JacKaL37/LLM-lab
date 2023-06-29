@@ -1,0 +1,1 @@
+First MVP: charting the Litany Against Fear GPT-4 catastrophic failure
