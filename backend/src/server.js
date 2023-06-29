@@ -1,4 +1,4 @@
-const dotenv = require('dotenv').config();
+const dotenv = require('dotenv').config({path:'.env'});
 const express = require('express');
 const cors = require('cors');
 const { Configuration, OpenAIApi } = require("openai");
