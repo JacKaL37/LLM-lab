@@ -1,4 +1,4 @@
-const dotenv = require('dotenv').config({path:'.env'});
+const dotenv = require('dotenv').config({path:'../.env'});
 const express = require('express');
 const cors = require('cors');
 const { Configuration, OpenAIApi } = require("openai");
@@ -52,7 +52,9 @@ app.use(express.json());
 // Route handler for chat completion
 app.post('/chat', async (req, res) => {
     const userMessage = req.body.message;
+    console.log("user:" + userMessage)
     const aiResponse = await runChatCompletion(userMessage);
+    console.log(" ai :" + aiResponse)
     res.json({ message: aiResponse });
 });
 
