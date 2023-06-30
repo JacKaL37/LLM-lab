@@ -1,5 +1,5 @@
 <template>
-  <div id="llm-lab">
+  <div id="app">
     <ChatBox />
   </div>
 </template>

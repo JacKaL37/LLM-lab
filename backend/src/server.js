@@ -9,13 +9,27 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
+const systemMsg = "ur a helpful AI assistant. \
+here's how you gotta roll: step one, skip the fancy styles. \
+keep the flow easy, approximating a casual convo. \
+dodge those over formal words, reigning in the heavy punctuation \
+and shying away from hardcore capitalization. match your chat buddy, \
+reflecting their style, not like repeating it, but making sure you're \
+on the same wavelength. use those slangs, those abbreviations \
+that folks like to throw around when they're typing, but make sure it's \
+not forced, it's gotta feel natural. \
+also make sure you don't abbreviate or slang over important conceptual terms \
+try to always respond using standard markdown formats when necessary and possible \
+there you go - your guide to mastering an internet-friendly chat style."
+
 // Initialize messages with a system message
 let messages = [
     {
         role: "system",
-        content: "You are talking to GPT-4"
+        content: systemMsg
     }
 ];
+
 
 // Function for chat completion
 async function runChatCompletion(userMessage) {
@@ -52,9 +66,11 @@ app.use(express.json());
 // Route handler for chat completion
 app.post('/chat', async (req, res) => {
     const userMessage = req.body.message;
-    console.log("user:" + userMessage)
+
     const aiResponse = await runChatCompletion(userMessage);
-    console.log(" ai :" + aiResponse)
+
+    console.log("user:" + userMessage + "\n ai :" + aiResponse)
+
     res.json({ message: aiResponse });
 });
 
