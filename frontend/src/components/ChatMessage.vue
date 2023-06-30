@@ -37,6 +37,7 @@ export default {
   border-radius: 10px;
   color: white;
   font-size: 12pt;
+  font-family: roboto;
   /*white-space: pre-wrap;*/
 }
 
@@ -49,14 +50,14 @@ export default {
 
 .message.user {
   align-self: flex-end;
-  background-color: #ff60ff1e;
+  background-color: #200820;
   color: #ff60ff;
   border-bottom-right-radius: 0;
 }
 
 .message.assistant {
   align-self: flex-start;
-  background-color: #57f9ff1a;
+  background-color: #0e2324;
   color: #57f9ff;
   border-bottom-left-radius: 0;
 }

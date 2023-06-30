@@ -1,6 +1,9 @@
 <template>
   <div class="chatbox">
-    <ChatMessage v-for="(message, index) in messages" :key="index" :message="message" />
+    <div class="chathistory">
+      <ChatMessage v-for="(message, index) in messages" :key="index" :message="message" />
+    </div>
+    
     <div class="input-area">
       <textarea ref="textarea" v-model="userMessage" placeholder="send a message" :disabled="isSending" class="input"
         @keydown.enter.exact.prevent="sendMessage" @keydown.shift.enter.exact="allowNewline" @input="expandTextarea" />
@@ -39,7 +42,9 @@ export default {
     async sendMessage() {
       const message = this.userMessage.trim();
       this.userMessage = '';
-      this.expandTextarea();
+      this.$nextTick(() => {
+        this.expandTextarea();
+      });
 
       if (message !== '') {
         this.isSending = true;
@@ -49,7 +54,8 @@ export default {
           content: message,
         });
 
-        const response = await axios.post('http://localhost:3000/chat', {
+        //const response = await axios.post('http://localhost:3000/chat', { 
+        const response = await axios.post('http://104.229.89.14:3000/chat', { 
           message: message,
         });
 
@@ -79,12 +85,21 @@ export default {
   background-color: #202020;
 }
 
-.input-area {
-  position: relative; 
+.chathistory {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 250px;
+}
+
+.input-area {
+  display: flex;
+  flex-direction: row;
   width: 100%;
   margin-top: 20px;
   border-radius: 5px;
+  background-color: #383838;
 }
 
 .input {
@@ -94,18 +109,17 @@ export default {
   resize: none;
   outline: none;
   overflow: auto;
-  background-color: #383838;
+  background-color: #00000000;
   border-radius: 5px;
   font-size: 12pt;
+  font-family: roboto;
   color: white;
   max-height: 320px;
+  width: 50px;
 }
 
 .send-button {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-
+  align-self: flex-end;
   width: 50px;
   height: 50px;
   border: none;
@@ -116,6 +130,6 @@ export default {
 }
 
 .send-button:disabled {
-  background-color: #ccc;
+  opacity: 0.1
 }
 </style>
