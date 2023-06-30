@@ -78,7 +78,7 @@ export default {
   align-items: center;
   justify-content: center;
   width: 100%;
-  max-width: 600px;
+  max-width: 700px;
   margin: 0 auto;
   padding: 10px;
   border-radius: 10px;
@@ -109,7 +109,7 @@ export default {
   resize: none;
   outline: none;
   overflow: auto;
-  background-color: #00000000;
+  background-color: #383838;
   border-radius: 5px;
   font-size: 12pt;
   font-family: roboto;
@@ -129,7 +129,9 @@ export default {
   cursor: pointer;
 }
 
-.send-button:disabled {
+.input:disabled, .send-button:disabled {
   opacity: 0.1
 }
+
+
 </style>
