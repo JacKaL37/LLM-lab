@@ -33,12 +33,14 @@ export default {
   width: 90%;
   padding: 10px;
   margin-bottom: 10px;
+  border: 1px solid;
   border-radius: 10px;
   color: white;
-  white-space: pre-wrap;
+  font-size: 12pt;
+  /*white-space: pre-wrap;*/
 }
 
-.message ::v-deep {
+.message ::v-deep{
     padding-top: 5px;
     padding-bottom: 5px;
     padding-left: 10px;
@@ -47,13 +49,15 @@ export default {
 
 .message.user {
   align-self: flex-end;
-  background-color: #007BFF;
+  background-color: #ff60ff1e;
+  color: #ff60ff;
   border-bottom-right-radius: 0;
 }
 
 .message.assistant {
   align-self: flex-start;
-  background-color: #28a745;
+  background-color: #57f9ff1a;
+  color: #57f9ff;
   border-bottom-left-radius: 0;
 }
 </style>

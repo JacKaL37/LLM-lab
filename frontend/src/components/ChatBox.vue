@@ -74,6 +74,9 @@ export default {
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #202020;
 }
 
 .input-area {
@@ -81,7 +84,6 @@ export default {
   display: flex;
   width: 100%;
   margin-top: 20px;
-  border: 1px solid #ccc;
   border-radius: 5px;
 }
 
@@ -92,6 +94,10 @@ export default {
   resize: none;
   outline: none;
   overflow: auto;
+  background-color: #383838;
+  border-radius: 5px;
+  font-size: 12pt;
+  color: white;
   max-height: 320px;
 }
 
@@ -104,7 +110,7 @@ export default {
   height: 50px;
   border: none;
   color: white;
-  background-color: #007BFF;
+  background-color: #555555;
   border-radius: 5px;
   cursor: pointer;
 }

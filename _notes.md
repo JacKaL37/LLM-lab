@@ -13,9 +13,8 @@ x rename to llm-lab
 
 x install cors
 
-- create vue.js frontend
-- abstract the chat component out to be used *everywhere*
-- 
+x create vue.js frontend
+x abstract the chat component out to be used *everywhere*
 
 - incorporate typesecript
 
