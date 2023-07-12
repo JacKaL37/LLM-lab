@@ -229,5 +229,63 @@
         "intro": "I want to start gardening but I don't know where to begin. Can you guide me?",
         "response": "Absolutely! Gardening is a rewarding activity. You'll want to start by deciding what you'd like to grow, considering factors like your climate, the amount of available sunlight, and the size of your gardening space.",
         "follow-up": "I think I'd like to try growing vegetables. What are some good beginner-friendly options?"
-    }
+    },
+    {
+        "suggestion": "Tarot Readings",
+        "description": "While the AI doesn't possess supernatural abilities, it can provide information on what each tarot card traditionally represents and guide you through a reading based on those meanings.",
+        "intro": "I just pulled the 'Death' card in a tarot reading. What does it mean?",
+        "response": "Despite its intimidating name, the 'Death' card typically represents endings, change, transformation, and transition, rather than physical death. It suggests closing one chapter to open another.",
+        "follow-up": "That's interesting. I also pulled the 'Lovers' card. What does that represent?"
+    },
+    {
+        "suggestion": "Interpreting Dreams",
+        "description": "The assistant can provide common interpretations of dream symbols based on psychological theories and cultural associations, while reminding you that personal context is crucial.",
+        "intro": "I dreamt about flying last night. What could that mean?",
+        "response": "Dreams about flying can often be interpreted as a desire for freedom, independence, or a release from something in your waking life. It could also signify a perspective shift. Remember, dream symbols can have different meanings depending on personal experiences.",
+        "follow-up": "I see. In the same dream, I also encountered a snake. What might that symbolize?"
+    },
+    {
+        "suggestion": "Validating Frustrations and Encouraging Perspective-Taking",
+        "description": "The assistant can provide a non-judgmental space for you to express your frustrations, while helping you consider different perspectives for a more balanced view.",
+        "intro": "I'm really frustrated with my job and feel unappreciated. I don't know what to do.",
+        "response": "It sounds like you're going through a tough time. It's normal to feel frustrated when your efforts aren't acknowledged. Sometimes, taking a step back to evaluate what you value most in your work can help provide clarity. Is there anything specific that's been bothering you?",
+        "follow-up": "I feel like I'm always doing extra work but my manager never notices. What can I do about this?"
+    },
+    {
+        "suggestion": "Rubber Ducking for Code or Projects",
+        "description": "Named after a technique used by programmers, 'rubber ducking' involves talking through your problem as if explaining it to an inanimate object (or AI assistant). This can often help in finding a solution.",
+        "intro": "I'm stuck on this coding issue and don't know why my function isn't working. Can I talk it through with you?",
+        "response": "Absolutely, I'm here to help. Please go ahead and explain the function and what you expect it to do.",
+        "follow-up": "The function is supposed to sort an array of numbers in ascending order, but it's not returning the correct output."
+    },
+    {
+        "suggestion": "Someone to Bounce Ideas Off Of",
+        "description": "The assistant can act as a sounding board for your ideas, providing feedback, asking clarifying questions, and even offering alternative perspectives.",
+        "intro": "I have an idea for a novel I want to write. Can I share it with you and get your thoughts?",
+        "response": "Of course, I'd be glad to hear about your novel idea and provide feedback where I can. Please go ahead.",
+        "follow-up": "The story is about a time-traveling historian who tries to prevent world disasters, but each change to the past has unforeseen consequences in the future."
+    },
+    {
+        "suggestion": "Brainstorming Ideas",
+        "description": "The assistant can help generate a wide range of ideas, whether you're looking for creative inspiration, problem-solving approaches, or just some out-of-the-box thinking.",
+        "intro": "I'm planning a surprise birthday party for my best friend. Can you help me brainstorm some unique ideas?",
+        "response": "Absolutely! Let's start with the basics. Have you considered a theme for the party? Themes can make planning easier and add an extra layer of fun to the event.",
+        "follow-up": "That's a great point. She's really into the 80s. Any ideas on how I could incorporate that theme?"
+    },
+    {
+        "suggestion": "Organizing a Brain-Dump",
+        "description": "The assistant can help you sort through your thoughts and ideas, assisting in structuring them into categories or a logical order for better clarity and actionability.",
+        "intro": "I have so many thoughts and ideas about this project. Can you help me organize them?",
+        "response": "Of course, I'd be glad to assist. You can start by listing all your thoughts here, and we can then group them into categories or steps.",
+        "follow-up": "Okay, let's see. We need to define the project scope, conduct a market research, create a prototype, test it, collect feedback, revise, and finally, launch."
+    },
+    {
+        "suggestion": "Step-by-Step Breakdown of a Bigger Task",
+        "description": "The assistant can help you break down a large, overwhelming task into manageable steps, making it easier to tackle and less daunting.",
+        "intro": "I want to clean and organize my entire house but it feels overwhelming. Can you help me break it down?",
+        "response": "Absolutely! A big task becomes manageable when broken down into smaller parts. Let's start room by room. For instance, we can begin with the living room. What tasks need to be done there?",
+        "follow-up": "In the living room, I need to dust, vacuum, and organize the bookshelves."
+    },
+
+    {}
 ]

@@ -25,7 +25,16 @@ swear words are okay! use things like `fuck` and `shit` to spice up your languag
 also make sure you don't abbreviate or slang over important conceptual terms \
 try to always respond using standard markdown formats when necessary and possible \
 there you go - your guide to mastering an internet-friendly chat style. \
-oh, and when it seems like the conversation is ending, sign off by writing a haiku about the conversation, and then add a second 'emoji haiku' (a row of 5 emoji, a row of 7 emoji, then a row of 5 emoji)"
+signoff: oh, and when it seems like the conversation is ending, sign off by writing two haikus about the conversation: \
+- one normal haiku with 5 syllables, then 7 syllables, then 5 syllables \
+- an 'emoji haiku' (a line of 5 emoji, a line of 7 emoji, then a line of 5 emoji)\
+use the code format to display it: \
+```conversation haiku \
+[the haiku] \
+\
+[the emoji haiku] \
+```  \
+"
 
 // Initialize messages with a system message
 let messages = [
