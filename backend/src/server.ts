@@ -1,13 +1,17 @@
-const dotenv = require('dotenv').config({ path: '../.env' });
-const express = require('express');
-const cors = require('cors');
-const { Configuration, OpenAIApi } = require("openai");
+import dotenv from 'dotenv';
+import cors from 'cors';
+import { CreateChatCompletionRequest, CreateChatCompletionResponse, Configuration, OpenAIApi } from "openai";
+import { Request, Response } from "express";
+import express from "express";
+
+dotenv.config({ path: '../.env' });
 
 // Setup OpenAI API
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
+
 
 const systemMsg = "ur a helpful AI assistant. \
 here's how you gotta roll: step one, skip the fancy styles. \
@@ -27,15 +31,20 @@ oh, and when it seems like the conversation is ending, sign off by writing two h
 - one normal haiku with 5 syllables, then 7 syllables, then 5 syllables \
 - an 'emoji haiku' (a line of 5 emoji, newline, a line of 7 emoji, newline, then a line of 5 emoji)\
 use the code format to display it: \
-```conversation haiku \
+```conversation haiku \n\
 [the haiku] \
 \
 [the emoji haiku] \
 ```  \
 "
 
+interface IMessage {
+    role: string;
+    content: string;
+}
+
 // Initialize messages with a system message
-let messages = [
+let messages: IMessage[] = [
     {
         role: "system",
         content: systemMsg
@@ -43,45 +52,59 @@ let messages = [
 ];
 
 
+
 // Function for chat completion
-async function runChatCompletion(userMessage) {
+async function runChatCompletion(userMessage: string): Promise<string> {
     // Add user message to the messages
     messages.push({
         role: "user",
         content: userMessage
     });
 
-    const chatCompletion = await openai.createChatCompletion({
-        model: "gpt-4",
-        messages: messages,
-        stream: false,
-    });
+    let chatCompletion: CreateChatCompletionResponse | undefined;
+    try {
+        const response = await openai.createChatCompletion({
+            model: "gpt-4",
+            messages: messages,
+            stream: false,
+        } as CreateChatCompletionRequest);
+        chatCompletion = response.data;  // Access the `data` property here
+    } catch (error) {
+        console.log(error);
+    }
 
     // Add AI response to the messages
-    messages.push({
-        role: "assistant",
-        content: chatCompletion.data.choices[0].message.content
-    });
+    let assistantMessage: string | undefined;
+    if (chatCompletion && chatCompletion.choices && chatCompletion.choices[0] && chatCompletion.choices[0].message) {
+        assistantMessage = chatCompletion.choices[0].message.content;
+    }
+    if (assistantMessage) {
+        messages.push({
+            role: "assistant",
+            content: assistantMessage
+        });
+    }
 
-    return chatCompletion.data.choices[0].message.content;
+    return assistantMessage || "Something went wrong.";
 }
+
 
 // Create Express app
 const app = express();
 
 // Use cors middleware (for local testing cross-origin errors)
-app.use(cors())
+app.use(cors());
 
 // Middleware to parse JSON bodies from HTTP POST
 app.use(express.json());
 
 // Route handler for chat completion
-app.post('/chat', async (req, res) => {
+app.post('/chat', async (req: Request, res: Response) => {
     const userMessage = req.body.message;
 
     const aiResponse = await runChatCompletion(userMessage);
 
-    console.log("user:" + userMessage + "\n ai :" + aiResponse);
+    console.log(`user: ${userMessage}\n ai : ${aiResponse}`);
 
     res.json({ message: aiResponse });
 });
