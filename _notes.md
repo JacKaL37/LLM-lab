@@ -69,12 +69,13 @@ xx lolol, nvm, found a shitty hacky way around it. (temporary!)
   - complete conversations
   - format toggle?: raw text, markdown, json, etc. 
 
-- bring in vueflow - https://vueflow.dev/
+- vueflow - https://vueflow.dev/
   - adding a panel for navigating a conversation tree (i.e., visualizing a chatML object) 
 
 
 - examine D3 trees for navigating message history spaces
   - have a gpt-3 bot name each node with a single sentence
+
 
 
 - port to google cloud instance

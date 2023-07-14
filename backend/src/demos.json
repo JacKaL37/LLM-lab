@@ -286,6 +286,13 @@
         "response": "Absolutely! A big task becomes manageable when broken down into smaller parts. Let's start room by room. For instance, we can begin with the living room. What tasks need to be done there?",
         "follow-up": "In the living room, I need to dust, vacuum, and organize the bookshelves."
     },
-
+    {
+        "suggestion": "Five-Year Planning",
+        "description": "The assistant can guide you in outlining a five-year plan, prompting you to consider various aspects of your life (career, education, personal growth, etc.) and set measurable goals.",
+        "intro": "I want to create a five-year plan but I'm not sure where to start. Can you help?",
+        "response": "Certainly! A good place to start is by identifying key areas of your life you want to focus on. These might include career, education, finances, health, personal growth, relationships, etc. For each area, think about where you want to be in five years.",
+        "follow-up": "Let's start with career. I want to be in a leadership position in my field in five years."
+    },
+    
     {}
 ]
