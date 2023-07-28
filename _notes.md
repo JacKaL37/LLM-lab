@@ -21,14 +21,61 @@ x implement copy button
 - fix copy API denial by getting into SSL certification
 xx lolol, nvm, found a shitty hacky way around it. (temporary!)
 
+-- !!! offramp
+  - get Demo Bot Garden rolling. 
+  - requires: 
+    - frontend selection screen
+    - frontend example animation
+    - prompt personality solidification
+    - ingestion
+    - backend streaming
+    - frontend streaming
+    - add "generator"
+    - statelessness -- frontend data model
+    - local storage usage
+    - "new conversation" button
+    - saving multiple conversations. ?
+
+    - demo-bot generator prompt
+    - demo bot script conversion prompt
+    - conversion of helper prompts to current bot "voice"
+    - keep demo-bots backstage in a file so we can save user entries to it
+
+--------------------------------------
+--------------------------------------
+--------------------------------------
+--------------------------------------
+--------------------------------------
+--------------------------------------
+
+
+- model revisions
+  - chat dictionary: uuid, time, user, etc-- query keys
+  - content: message history, etc. 
+
 - abstract out the codeblock component
+  - add syntax hilighting
 
 - streaming, how-do. (earlier is better, as it seems fundamental to the data flow pattern.)
+- perplexity measurements
+- token counts
+
+- hyperparameter panel
 
 - incorporate typesecript
 
 - install langchainjs
 
+- declare-lab
+  - 13-billion
+
+- component: prompt-viewer
+  - decorated prompt
+
+- tabs:
+  - langflow
+  - playground for databases / integrations / whatever goes into the prompt - 
+  - 
 
 - add bootstrap to the frontend
 
@@ -110,9 +157,12 @@ xx lolol, nvm, found a shitty hacky way around it. (temporary!)
   - the components themselves can 
   - 
 
-- two servers
-  - context server
-  - user server
+
+
+
+- two databases
+  - context database
+  - user database
   - 
 
 ? should the server be stateless?
@@ -126,11 +176,93 @@ xx lolol, nvm, found a shitty hacky way around it. (temporary!)
   - standard paper digester agent
   - also an investigator script for the litany against fear
 
+# Conversations
+
+doping memory to bias the vectors
+- "what is the current topic"
+- "need to talk about ( )"
+- add it into the vectorstore retrieval with a huge weight value on the topic's semantic vector
+- tada, we can more reliably slip between domains
+- can also look to the future of generating these weights automatically
+
+Memory Structure
+- user memory
+  - each user will have an id
+  - memory of entities
+  - memory of knowledge
+  - maybe on a decaying vectorstore?
+- conversation memory
+  - each conversation will have an id
+  - conversation buffer
+  - summary
+  - a message vectorstore
+    - retrieves the N most relevant messages from history based on M most recent messages
+    - whole point being, to effectively extend context continuously
+    - costly, though, so getting smart about them is good
+    - how dumb or smart? not sure, maybe both
+
+<-> easy front-end switches to enable / disable each feature as needed. 
+
+```example
+
+user memory: 
+  entities mentioned: 
+  {database.users.entities[{user_id}]}
+  knowledge mentioned:
+  {database.users.knowledge[{user_id}]}
+
+conversation memory:
+{database.history_buffers[{uid:user_id,cid:conversation_id}]}
+{database.summaries[{uid:user_id,cid:conversation_id}]}
+{historybuffer.length<20?database.vectorstores[{uid:user_id,cid:conversation_id}.query(history_buffer[-3])]}
+
+```
+
+dataset - my discord server
 
 
+vector-memory-back:
+- 
+
+"the ghost draft" -> before the rough draft
+
+
+onboarding task:
+- pick one, be specific, show it to a specific person.
+- generalizing: "pick your own topic"
 
 
 conceptual thoughts:
 - output parsers:
   - can add "reminders" and "to-dos" to a running list the AI keeps track of
   - helpful when there's an agenda, like "talk about and demonstrate all of these topics"
+
+IDE ideas:
+  - database / vectorstore browsers (with visuals)
+  - langflow vibes (advanced) 
+  - conversation branch visualizer (with llm summarization for node names!)
+
+
+Eternal conversation memory (Snapback/Scrollback/Jumpback Memory):
+- all messages from chat history are stored in vectorstore
+- then we do it layered:
+  - generous buffer window for perfect recency -- this is still primary, and many conversations will never leave this phase
+  - rolling summary of full conversation, updated regularly -- this helps keep things going if the conversation goes very long
+  - dumb/fast vectorstore for recently lost messages
+  - slower/deeper vectorstore that holds the entire history of the conversation
+    - triggers on the most recent N messages
+    - returns the M closest
+    - some distance cutoff needs to be set, I guess?
+  - simple version should be relatively easy to achieve. 
+
+tree navigation data model for frontend:
+- full tree is stored as "conversation"
+  - "current path" is also stored
+  - a flat "conversation text" model is under "computed", uses conversation + path to compute the flat text
+
+
+hyper-agent:
+- enhanced memory across the conversation history
+- branches in conversation, easily visualized and navigated
+  - memory structure computes a flat version, too
+- possesses stable entity memory, for understanding People, Places, Things, etc. atomic knowledge across all your conversations
