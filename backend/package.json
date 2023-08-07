@@ -1,6 +1,7 @@
 {
   "name": "litanyagainstfear",
   "version": "0.0.1",
+  "type": "module",
   "description": "Systematically examining a curious catastrophic failure of GPT-4. ",
   "main": "index.js",
   "scripts": {
