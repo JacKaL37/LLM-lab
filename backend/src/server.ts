@@ -6,7 +6,7 @@ import fs from 'fs';
 import express from "express";
 
 // get environment variables
-dotenv.config({ path: '../.env' });
+dotenv.config({ path: '.env' });
 
 // setup logging 📝
 const logsDir = './logs';

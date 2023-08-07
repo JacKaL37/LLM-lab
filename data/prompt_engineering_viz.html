@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple D3 Graph</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .node {
+            fill: #ccc;
+            stroke: #333;
+            stroke-width: 2px;
+        }
+
+        .edge {
+            stroke: #555;
+            stroke-width: 2px;
+        }
+
+        .label {
+            font-size: 12px;
+        }
+
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            width: 240px;
+            padding: 2px;
+            font: 12px sans-serif;
+            background: lightsteelblue;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <script>
+        // Barebones data setup
+        const nodes = [
+            { id: "Initiation", group: 1, size: 20 },
+            { id: "Clarity", group: 1, size: 20 },
+            { id: "Foundations", group: 1, size: 20 },
+            { id: "Evaluation & Review", group: 1, size: 20 },
+            { id: "Execution & Content Creation", group: 1, size: 20 },
+            { id: "Emotional & Contextual Tuning", group: 1, size: 20 },
+            { id: "Continuation & Deep Dive", group: 1, size: 20 },
+            { id: "Refinement & Quality Control", group: 1, size: 20 },
+            { id: "Use Specific Delimiters.", group: 2, size: 20 },
+            { id: "Request a Specific Output Format.", group: 2, size: 20 },
+            { id: "Verify the Bot's Responses.", group: 2, size: 20 },
+            { id: "Provide Context with Few-shot Examples.", group: 2, size: 20 },
+            { id: "Break the Task into Manageable Steps.", group: 2, size: 20 },
+            { id: "Work out Detailed Solutions.", group: 2, size: 20 },
+            { id: "Set a Clear Length Limit.", group: 2, size: 20 },
+            { id: "Specify Your Target Audience.", group: 2, size: 20 },
+            { id: "Define the Desired Content Focus.", group: 2, size: 20 },
+            { id: "Summarize Large Texts.", group: 2, size: 20 },
+            { id: "Extract Specific Information.", group: 2, size: 20 },
+            { id: "Gauge Overall Sentiment.", group: 2, size: 20 },
+            { id: "Multitask within a Single Prompt.", group: 2, size: 20 },
+            { id: "Adjust the Tone or Output Format.", group: 2, size: 20 },
+            { id: "Proofread Text for Errors.", group: 2, size: 20 },
+            { id: "Generate Content from Extracted Details.", group: 2, size: 20 },
+            { id: "Retain Memory of Chat Context.", group: 2, size: 20 },
+            { id: "Tune Responses to the User's Style.", group: 2, size: 20 },
+            { id: "Express Moments of Uncertainty or Excitement.", group: 2, size: 20 },
+            { id: "Refine and Retry Your Prompts.", group: 2, size: 20 },
+            { id: "Topics", group: 0, size: 20 }
+        ];
+
+        const links = [
+            { source: nodes[0], target: nodes[8] },
+            { source: nodes[0], target: nodes[9] },
+            { source: nodes[0], target: nodes[11] },
+            { source: nodes[1], target: nodes[8] },
+            { source: nodes[1], target: nodes[9] },
+            { source: nodes[1], target: nodes[15] },
+            { source: nodes[1], target: nodes[16] },
+            { source: nodes[2], target: nodes[8] },
+            { source: nodes[2], target: nodes[9] },
+            { source: nodes[2], target: nodes[11] },
+            { source: nodes[3], target: nodes[10] },
+            { source: nodes[3], target: nodes[22] },
+            { source: nodes[3], target: nodes[27] },
+            { source: nodes[4], target: nodes[12] },
+            { source: nodes[4], target: nodes[13] },
+            { source: nodes[4], target: nodes[17] },
+            { source: nodes[4], target: nodes[18] },
+            { source: nodes[4], target: nodes[23] },
+            { source: nodes[5], target: nodes[19] },
+            { source: nodes[5], target: nodes[21] },
+            { source: nodes[5], target: nodes[24] },
+            { source: nodes[5], target: nodes[25] },
+            { source: nodes[5], target: nodes[26] },
+            { source: nodes[6], target: nodes[20] },
+            { source: nodes[6], target: nodes[24] },
+            { source: nodes[7], target: nodes[14] },
+            { source: nodes[7], target: nodes[22] },
+            { source: nodes[7], target: nodes[27] },
+            { source: nodes[28], target: nodes[0] },
+            { source: nodes[28], target: nodes[1] },
+            { source: nodes[28], target: nodes[2] },
+            { source: nodes[28], target: nodes[3] },
+            { source: nodes[28], target: nodes[4] },
+            { source: nodes[28], target: nodes[5] },
+            { source: nodes[28], target: nodes[6] },
+            { source: nodes[28], target: nodes[7] }
+        ];
+
+        const tips = {
+            "Use Specific Delimiters.": {
+                "description": "Separate content sections with unique characters.",
+                "example": "*e.g., `---`, `###`, `|||`*",
+                "topics": ["Initiation", "Clarity", "Foundations"]
+            },
+            "Request a Specific Output Format.": {
+                "description": "Clearly define the desired type of output.",
+                "example": "*e.g., HTML, JSON, essay*",
+                "topics": ["Initiation", "Clarity", "Foundations"]
+            },
+            "Verify the Bot's Responses.": {
+                "description": "Ensure the bot checks its answers.",
+                "example": "*e.g., \"Did you cover X?\", \"Check your work.\"*",
+                "topics": ["Evaluation & Review", "Quality Control"]
+            },
+            "Provide Context with Few-shot Examples.": {
+                "description": "Offer multiple examples to guide the bot.",
+                "example": "*e.g., \"Like when you say A, B, or C.\"*",
+                "topics": ["Initiation", "Clarity", "Foundations"]
+            },
+            "Break the Task into Manageable Steps.": {
+                "description": "Organize tasks sequentially.",
+                "example": "*e.g., \"First, summarize. Then, translate.\"*",
+                "topics": ["Execution & Content Creation"]
+            },
+            "Work out Detailed Solutions.": {
+                "description": "Seek the bot's reasoning, not just its conclusions.",
+                "example": "*e.g., \"Explain your reasoning.\"*",
+                "topics": ["Execution & Content Creation", "Deep Dive"]
+            },
+            "Set a Clear Length Limit.": {
+                "description": "Limit the words or sentences in outputs.",
+                "example": "*e.g., \"Max 50 words.\", \"Three sentences max.\"*",
+                "topics": ["Refinement & Quality Control"]
+            },
+            "Specify Your Target Audience.": {
+                "description": "Define the intended readership.",
+                "example": "*e.g., \"Explain like I'm five.\", \"Talk to me like an expert.\"*",
+                "topics": ["Refinement", "Clarity"]
+            },
+            "Define the Desired Content Focus.": {
+                "description": "Emphasize specific topics or styles.",
+                "example": "*e.g., \"Technical tone.\", \"Focus on physical materials.\"*",
+                "topics": ["Refinement", "Clarity"]
+            },
+            "Summarize Large Texts.": {
+                "description": "Compress content to its essence.",
+                "example": "*e.g., \"50 words on the main idea.\", \"Focus on price/value.\"*",
+                "topics": ["Execution & Content Creation"]
+            },
+            "Extract Specific Information.": {
+                "description": "Pull out precise details from larger content.",
+                "example": "*e.g., \"Pull out product names.\", \"Give me the main topics.\"*",
+                "topics": ["Execution & Content Creation"]
+            },
+            "Gauge Overall Sentiment.": {
+                "description": "Analyze content for emotional tones.",
+                "example": "*e.g., \"Is this positive?\", \"Find signs of anger.\"*",
+                "topics": ["Emotional & Contextual Tuning", "Mood & Tone"]
+            },
+            "Multitask within a Single Prompt.": {
+                "description": "Combine various requests into one.",
+                "example": "*e.g., \"Sentiment + extract item name.\"*",
+                "topics": ["Continuation & Deep Dive"]
+            },
+            "Adjust the Tone or Output Format.": {
+                "description": "Modify the mood or structural format.",
+                "example": "*e.g., \"Make it informal.\", \"Convert to HTML table.\"*",
+                "topics": ["Emotional & Contextual Tuning", "Mood & Tone"]
+            },
+            "Proofread Text for Errors.": {
+                "description": "Search for and correct mistakes in content.",
+                "example": "*e.g., \"Fix spelling mistakes.\", \"Correct grammar issues.\"*",
+                "topics": ["Evaluation & Review", "Quality Control"]
+            },
+            "Generate Content from Extracted Details.": {
+                "description": "Create new content based on specific information.",
+                "example": "*e.g., \"Reply using review details.\", \"Create a story from the given facts.\"*",
+                "topics": ["Execution & Content Creation"]
+            },
+            "Retain Memory of Chat Context.": {
+                "description": "Maintain the conversation's historical context.",
+                "example": "*e.g., \"Remember our last chat?\", \"Use the previous message.\"*",
+                "topics": ["Continuation & Deep Dive"]
+            },
+            "Tune Responses to the User's Style.": {
+                "description": "Match the user's tone and pace.",
+                "example": "*e.g., \"Match my energy.\", \"Follow my lead.\"*",
+                "topics": ["Emotional & Contextual Tuning", "Mood & Tone"]
+            },
+            "Express Moments of Uncertainty or Excitement.": {
+                "description": "Show genuine feelings to the bot.",
+                "example": "*e.g., \"I'm confused about X.\", \"I'm excited about Y!\"*",
+                "topics": ["Emotional & Contextual Tuning", "Mood & Tone"]
+            },
+            "Refine and Retry Your Prompts.": {
+                "description": "Iterate and improve instructions.",
+                "example": "*e.g., \"Try a different approach.\", \"Give me another version.\"*",
+                "topics": ["Evaluation & Review", "Quality Control"]
+            }
+        }
+
+
+        // Assuming you have groups numbered from 1 to whatever max group you have
+        // Here we're using the d3.schemeCategory10 color scheme, but there are others
+        const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+        const tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+        // Setting up the SVG container
+        const svg = d3.select("body").append("svg")
+            .attr("width", 1000)
+            .attr("height", 1000);
+
+        // Simulate the forces
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).distance(150))
+            .force("charge", d3.forceManyBody().strength(-200))
+            .force("center", d3.forceCenter(500, 500));
+
+        // Draw edges (links)
+        const edge = svg.selectAll(".edge")
+            .data(links)
+            .enter().append("line")
+            .attr("class", "edge");
+
+        // Draw nodes
+        const node = svg.selectAll(".node")
+            .data(nodes)
+            .enter().append("circle")
+            .attr("class", "node")
+            .attr("r", d => d.size)
+            .style("fill", d => color(d.group))
+            .on('click', handleNodeClick)
+            .on("mouseover", function (event, d) {
+                let content = ''
+                if (tips[d.id] != null) {
+                    const tip = tips[d.id]; // Directly accessing the tip using the node's id
+                    // Formatting the tooltip content
+                    content = `
+                        <strong>${d.id}</strong><br>
+                        ${tip.description}<br>
+                        <i>${tip.example}</i>
+                    `;
+                } else {
+                    content = d.id
+                }
+                tooltip.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+                tooltip.html(content)
+                    .style("left", (event.pageX + 5) + "px")
+                    .style("top", (event.pageY - 28) + "px");
+            })
+            .on("mouseout", function (d) {
+                tooltip.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+            })
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
+        // Label nodes
+        const label = svg.selectAll(".label")
+            .data(nodes)
+            .enter().append("text")
+            .style("visibility", "hidden")
+            .attr("class", "label")
+            .attr("dy", "-2em")
+            .text(d => d.id);
+
+        simulation.on("tick", function () {
+            edge.attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+            node.attr("cx", d => d.x)
+                .attr("cy", d => d.y);
+
+            label.attr("x", d => d.x)
+                .attr("y", d => d.y)
+                .style("text-anchor", "middle")
+                .style("alignment-baseline", "middle");
+        });
+
+        let selectedNode = null;
+
+        function handleNodeClick(event, d) {
+            // Reset styles for all nodes and links
+            node.style('opacity', 1);
+            edge.style('opacity', 0.1);
+            label.style('visibility', "hidden");
+
+            // If the same node is clicked twice, reset the selectedNode to null
+            if (selectedNode === d) {
+                selectedNode = null;
+                return;
+            }
+
+            selectedNode = d;
+
+            const connectedNodes = [d.id]; // To store the IDs of the connected nodes
+
+            // Highlight directly connected nodes
+            edge.each(function (l) {
+                if (l.source === d || l.target === d) {
+                    connectedNodes.push(l.source.id);
+                    connectedNodes.push(l.target.id);
+                }
+            });
+
+            node.each(function (n) {
+                if (!connectedNodes.includes(n.id)) {
+                    d3.select(this).style('opacity', 0.1); // fade out non-connected nodes
+                }
+            });
+
+            label.each(function (n) {
+                if (connectedNodes.includes(n.id)) {
+                    d3.select(this).style('visibility', "hidden" ? "visible" : "hidden"); // hide labels for non-connected nodes
+                }
+            })
+
+
+            edge.style('opacity', l => (l.source === d || l.target === d) ? 1 : 0.1); // fade out non-connected links
+        }
+
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+    </script>
+
+</body>
+
+</html>

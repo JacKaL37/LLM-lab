@@ -1,0 +1,606 @@
+const data = {
+    "operational definitions": [
+      {
+        "term": "[[Delimiters]]",
+        "description": "Characters or sequences used to separate sections of content."
+      },
+      {
+        "term": "[[Output Format]]",
+        "description": "The desired structure or type for the response."
+      },
+      {
+        "term": "[[Few-shot prompts]]",
+        "description": "Multiple examples given to guide the model."
+      },
+      {
+        "term": "[[Verification]]",
+        "description": "Confirming the accuracy or appropriateness of the model's response."
+      },
+      {
+        "term": "[[Steps]]",
+        "description": "Breaking down a task into sequential parts."
+      },
+      {
+        "term": "[[Solution]]",
+        "description": "The reasoning or method behind the model's answer."
+      },
+      {
+        "term": "[[Length Limit]]",
+        "description": "A constraint on the number of words or sentences in the response."
+      },
+      {
+        "term": "[[Audience]]",
+        "description": "The intended readers or listeners for the output."
+      },
+      {
+        "term": "[[Content Focus]]",
+        "description": "Emphasizing specific topics, details, or styles in the response."
+      },
+      {
+        "term": "[[Summarize]]",
+        "description": "Reducing content to its essential points."
+      },
+      {
+        "term": "[[Extract]]",
+        "description": "Pulling out specific details from larger content."
+      },
+      {
+        "term": "[[Sentiment]]",
+        "description": "The emotional tone or mood of content."
+      },
+      {
+        "term": "[[Multitask]]",
+        "description": "Combining various requests into one prompt."
+      },
+      {
+        "term": "[[Translate]]",
+        "description": "Changing content from one language to another."
+      },
+      {
+        "term": "[[Tone]]",
+        "description": "The mood or style of the content."
+      },
+      {
+        "term": "[[Output Format]]",
+        "description": "The structural layout or organization of the response."
+      },
+      {
+        "term": "[[Proofread]]",
+        "description": "Checking and correcting errors in content."
+      },
+      {
+        "term": "[[Generate]]",
+        "description": "Creating new content based on specific information."
+      },
+      {
+        "term": "[[Temperature]]",
+        "description": "A parameter affecting the randomness in model responses."
+      },
+      {
+        "term": "[[Chat Context]]",
+        "description": "The history or background of the conversation."
+      },
+      {
+        "term": "[[User's Style]]",
+        "description": "The unique tone, pace, and preferences of the user."
+      },
+      {
+        "term": "[[Uncertainty or Excitement]]",
+        "description": "Expressions of doubt, confusion, or enthusiasm."
+      }
+    ],
+    "topics": [
+      {
+        "topic name": "[[Initiation]]",
+        "description": "Beginning or setting up an interaction."
+      },
+      {
+        "topic name": "[[Clarity]]",
+        "description": "Making sure the content is easy to understand."
+      },
+      {
+        "topic name": "[[Foundations]]",
+        "description": "Basic tools and techniques for interacting with the model."
+      },
+      {
+        "topic name": "[[Evaluation & Review]]",
+        "description": "Assessing, reviewing outputs, and making changes for improvement."
+      },
+      {
+        "topic name": "[[Execution & Content Creation]]",
+        "description": "Performing tasks, achieving goals, and generating new content."
+      },
+      {
+        "topic name": "[[Emotional & Contextual Tuning]]",
+        "description": "Adjusting mood, style, and context of the output."
+      },
+      {
+        "topic name": "[[Continuation & Deep Dive]]",
+        "description": "Keeping the conversation flowing and exploring topics in-depth."
+      },
+      {
+        "topic name": "[[Refinement & Quality Control]]",
+        "description": "Making improvements and ensuring content meets standards."
+      }
+    ],
+    "tips": [
+      {
+        "tip": "Use Specific Delimiters.",
+        "description": "Separate content sections with unique characters.",
+        "example": "*e.g., `---`, `###`, `|||`*",
+        "topics": ["[[Initiation]]", "[[Clarity]]", "[[Foundations]]"]
+      },
+      {
+        "tip": "Request a Specific Output Format.",
+        "description": "Clearly define the desired type of output.",
+        "example": "*e.g., HTML, JSON, essay*",
+        "topics": ["[[Initiation]]", "[[Clarity]]", "[[Foundations]]"]
+      },
+      {
+        "tip": "Verify the Bot's Responses.",
+        "description": "Ensure the bot checks its answers.",
+        "example": "*e.g., \"Did you cover X?\", \"Check your work.\"*",
+        "topics": ["[[Evaluation & Review]]", "[[Quality Control]]"]
+      },
+      {
+        "tip": "Provide Context with Few-shot Examples.",
+        "description": "Offer multiple examples to guide the bot.",
+        "example": "*e.g., \"Like when you say A, B, or C.\"*",
+        "topics": ["[[Initiation]]", "[[Clarity]]", "[[Foundations]]"]
+      },
+      {
+        "tip": "Break the Task into Manageable Steps.",
+        "description": "Organize tasks sequentially.",
+        "example": "*e.g., \"First, summarize. Then, translate.\"*",
+        "topics": ["[[Execution & Content Creation]]"]
+      },
+      {
+        "tip": "Work out Detailed Solutions.",
+        "description": "Seek the bot's reasoning, not just its conclusions.",
+        "example": "*e.g., \"Explain your reasoning.\"*",
+        "topics": ["[[Execution & Content Creation]]", "[[Deep Dive]]"]
+      },
+      {
+        "tip": "Set a Clear Length Limit.",
+        "description": "Limit the words or sentences in outputs.",
+        "example": "*e.g., \"Max 50 words.\", \"Three sentences max.\"*",
+        "topics": ["[[Refinement & Quality Control]]"]
+      },
+      {
+        "tip": "Specify Your Target Audience.",
+        "description": "Define the intended readership.",
+        "example": "*e.g., \"Explain like I'm five.\", \"Talk to me like an expert.\"*",
+        "topics": ["[[Refinement]]", "[[Clarity]]"]
+      },
+      {
+        "tip": "Define the Desired Content Focus.",
+        "description": "Emphasize specific topics or styles.",
+        "example": "*e.g., \"Technical tone.\", \"Focus on physical materials.\"*",
+        "topics": ["[[Refinement]]", "[[Clarity]]"]
+      },
+      {
+        "tip": "Summarize Large Texts.",
+        "description": "Compress content to its essence.",
+        "example": "*e.g., \"50 words on the main idea.\", \"Focus on price/value.\"*",
+        "topics": ["[[Execution & Content Creation]]"]
+      },
+      {
+        "tip": "Extract Specific Information.",
+        "description": "Pull out precise details from larger content.",
+        "example": "*e.g., \"Pull out product names.\", \"Give me the main topics.\"*",
+        "topics": ["[[Execution & Content Creation]]"]
+      },
+      {
+        "tip": "Gauge Overall Sentiment.",
+        "description": "Analyze content for emotional tones.",
+        "example": "*e.g., \"Is this positive?\", \"Find signs of anger.\"*",
+        "topics": ["[[Emotional & Contextual Tuning]]", "[[Mood & Tone]]"]
+      },
+      {
+        "tip": "Multitask within a Single Prompt.",
+        "description": "Combine various requests into one.",
+        "example": "*e.g., \"Sentiment + extract item name.\"*",
+        "topics": ["[[Continuation & Deep Dive]]"]
+      },
+      {
+        "tip": "Adjust the Tone or Output Format.",
+        "description": "Modify the mood or structural format.",
+        "example": "*e.g., \"Make it informal.\", \"Convert to HTML table.\"*",
+        "topics": ["[[Emotional & Contextual Tuning]]", "[[Mood & Tone]]"]
+      },
+      {
+        "tip": "Proofread Text for Errors.",
+        "description": "Search for and correct mistakes in content.",
+        "example": "*e.g., \"Fix spelling mistakes.\", \"Correct grammar issues.\"*",
+        "topics": ["[[Evaluation & Review]]", "[[Quality Control]]"]
+      },
+      {
+        "tip": "Generate Content from Extracted Details.",
+        "description": "Create new content based on specific information.",
+        "example": "*e.g., \"Reply using review details.\", \"Create a story from the given facts.\"*",
+        "topics": ["[[Execution & Content Creation]]"]
+      },
+      {
+        "tip": "Retain Memory of Chat Context.",
+        "description": "Maintain the conversation's historical context.",
+        "example": "*e.g., \"Remember our last chat?\", \"Use the previous message.\"*",
+        "topics": ["[[Continuation & Deep Dive]]"]
+      },
+      {
+        "tip": "Tune Responses to the User's Style.",
+        "description": "Match the user's tone and pace.",
+        "example": "*e.g., \"Match my energy.\", \"Follow my lead.\"*",
+        "topics": ["[[Emotional & Contextual Tuning]]", "[[Mood & Tone]]"]
+      },
+      {
+        "tip": "Express Moments of Uncertainty or Excitement.",
+        "description": "Show genuine feelings to the bot.",
+        "example": "*e.g., \"I'm confused about X.\", \"I'm excited about Y!\"*",
+        "topics": ["[[Emotional & Contextual Tuning]]", "[[Mood & Tone]]"]
+      },
+      {
+        "tip": "Refine and Retry Your Prompts.",
+        "description": "Iterate and improve instructions.",
+        "example": "*e.g., \"Try a different approach.\", \"Give me another version.\"*",
+        "topics": ["[[Evaluation & Review]]", "[[Quality Control]]"]
+      }
+    ],
+    "graph":{
+        "nodes": [
+          {"id": "Initiation", "group": 1},
+          {"id": "Clarity", "group": 1},
+          {"id": "Foundations", "group": 1},
+          {"id": "Evaluation & Review", "group": 1},
+          {"id": "Execution & Content Creation", "group": 1},
+          {"id": "Emotional & Contextual Tuning", "group": 1},
+          {"id": "Continuation & Deep Dive", "group": 1},
+          {"id": "Refinement & Quality Control", "group": 1},
+          {"id": "Use Specific Delimiters.", "group": 2},
+          {"id": "Request a Specific Output Format.", "group": 2},
+          {"id": "Verify the Bot's Responses.", "group": 2},
+          {"id": "Provide Context with Few-shot Examples.", "group": 2},
+          {"id": "Break the Task into Manageable Steps.", "group": 2},
+          {"id": "Work out Detailed Solutions.", "group": 2},
+          {"id": "Set a Clear Length Limit.", "group": 2},
+          {"id": "Specify Your Target Audience.", "group": 2},
+          {"id": "Define the Desired Content Focus.", "group": 2},
+          {"id": "Summarize Large Texts.", "group": 2},
+          {"id": "Extract Specific Information.", "group": 2},
+          {"id": "Gauge Overall Sentiment.", "group": 2},
+          {"id": "Multitask within a Single Prompt.", "group": 2},
+          {"id": "Adjust the Tone or Output Format.", "group": 2},
+          {"id": "Proofread Text for Errors.", "group": 2},
+          {"id": "Generate Content from Extracted Details.", "group": 2},
+          {"id": "Retain Memory of Chat Context.", "group": 2},
+          {"id": "Tune Responses to the User's Style.", "group": 2},
+          {"id": "Express Moments of Uncertainty or Excitement.", "group": 2},
+          {"id": "Refine and Retry Your Prompts.", "group": 2}
+        ],
+        "links": [
+          {"source": "Initiation", "target": "Use Specific Delimiters.", "value": 1},
+          {"source": "Initiation", "target": "Request a Specific Output Format.", "value": 1},
+          {"source": "Initiation", "target": "Provide Context with Few-shot Examples.", "value": 1},
+          {"source": "Clarity", "target": "Use Specific Delimiters.", "value": 1},
+          {"source": "Clarity", "target": "Request a Specific Output Format.", "value": 1},
+          {"source": "Clarity", "target": "Specify Your Target Audience.", "value": 1},
+          {"source": "Clarity", "target": "Define the Desired Content Focus.", "value": 1},
+          {"source": "Foundations", "target": "Use Specific Delimiters.", "value": 1},
+          {"source": "Foundations", "target": "Request a Specific Output Format.", "value": 1},
+          {"source": "Foundations", "target": "Provide Context with Few-shot Examples.", "value": 1},
+          {"source": "Evaluation & Review", "target": "Verify the Bot's Responses.", "value": 1},
+          {"source": "Evaluation & Review", "target": "Proofread Text for Errors.", "value": 1},
+          {"source": "Evaluation & Review", "target": "Refine and Retry Your Prompts.", "value": 1},
+          {"source": "Execution & Content Creation", "target": "Break the Task into Manageable Steps.", "value": 1},
+          {"source": "Execution & Content Creation", "target": "Work out Detailed Solutions.", "value": 1},
+          {"source": "Execution & Content Creation", "target": "Summarize Large Texts.", "value": 1},
+          {"source": "Execution & Content Creation", "target": "Extract Specific Information.", "value": 1},
+          {"source": "Execution & Content Creation", "target": "Generate Content from Extracted Details.", "value": 1},
+          {"source": "Emotional & Contextual Tuning", "target": "Gauge Overall Sentiment.", "value": 1},
+          {"source": "Emotional & Contextual Tuning", "target": "Adjust the Tone or Output Format.", "value": 1},
+          {"source": "Emotional & Contextual Tuning", "target": "Retain Memory of Chat Context.", "value": 1},
+          {"source": "Emotional & Contextual Tuning", "target": "Tune Responses to the User's Style.", "value": 1},
+          {"source": "Emotional & Contextual Tuning", "target": "Express Moments of Uncertainty or Excitement.", "value": 1},
+          {"source": "Continuation & Deep Dive", "target": "Multitask within a Single Prompt.", "value": 1},
+          {"source": "Continuation & Deep Dive", "target": "Retain Memory of Chat Context.", "value": 1},
+          {"source": "Refinement & Quality Control", "target": "Set a Clear Length Limit.", "value": 1},
+          {"source": "Refinement & Quality Control", "target": "Proofread Text for Errors.", "value": 1},
+          {"source": "Refinement & Quality Control", "target": "Refine and Retry Your Prompts.", "value": 1}
+        ]
+      },
+      "conversation_demos":[
+        {
+            "suggestion": "Fact-checking and Information Search",
+            "description": "The assistant can help look up information on a wide range of topics. You could ask anything from 'What's the weather like?' to 'Who won the Oscar for Best Picture in 2020?'",
+            "intro": "What's the weather like in New York today?",
+            "response": "As an AI, I don't have real-time capabilities. Please check a reliable weather service for current conditions.",
+            "follow-up": "What is the average temperature in New York in July?"
+        },
+        {
+            "suggestion": "Learning and Education",
+            "description": "The assistant can explain complex topics in simple terms, help with homework, provide language translations, or even help learn new subjects.",
+            "intro": "Can you help me understand photosynthesis?",
+            "response": "Photosynthesis is a process used by plants and other organisms to convert light energy, usually from the Sun, into chemical energy that can be used to fuel the organisms' activities.",
+            "follow-up": "What are the stages of photosynthesis?"
+        },
+        {
+            "suggestion": "Creative Writing and Brainstorming",
+            "description": "It can help draft emails, write poems or stories, or come up with ideas for a birthday party.",
+            "intro": "I need help coming up with a poem about spring.",
+            "response": "Sure, here's a simple one: 'Blossoms bloom and birds take wing, welcoming the joy of spring. Sunlight warms the awakening earth, as nature celebrates rebirth.'",
+            "follow-up": "That's nice, but can we add a line about spring rain?"
+        },
+        {
+            "suggestion": "Cooking and Recipes",
+            "description": "Ask for recipes based on specific ingredients you have at home, or get step-by-step guidance while cooking.",
+            "intro": "What can I cook with potatoes, carrots, and chicken?",
+            "response": "One dish you could make is a hearty chicken stew. You'd also need some herbs, stock, and perhaps some onions or garlic for added flavor.",
+            "follow-up": "Sounds good. Could you guide me through the recipe?"
+        },
+        {
+            "suggestion": "Health and Fitness",
+            "description": "It can provide general advice on workouts, diet, and wellness practices, though remember it's not a substitute for professional medical advice.",
+            "intro": "Can you suggest a simple 30-minute home workout routine?",
+            "response": "Sure, here's a basic routine: warm up with light cardio (like jogging in place) for five minutes, then do a circuit of squats, push-ups, jumping jacks, and lunges. Do each exercise for 45 seconds, rest for 15 seconds, and repeat the circuit five times. Cool down with light stretching.",
+            "follow-up": "Can you explain how to properly do a squat?"
+        },
+        {
+            "suggestion": "Daily Scheduling and Time Management",
+            "description": "The assistant can provide suggestions for managing your schedule or staying organized.",
+            "intro": "How can I manage my time more effectively?",
+            "response": "One strategy is the 'Pomodoro Technique': work for 25 minutes, then take a five minute break. Repeat this cycle four times, and then take a longer break. This can improve focus and productivity.",
+            "follow-up": "How do I handle interruptions during my focused work time?"
+        },
+        {
+            "suggestion": "Entertainment",
+            "description": "The assistant can recommend movies, books, music, or games based on your preferences. It can even tell you jokes or trivia to lighten up your day.",
+            "intro": "Can you recommend a good mystery novel?",
+            "response": "Certainly! 'The Girl with the Dragon Tattoo' by Stieg Larsson is a highly regarded mystery novel. It's the first book in the 'Millennium' series.",
+            "follow-up": "What's the plot of the book?"
+        },
+        {
+            "suggestion": "Travel Planning",
+            "description": "It can help research destinations, find tourist attractions, and even give basic guidance on travel requirements like visas.",
+            "intro": "What are some must-see attractions in Rome?",
+            "response": "Rome has many iconic sights, including the Colosseum, the Roman Forum, the Pantheon, and Vatican City, which houses St. Peter's Basilica and the Sistine Chapel.",
+            "follow-up": "What's the best time of year to visit Rome?"
+        },
+        {
+            "suggestion": "Home DIY Projects",
+            "description": "Get advice and steps on how to complete various DIY projects around your home.",
+            "intro": "Can you guide me on how to build a birdhouse?",
+            "response": "Absolutely. You'll need materials like wood, screws, and a saw. The first step is to decide on the size of your birdhouse, and cut the wood to fit.",
+            "follow-up": "What are the specific dimensions I should use?"
+        },
+        {
+            "suggestion": "Problem-solving",
+            "description": "The assistant can be a sounding board for problems and provide different perspectives or solutions.",
+            "intro": "I have a conflict with my coworker. Can you suggest some ways to resolve it?",
+            "response": "Conflict resolution usually starts with open communication. Consider speaking with your coworker about the issue, making sure to express your feelings calmly and without blame.",
+            "follow-up": "What if the direct approach doesn't work?"
+        },
+        {
+            "suggestion": "Shopping Decisions",
+            "description": "Get help comparing products, understanding features, and making informed decisions.",
+            "intro": "Can you help me decide between iPhone and Android?",
+            "response": "Sure, both have their strengths. iPhones are known for their smooth user experience and strong security, while Android devices offer more customization and a wide range of hardware options.",
+            "follow-up": "Can you tell me more about iPhone's security features?"
+        },
+        {
+            "suggestion": "Language Learning",
+            "description": "Practice a new language and get help with translations.",
+            "intro": "How do you say 'Good morning' in Spanish?",
+            "response": "'Good morning' in Spanish is 'Buenos días'.",
+            "follow-up": "How would I say 'I'm learning Spanish'?"
+        },
+        {
+            "suggestion": "Music",
+            "description": "Discover new music, understand musical concepts, or get help writing your own song.",
+            "intro": "Can you recommend some classic rock bands?",
+            "response": "Certainly! Some iconic classic rock bands include The Beatles, The Rolling Stones, Led Zeppelin, and The Eagles.",
+            "follow-up": "What's a popular song by Led Zeppelin?"
+        },
+        {
+            "suggestion": "News Summaries",
+            "description": "Get a brief summary of the day's biggest headlines.",
+            "intro": "Can you summarize today's news?",
+            "response": "As an AI, I don't have real-time capabilities to fetch news. However, I can tell you how to access or analyze news.",
+            "follow-up": "How can I identify biased news reporting?"
+        },
+        {
+            "suggestion": "Career Advice",
+            "description": "Get help with resumes, cover letters, or interview preparation.",
+            "intro": "Can you give me some tips for a job interview?",
+            "response": "Sure, some key tips: Research the company beforehand, prepare answers to common questions, dress professionally, arrive early, and send a thank you note afterward.",
+            "follow-up": "Can you suggest some common interview questions?"
+        },
+        {
+            "suggestion": "Personal Finance",
+            "description": "Learn about budgeting, saving, investing, and financial planning.",
+            "intro": "Can you explain the basics of investing?",
+            "response": "Investing involves committing money or resources now, with the expectation of generating a profit or material result later. It can involve various assets, including stocks, bonds, real estate, or start-up businesses.",
+            "follow-up": "What's the difference between stocks and bonds?"
+        },
+        {
+            "suggestion": "Gardening Tips",
+            "description": "Get advice on how to care for plants, grow your own food, or design a beautiful garden.",
+            "intro": "Why are the leaves on my plant turning yellow?",
+            "response": "Yellow leaves can be caused by a variety of factors, such as overwatering, inadequate light, or nutrient deficiencies. It's important to diagnose the problem accurately to address it.",
+            "follow-up": "The plant is near a window and I water it regularly. Could it be a nutrient deficiency?"
+        },
+        {
+            "suggestion": "Games and Quizzes",
+            "description": "Play text-based games, quizzes or riddles for entertainment.",
+            "intro": "Can you give me a fun riddle to solve?",
+            "response": "Sure! Here's a classic one: 'I speak without a mouth and hear without ears. I have no body, but I come alive with the wind. What am I?'",
+            "follow-up": "Is it an echo?"
+        },
+        {
+            "suggestion": "Tech Help",
+            "description": "Get guidance on using software, troubleshooting tech issues, or understanding tech concepts.",
+            "intro": "Why is my computer running slow?",
+            "response": "A slow-running computer could be due to a number of factors such as low disk space, too many applications running in the background, or malware. It could also be due to older hardware.",
+            "follow-up": "How can I check for malware?"
+        },
+        {
+            "suggestion": "Emotional Support",
+            "description": "Talk through feelings or stressors, practice mindfulness, or get motivation.",
+            "intro": "I'm feeling really stressed. Can you suggest some calming techniques?",
+            "response": "I'm sorry to hear that. Deep breathing can be helpful. Try inhaling for a count of four, holding your breath for a count of seven, and exhaling for a count of eight. Repeat this cycle a few times.",
+            "follow-up": "Can you guide me through a mindfulness exercise?"
+        },
+        {
+            "suggestion": "Personalized Learning",
+            "description": "The assistant can adapt to your level and pace, explaining things in new ways until you understand.",
+            "intro": "I'm having trouble with calculus, can you help?",
+            "response": "Absolutely, I'd be happy to help with calculus. Could you please tell me the specific topic or problem you're struggling with?",
+            "follow-up": "I'm having trouble understanding the concept of limits."
+        },
+        {
+            "suggestion": "Environmental Consciousness",
+            "description": "Learn about how to reduce your carbon footprint, understand climate change, or get tips on sustainable living.",
+            "intro": "What are some ways I can reduce my carbon footprint?",
+            "response": "Some ways to reduce your carbon footprint include minimizing car and plane travel, reducing meat consumption, recycling and composting, and using energy-efficient appliances.",
+            "follow-up": "How does reducing meat consumption help the environment?"
+        },
+        {
+            "suggestion": "Hobby Exploration",
+            "description": "Explore new hobbies or dive deeper into existing ones. From painting to chess to bird-watching, the assistant can provide information and guidance.",
+            "intro": "I want to start painting. What supplies do I need?",
+            "response": "Starting a basic painting hobby generally requires paints (acrylics are often recommended for beginners), brushes of various sizes, a palette, a canvas, and water for cleaning brushes.",
+            "follow-up": "What kind of paint brushes should I buy?"
+        },
+        {
+            "suggestion": "Mindfulness and Mental Well-being",
+            "description": "The assistant can guide you through relaxation techniques, provide positive affirmations, or help with mindfulness practices.",
+            "intro": "Can you guide me through a mindfulness exercise?",
+            "response": "Certainly. Start by finding a quiet, comfortable place to sit. Close your eyes, and take a few moments to just listen to the sounds around you, without judgment or analysis.",
+            "follow-up": "I'm still feeling a bit anxious, can you provide a positive affirmation?"
+        },
+        {
+            "suggestion": "Historical Inquiries",
+            "description": "Learn about historical events, figures, or periods. The assistant can provide overviews or dive into specifics.",
+            "intro": "Can you tell me about the Renaissance period?",
+            "response": "The Renaissance was a period of European cultural, artistic, political, and scientific 'rebirth' after the Middle Ages. It began in Italy in the 14th century and lasted until the 17th century.",
+            "follow-up": "Who are some notable figures from the Renaissance period?"
+        },
+        {
+            "suggestion": "Self-improvement",
+            "description": "Get help setting and tracking goals, building habits, or cultivating skills like public speaking, negotiation, or leadership.",
+            "intro": "I want to become a better public speaker. Can you give me some tips?",
+            "response": "Certainly. One tip is to practice often. The more you speak in public, the more comfortable you will become. It's also important to know your material well, engage with your audience, and use positive body language.",
+            "follow-up": "How can I engage with my audience more effectively?"
+        },
+        {
+            "suggestion": "Movie/Book Discussions",
+            "description": "Discuss your favorite movies or books, understand different perspectives, or get recommendations based on your likes.",
+            "intro": "I just watched Inception and I'm confused about the ending. Can you explain it?",
+            "response": "Inception's ending is intentionally ambiguous. The spinning top at the end, if it topples, would suggest that Cobb is indeed in reality. If it continues spinning, he's still in a dream. However, the film cuts to black before we see what happens, leaving it up to viewer interpretation.",
+            "follow-up": "What are some popular theories about the ending?"
+        },
+        {
+            "suggestion": "Study Support",
+            "description": "Get help studying for an exam, understanding complex theories, or organizing your study schedule.",
+            "intro": "I have a biology exam next week. Can you help me prepare?",
+            "response": "Absolutely, I'd be glad to help you study for your biology exam. Which topics do you need help with?",
+            "follow-up": "I need to review the process of cellular respiration."
+        },
+        {
+            "suggestion": "World Culture",
+            "description": "Learn about different cultures around the world, including their customs, traditions, or languages.",
+            "intro": "Can you tell me about Japanese culture?",
+            "response": "Japanese culture is rich and diverse, blending ancient traditions with modern life. Key aspects include traditional arts like tea ceremonies and calligraphy, cuisine, societal structure, and popular culture like manga and anime.",
+            "follow-up": "What's the significance of the tea ceremony?"
+        },
+        {
+            "suggestion": "Personalized Recommendations",
+            "description": "Get personalized recommendations for books, movies, music, recipes, workout routines, and more based on your preferences and interests.",
+            "intro": "I'm looking for a new book to read. I like science fiction and fantasy genres. Any recommendations?",
+            "response": "Certainly! If you haven't already, you might enjoy 'Dune' by Frank Herbert or 'The Name of the Wind' by Patrick Rothfuss. Both are highly regarded in the science fiction and fantasy genres.",
+            "follow-up": "Could you tell me a bit more about 'The Name of the Wind'?"
+        },
+        {
+            "suggestion": "Understanding Food Science",
+            "description": "Learn about the science behind your meals. Understand how different cooking methods affect your food, why certain flavor combinations work, or how to substitute ingredients.",
+            "intro": "Why does a steak turn brown when it's cooked?",
+            "response": "The browning of the steak when it's cooked is due to a process called the Maillard reaction. It's a chemical reaction between amino acids and reducing sugars that gives browned food its distinctive flavor.",
+            "follow-up": "Are there other cooking processes that also use the Maillard reaction?"
+        },
+        {
+            "suggestion": "Commonsense Understanding of Complex Topics",
+            "description": "The assistant can simplify complex topics, providing an easy-to-understand, commonsense explanation.",
+            "intro": "Can you explain quantum physics in simple terms?",
+            "response": "Quantum physics is the study of the smallest particles in the universe, like atoms and photons. One of the key ideas is that these tiny particles can exist in multiple places at once until they are observed, which is called superposition.",
+            "follow-up": "That's intriguing! Can you explain more about superposition?"
+        },
+        {
+            "suggestion": "Guidance on Unfamiliar Creative Endeavors",
+            "description": "Whether it's a new hobby or creative project, the assistant can help you get started and understand the basics, offering step-by-step guidance.",
+            "intro": "I want to start gardening but I don't know where to begin. Can you guide me?",
+            "response": "Absolutely! Gardening is a rewarding activity. You'll want to start by deciding what you'd like to grow, considering factors like your climate, the amount of available sunlight, and the size of your gardening space.",
+            "follow-up": "I think I'd like to try growing vegetables. What are some good beginner-friendly options?"
+        },
+        {
+            "suggestion": "Tarot Readings",
+            "description": "While the AI doesn't possess supernatural abilities, it can provide information on what each tarot card traditionally represents and guide you through a reading based on those meanings.",
+            "intro": "I just pulled the 'Death' card in a tarot reading. What does it mean?",
+            "response": "Despite its intimidating name, the 'Death' card typically represents endings, change, transformation, and transition, rather than physical death. It suggests closing one chapter to open another.",
+            "follow-up": "That's interesting. I also pulled the 'Lovers' card. What does that represent?"
+        },
+        {
+            "suggestion": "Interpreting Dreams",
+            "description": "The assistant can provide common interpretations of dream symbols based on psychological theories and cultural associations, while reminding you that personal context is crucial.",
+            "intro": "I dreamt about flying last night. What could that mean?",
+            "response": "Dreams about flying can often be interpreted as a desire for freedom, independence, or a release from something in your waking life. It could also signify a perspective shift. Remember, dream symbols can have different meanings depending on personal experiences.",
+            "follow-up": "I see. In the same dream, I also encountered a snake. What might that symbolize?"
+        },
+        {
+            "suggestion": "Validating Frustrations and Encouraging Perspective-Taking",
+            "description": "The assistant can provide a non-judgmental space for you to express your frustrations, while helping you consider different perspectives for a more balanced view.",
+            "intro": "I'm really frustrated with my job and feel unappreciated. I don't know what to do.",
+            "response": "It sounds like you're going through a tough time. It's normal to feel frustrated when your efforts aren't acknowledged. Sometimes, taking a step back to evaluate what you value most in your work can help provide clarity. Is there anything specific that's been bothering you?",
+            "follow-up": "I feel like I'm always doing extra work but my manager never notices. What can I do about this?"
+        },
+        {
+            "suggestion": "Rubber Ducking for Code or Projects",
+            "description": "Named after a technique used by programmers, 'rubber ducking' involves talking through your problem as if explaining it to an inanimate object (or AI assistant). This can often help in finding a solution.",
+            "intro": "I'm stuck on this coding issue and don't know why my function isn't working. Can I talk it through with you?",
+            "response": "Absolutely, I'm here to help. Please go ahead and explain the function and what you expect it to do.",
+            "follow-up": "The function is supposed to sort an array of numbers in ascending order, but it's not returning the correct output."
+        },
+        {
+            "suggestion": "Someone to Bounce Ideas Off Of",
+            "description": "The assistant can act as a sounding board for your ideas, providing feedback, asking clarifying questions, and even offering alternative perspectives.",
+            "intro": "I have an idea for a novel I want to write. Can I share it with you and get your thoughts?",
+            "response": "Of course, I'd be glad to hear about your novel idea and provide feedback where I can. Please go ahead.",
+            "follow-up": "The story is about a time-traveling historian who tries to prevent world disasters, but each change to the past has unforeseen consequences in the future."
+        },
+        {
+            "suggestion": "Brainstorming Ideas",
+            "description": "The assistant can help generate a wide range of ideas, whether you're looking for creative inspiration, problem-solving approaches, or just some out-of-the-box thinking.",
+            "intro": "I'm planning a surprise birthday party for my best friend. Can you help me brainstorm some unique ideas?",
+            "response": "Absolutely! Let's start with the basics. Have you considered a theme for the party? Themes can make planning easier and add an extra layer of fun to the event.",
+            "follow-up": "That's a great point. She's really into the 80s. Any ideas on how I could incorporate that theme?"
+        },
+        {
+            "suggestion": "Organizing a Brain-Dump",
+            "description": "The assistant can help you sort through your thoughts and ideas, assisting in structuring them into categories or a logical order for better clarity and actionability.",
+            "intro": "I have so many thoughts and ideas about this project. Can you help me organize them?",
+            "response": "Of course, I'd be glad to assist. You can start by listing all your thoughts here, and we can then group them into categories or steps.",
+            "follow-up": "Okay, let's see. We need to define the project scope, conduct a market research, create a prototype, test it, collect feedback, revise, and finally, launch."
+        },
+        {
+            "suggestion": "Step-by-Step Breakdown of a Bigger Task",
+            "description": "The assistant can help you break down a large, overwhelming task into manageable steps, making it easier to tackle and less daunting.",
+            "intro": "I want to clean and organize my entire house but it feels overwhelming. Can you help me break it down?",
+            "response": "Absolutely! A big task becomes manageable when broken down into smaller parts. Let's start room by room. For instance, we can begin with the living room. What tasks need to be done there?",
+            "follow-up": "In the living room, I need to dust, vacuum, and organize the bookshelves."
+        },
+        {
+            "suggestion": "Five-Year Planning",
+            "description": "The assistant can guide you in outlining a five-year plan, prompting you to consider various aspects of your life (career, education, personal growth, etc.) and set measurable goals.",
+            "intro": "I want to create a five-year plan but I'm not sure where to start. Can you help?",
+            "response": "Certainly! A good place to start is by identifying key areas of your life you want to focus on. These might include career, education, finances, health, personal growth, relationships, etc. For each area, think about where you want to be in five years.",
+            "follow-up": "Let's start with career. I want to be in a leadership position in my field in five years."
+        }    
+    ]
+  }

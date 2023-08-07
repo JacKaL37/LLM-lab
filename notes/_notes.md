@@ -266,3 +266,41 @@ hyper-agent:
 - branches in conversation, easily visualized and navigated
   - memory structure computes a flat version, too
 - possesses stable entity memory, for understanding People, Places, Things, etc. atomic knowledge across all your conversations
+
+
+large-scale parameters:
+- setting personality already done
+- setting *vibe* of the conversation can also be that way
+
+
+New front-end concepts! 8/4/2023
+
+  Side panel "status browser"
+  - can accept status objects emitted from "selected" elements
+    - those status visualizations contain tons of deeper information
+    - elements can be linked
+      - e.g., clicking a message node in the conversation tree is the same as clicking that same message in the conversation object
+
+  messages could have their own pop-out panels:
+  - langsmith-esque prompt inspection
+  - additional metadata, e.g.: 
+    - citing sources 
+    - including vectorstore returns 
+    - entity memory
+    - hyperparameters 
+
+  conversations can have their pop-out panels:
+  - hyperparameters
+  - message tree
+  - associated vectorstores
+
+  text-entry area: prompt status
+  - toggles for various "best practicies stuff"
+
+
+  minimal version embeddable in other pages
+  - just a conversation box
+  - parameterized with specific settings
+
+
+  
