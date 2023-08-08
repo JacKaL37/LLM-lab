@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "testing": "node dist/server_langchain.js"
   },
   "author": "",
   "license": "ISC",
