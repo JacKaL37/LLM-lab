@@ -10,7 +10,8 @@ const chat = new ChatOpenAI({
   streaming: true,
 });
 
-const response = await chat.call([new HumanMessage("Tell me a joke.")], {
+
+const response = chat.call([new HumanMessage("Tell me a joke.")], {
   callbacks: [
     {
       handleLLMNewToken(token: string) {
