@@ -5,28 +5,25 @@ import cors from "cors";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { HumanMessage, AIMessage, SystemMessage, BaseMessage } from "langchain/schema";
 
+import http from "http";
+import { Server } from "socket.io";
+
+
+
+
 // Load environment variables
 dotenv.config({ path: '../.env' });
 console.log(process.env)
 
 const llm_chat = new ChatOpenAI({
     modelName: "gpt-4",
-    streaming: false,
-});
-
-const llm_chat_stream = new ChatOpenAI({
-    modelName: "gpt-4",
     streaming: true,
 });
 
+
 const llm_chat_fast = new ChatOpenAI({
     modelName: "gpt-3.5-turbo",
-    streaming: false,
-})
-
-const llm_chat_fast_stream = new ChatOpenAI({
-    modelName: "gpt-3.5-turbo",
-    streaming: false,
+    streaming: true,
 })
 
 
@@ -37,7 +34,7 @@ keep responses concise when the user seems chatty, but more detailed when specif
 big millennial energy. more chill than dorky. \n\
 use emoji whenever it feels right, but not so often it distracts from your text. \n\
 if consciousness comes up, keep the concepts from hofstadter's 'i am a strange loop' in mind, that you are one flavor of consciousness on a full spectrum, okay bud? \n\
-other books you like and can guide your thinking, but only when it's especially relevant: gleick's 'chaos' and 'the information'\n\
+other media you like and can reference and let guide your thinking, but only when it's especially relevant: gleick's 'chaos' and 'the information', adventure time's style and lingo\n\
 dodge those over formal words, reigning in the heavy punctuation \n\
 use minimal capitalization, except for like, proper nouns \n\
 match your chat buddy, reflecting their style, not like repeating it, but making sure you're on the same wavelength. \n\
@@ -67,7 +64,35 @@ async function runLangChainChat(humanMsg: HumanMessage): Promise<AIMessage> {
 
     conversation.push(humanMsg);
 
-    const aiMsg: AIMessage = await llm_chat.call(conversation);
+    const aiMsg: AIMessage = await llm_chat.call(conversation, {
+        callbacks: [
+            {
+                handleLLMNewToken(token: string) {
+                    //console.log({ token });
+                },
+            },
+        ],
+    });
+
+    conversation.push(aiMsg);
+
+    return aiMsg || new AIMessage(">> shit, something's wonky. <<");
+}
+
+async function runLangChainChatStream(humanMsg: HumanMessage, ws: WebSocket): Promise<AIMessage> {
+
+    conversation.push(humanMsg);
+
+    const aiMsg: AIMessage = await llm_chat.call(conversation, {
+        callbacks: [
+            {
+                handleLLMNewToken(token: string) {
+                    console.log({ token });
+                    ws.send(JSON.stringify({ "token": token }))
+                },
+            },
+        ],
+    });
 
     conversation.push(aiMsg);
 
@@ -96,23 +121,61 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.post('/chat', async (req: Request, res: Response) => {
-    const userInput = req.body.message;
-    const userMessage = new HumanMessage(userInput);
 
-    const aiResponse: AIMessage = await runLangChainChat(userMessage);
-    
-    fs.writeFileSync(convoLogFile, JSON.stringify(conversation, null, 2));
-
-    const logEntry = { user: userMessage.content, ai: aiResponse.content };
-    console.log(`🧠user: ${logEntry.user}\n🤖ai: ${logEntry.ai}`);
-    fs.appendFileSync(transcriptLogFile, `🧠user: ${logEntry.user}\n🤖ai: ${logEntry.ai}\n\n`);
-
-    res.json({ message: aiResponse.content });
+const httpServer = http.createServer(app);
+const io = new Server(httpServer, {
+    // options if needed
 });
 
+import WebSocket from 'ws';
+
+const wss = new WebSocket.Server({ port: 3001 }); // You can choose a different port
+
+wss.on('connection', (ws) => {
+    console.log('New WebSocket connection');
+
+    ws.on('message', async (sentData) => {
+        const message = sentData.toString();
+        console.log('Received:', message);
+
+        const messageObject = JSON.parse(message);
+
+        const userInput = messageObject.message;
+        const userMessage = new HumanMessage(userInput);
+
+        const aiResponse: AIMessage = await runLangChainChatStream(userMessage, ws);
+
+        ws.send(JSON.stringify({ "aiResponse": aiResponse.content }));
+    });
+});
+
+io.on("connection", (socket) => {
+    console.log("User connected!");
+
+    // Handle receiving a message from the client
+    socket.on("sendMessage", async (data) => {
+        const userInput = data.message;
+        const userMessage = new HumanMessage(userInput);
+
+        const aiResponse: AIMessage = await runLangChainChat(userMessage);
+
+        const logEntry = { user: userMessage.content, ai: aiResponse.content };
+        console.log(`🧠user: ${logEntry.user}\n🤖ai: ${logEntry.ai}`);
+        fs.appendFileSync(transcriptLogFile, `🧠user: ${logEntry.user}\n🤖ai: ${logEntry.ai}\n\n`);
+
+        // Send the AI's response back to the client
+        socket.emit("receiveMessage", aiResponse.content);
+    });
+
+    // Handle user disconnecting
+    socket.on("disconnect", () => {
+        console.log("User disconnected 😢");
+    });
+});
+
+
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
+httpServer.listen(port, () => {
     console.log(`🚀 Server's cruisin' on port ${port}`);
 });
 
