@@ -3,7 +3,7 @@
     <div class="chathistory" ref="chathistory">
       <ChatMessage v-for="(message, index) in message_list" :key="index" :message="message" />
     </div>
-    
+
     <div class="input-area">
       <textarea ref="textarea" v-model="userMessage" placeholder="send a message" :disabled="isSending" class="input"
         @keydown.enter.exact.prevent="sendMessage" @keydown.shift.enter.exact="allowNewline" @input="expandTextarea" />
@@ -24,19 +24,19 @@ export default {
       userMessage: '',
       isSending: false,
       conversation_history: [],
-      currentAIresponse: {role: "assistant", content:""},
+      currentAIresponse: { role: "assistant", content: "" },
       audioContext: new (window.AudioContext || window.webkitAudioContext)(),
       osc: this.audioContext,
       gainNode: null
     };
   },
   computed: {
-      message_list(){
-        if (this.currentAIresponse.content!=''){
-          return this.conversation_history.concat({role:"assistant", content:this.currentAIresponse.content});
-        }
-        return this.conversation_history
+    message_list() {
+      if (this.currentAIresponse.content != '') {
+        return this.conversation_history.concat({ role: "assistant", content: this.currentAIresponse.content });
       }
+      return this.conversation_history
+    }
   },
   mounted() {
     // Connect to the WebSocket server on port 3001
@@ -45,12 +45,12 @@ export default {
     // Listen for incoming messages and handle them
     this.socket.onmessage = (event) => {
       const JSONmsg = JSON.parse(event.data);
-      if(JSONmsg.type == "token"){
+      if (JSONmsg.type == "token") {
         this.currentAIresponse.content += JSONmsg.content;
         this.playTickSound();
         this.scrollCheck();
-      } else if(JSONmsg.type == "aiResponse"){
-        this.conversation_history.push({role:"assistant", content:JSONmsg.content});
+      } else if (JSONmsg.type == "aiResponse") {
+        this.conversation_history.push({ role: "assistant", content: JSONmsg.content });
         this.currentAIresponse.content = '';
         this.isSending = false;
         this.$nextTick(() => {
@@ -58,6 +58,11 @@ export default {
         });
       }
     };
+
+    this.pentScale = this.generatePentatonicScale(16);
+    console.log(this.pentScale)
+
+    this.currentNotePointer = 0;
   },
   methods: {
     // Other methods stay the same
@@ -81,9 +86,9 @@ export default {
       }
     },
     scrollCheck() {
-    // this gets the .chathistory div
+      // this gets the .chathistory div
       const chatHistory = this.$refs.chathistory;
-    
+
       // check if .chathistory scroll was already at the bottom
       if (chatHistory.scrollTop + chatHistory.clientHeight === chatHistory.scrollHeight) {
         // if it was, wait for dom to update then scroll to new bottom 
@@ -105,39 +110,50 @@ export default {
       })
     },
     playTickSound() {
-        this.osc = this.audioContext.createOscillator();
-        this.gainNode = this.audioContext.createGain();
-        this.osc.frequency.value = 200;
-        this.osc.connect(this.gainNode);
-        this.gainNode.connect(this.audioContext.destination);
+      this.osc = this.audioContext.createOscillator();
+      this.gainNode = this.audioContext.createGain();
+
+      //samples randomly from a list of possible numbers
+      //this.osc.frequency.value = this.pentScale[Math.floor(Math.random() * this.pentScale.length)];
+
+      //brownian pentatonic wandering
+      this.currentNotePointer += parseInt(Math.floor((Math.random() * 3) - 1));
+      this.currentNotePointer = (this.currentNotePointer + this.pentScale.length) % this.pentScale.length;
+
+      this.osc.frequency.value = this.pentScale[this.currentNotePointer]
+      console.log("token freq.: " + this.pentScale[this.currentNotePointer] + "hz")
       
-        // Gain value starts from 0
-        this.gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-        
-        // Gain value increases to 0.1 over 0.01 seconds (fade in)
-        this.gainNode.gain.linearRampToValueAtTime(0.05, this.audioContext.currentTime + 0.02);
-      
-        this.osc.start(this.audioContext.currentTime);
-        
-        // Gain value decreases to 0 over 0.01 seconds (fade out)
-        this.gainNode.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + 0.02);
-      
-        this.osc.stop(this.audioContext.currentTime + 0.04);
+      this.osc.connect(this.gainNode);
+      this.gainNode.connect(this.audioContext.destination);
+
+      // Gain value starts from 0
+      this.gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+
+      // Gain value increases to 0.1 over 0.01 seconds (fade in)
+      this.gainNode.gain.linearRampToValueAtTime(0.05, this.audioContext.currentTime + 0.02);
+
+      this.osc.start(this.audioContext.currentTime);
+
+      // Gain value decreases to 0 over 0.01 seconds (fade out)
+      this.gainNode.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + 0.02);
+
+      this.osc.stop(this.audioContext.currentTime + 0.04);
+
     },
     playGloppySound() {
       this.osc = this.audioContext.createOscillator();
       this.gainNode = this.audioContext.createGain();
       this.osc.connect(this.gainNode);
       this.gainNode.connect(this.audioContext.destination);
-      
+
       this.osc.type = 'sine';  // you can experiment with 'sine', 'square', 'sawtooth', 'triangle' 
-      this.osc.frequency.setValueAtTime(200, this.audioContext.currentTime);  
+      this.osc.frequency.setValueAtTime(200, this.audioContext.currentTime);
 
       // create a frequency ramp that goes up and down
-      this.osc.frequency.exponentialRampToValueAtTime(400, this.audioContext.currentTime + 0.01); 
+      this.osc.frequency.exponentialRampToValueAtTime(400, this.audioContext.currentTime + 0.01);
       this.osc.frequency.exponentialRampToValueAtTime(200, this.audioContext.currentTime + 0.02);
 
-      this.gainNode.gain.setValueAtTime(0.05, this.audioContext.currentTime); 
+      this.gainNode.gain.setValueAtTime(0.05, this.audioContext.currentTime);
 
       // add some fade-in and fade-out to the glop
       this.gainNode.gain.linearRampToValueAtTime(0.2, this.audioContext.currentTime + 0.01);
@@ -145,6 +161,21 @@ export default {
 
       this.osc.start(this.audioContext.currentTime);
       this.osc.stop(this.audioContext.currentTime + 0.04);
+    },
+    generatePentatonicScale(size) {
+      let root = 440; // base frequency
+      let ratios = [1, 9 / 8, 5 / 4, 4 / 3, 3 / 2]; // pentatonic scale
+
+      let frequencies = []; // array to store our frequencies
+
+      for (let i = 0; i < size; i++) {
+        let octave = Math.floor(i / 5);
+        let note = i % 5;
+
+        frequencies[i] = root * Math.pow(2, octave) * ratios[note];
+      }
+      
+      return frequencies;
     }
   },
 };
@@ -171,22 +202,22 @@ export default {
   align-items: center;
   width: 100%;
   min-height: 250px;
-  max-height: 500px; 
+  max-height: 500px;
   overflow: auto;
 }
 
 .chathistory::-webkit-scrollbar {
-    width: 4px;
-    height: 8px;
+  width: 4px;
+  height: 8px;
 }
 
 .chathistory::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 .chathistory::-webkit-scrollbar-thumb {
-    background-color: rgba(125, 125, 125, 0.7);
-    border-radius: 4px;
+  background-color: rgba(125, 125, 125, 0.7);
+  border-radius: 4px;
 }
 
 .input-area {
@@ -226,11 +257,8 @@ export default {
   cursor: pointer;
 }
 
-.input:disabled, .send-button:disabled {
+.input:disabled,
+.send-button:disabled {
   opacity: 0.1
 }
-
-
-
-
 </style>
