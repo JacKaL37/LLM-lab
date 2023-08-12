@@ -14,6 +14,7 @@
 
 <script>
 import ChatMessage from './ChatMessage.vue';
+import * as Tone from 'tone';
 
 export default {
   components: {
@@ -49,9 +50,12 @@ export default {
         this.currentAIresponse.content += JSONmsg.content;
         this.playTickSound();
         this.scrollCheck();
+
       } else if (JSONmsg.type == "aiResponse") {
+        
         this.conversation_history.push({ role: "assistant", content: JSONmsg.content });
         this.currentAIresponse.content = '';
+        
         this.isSending = false;
         this.$nextTick(() => {
           this.$refs.textarea.focus();
@@ -60,6 +64,8 @@ export default {
     };
 
     this.scalePatterns = {
+      "Constant": [1],
+      "Pentatonic": [1, 9/8, 5/4, 3/2, 5/3],
       "Blues Scale": [1, 6 / 5, 4 / 3, 7 / 5, 3 / 2, 8 / 5],
       "Minor Pentatonic": [1, 6 / 5, 4 / 3, 3 / 2, 8 / 5],
       "Major Scale": [1, 9 / 8, 5 / 4, 4 / 3, 3 / 2, 5 / 3, 15 / 8],
@@ -84,7 +90,7 @@ export default {
 
     this.baseNote = 440
 
-    this.notesInScale = 16
+    this.notesInScale = 11
 
     this.scaleNotes = this.generateScale(this.notesInScale, this.baseNote, this.scalePatterns["Blues Scale"]);
     console.log(this.scaleNotes)
@@ -140,8 +146,8 @@ export default {
       //attack, sustain, decay, release, wave-type
       this.osc = this.audioContext.createOscillator();
       this.gainNode = this.audioContext.createGain();
-      //this.osc.type = "sine", "sawtooth"
-      this.osc.type = "square"
+      //this.osc.type = "sine", "sawtooth", "square", "triangle", "custom"
+      this.osc.type = "sine"
 
       //samples randomly from a list of possible numbers
       //this.osc.frequency.value = this.scaleNotes[Math.floor(Math.random() * this.scaleNotes.length)];
@@ -149,7 +155,7 @@ export default {
       //brownian pentatonic wandering
       this.currentNotePointer += parseInt(Math.floor((Math.random() * 5) - 2));
       this.currentNotePointer = (this.currentNotePointer + this.scaleNotes.length) % this.scaleNotes.length;
-      
+
       this.osc.frequency.value = this.scaleNotes[this.currentNotePointer]
       console.log("token freq.: " + this.scaleNotes[this.currentNotePointer] + "hz")
 
@@ -160,22 +166,33 @@ export default {
       this.gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
 
       // Gain value increases to 0.1 over 0.01 seconds (fade in)
-      this.gainNode.gain.linearRampToValueAtTime(0.04, this.audioContext.currentTime + 0.12);
+      this.gainNode.gain.linearRampToValueAtTime(0.01, this.audioContext.currentTime + 0.02);
 
       this.osc.start(this.audioContext.currentTime);
 
       // Gain value decreases to 0 over 0.01 seconds (fade out)
-      this.gainNode.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + 0.18);
+      this.gainNode.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + 0.04);
 
       this.osc.stop(this.audioContext.currentTime + 0.2);
 
+    },
+    playTickSynth() {
+      const synth = new Tone.Synth().toDestination();
+
+      //brownian pentatonic wandering
+      this.currentNotePointer += parseInt(Math.floor((Math.random() * 5) - 2));
+      this.currentNotePointer = (this.currentNotePointer + this.scaleNotes.length) % this.scaleNotes.length;
+
+      let freq = this.scaleNotes[this.currentNotePointer];
+      synth.triggerAttackRelease(freq, "8n"); // create a note that lasts an eighth-note
+      console.log("token freq.: " + freq + "hz");
     },
     generateScale(size, root, ratios) {
       //size, rootNote, scale, ratios, iteration_patterns (what directions and how do they play out)
       // adding in musicality: 3-3-3-2 random up and down would be a musical pattern
       // adding in chord progression: changing base frequency every few notes 1 4 5 1 
-        // look for two new-lines: next paragraph is next chord
-        // could generate all possible notes ahead of time
+      // look for two new-lines: next paragraph is next chord
+      // could generate all possible notes ahead of time
       // every N notes, drop a bass chord in, or add lots of sustain, 
 
       //let ratios =  [1, 9/8, 5/4, 45/32, 3/2, 8/5]; // pentatonic scale
