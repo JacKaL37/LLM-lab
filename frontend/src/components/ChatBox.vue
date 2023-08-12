@@ -59,8 +59,35 @@ export default {
       }
     };
 
-    this.pentScale = this.generatePentatonicScale(16);
-    console.log(this.pentScale)
+    this.scalePatterns = {
+      "Blues Scale": [1, 6 / 5, 4 / 3, 7 / 5, 3 / 2, 8 / 5],
+      "Minor Pentatonic": [1, 6 / 5, 4 / 3, 3 / 2, 8 / 5],
+      "Major Scale": [1, 9 / 8, 5 / 4, 4 / 3, 3 / 2, 5 / 3, 15 / 8],
+      "Minor Scale": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5],
+      "Whole Tone": [1, 9 / 8, 5 / 4, 45 / 32, 3 / 2, 8 / 5],
+
+      "Dorian Mode": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5],
+      "Mixolydian Mode": [1, 9 / 8, 5 / 4, 4 / 3, 3 / 2, 5 / 3, 16 / 9],
+      "Lydian Mode": [1, 9 / 8, 5 / 4, 45 / 32, 3 / 2, 5 / 3, 15 / 8],
+      "Phrygian Mode": [1, 16 / 15, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5],
+
+      "Locrian Mode": [1, 16 / 15, 6 / 5, 64 / 45, 8 / 5, 16 / 9, 32 / 15],
+      "Maqam Bayati": [1, 3 / 4, 3 / 2, 2, 3, 4],
+      "Maqam Hijaz": [1, 5 / 4, 3 / 2, 7 / 4, 2],
+      "Maqam Rast": [1, 9 / 8, 5 / 4, 4 / 3, 3 / 2, 5 / 3, 7 / 2, 2],
+      "Maqam Sikah": [1, 3 / 2, 2, 3, 4],
+      "Octotonic Scale": [1, 9 / 8, 6 / 5, 3 / 2, 8 / 5, 5 / 3, 7 / 4, 15 / 8],
+      "Harmonic Minor Scale": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 15 / 8],
+      "Melodic Minor Scale (Asc)": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 5 / 3, 15 / 8],
+      "Melodic Minor Scale (Desc)": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5]
+    }
+
+    this.baseNote = 440
+
+    this.notesInScale = 16
+
+    this.scaleNotes = this.generateScale(this.notesInScale, this.baseNote, this.scalePatterns["Blues Scale"]);
+    console.log(this.scaleNotes)
 
     this.currentNotePointer = 0;
   },
@@ -110,19 +137,22 @@ export default {
       })
     },
     playTickSound() {
+      //attack, sustain, decay, release, wave-type
       this.osc = this.audioContext.createOscillator();
       this.gainNode = this.audioContext.createGain();
+      //this.osc.type = "sine", "sawtooth"
+      this.osc.type = "square"
 
       //samples randomly from a list of possible numbers
-      //this.osc.frequency.value = this.pentScale[Math.floor(Math.random() * this.pentScale.length)];
+      //this.osc.frequency.value = this.scaleNotes[Math.floor(Math.random() * this.scaleNotes.length)];
 
       //brownian pentatonic wandering
-      this.currentNotePointer += parseInt(Math.floor((Math.random() * 3) - 1));
-      this.currentNotePointer = (this.currentNotePointer + this.pentScale.length) % this.pentScale.length;
-
-      this.osc.frequency.value = this.pentScale[this.currentNotePointer]
-      console.log("token freq.: " + this.pentScale[this.currentNotePointer] + "hz")
+      this.currentNotePointer += parseInt(Math.floor((Math.random() * 5) - 2));
+      this.currentNotePointer = (this.currentNotePointer + this.scaleNotes.length) % this.scaleNotes.length;
       
+      this.osc.frequency.value = this.scaleNotes[this.currentNotePointer]
+      console.log("token freq.: " + this.scaleNotes[this.currentNotePointer] + "hz")
+
       this.osc.connect(this.gainNode);
       this.gainNode.connect(this.audioContext.destination);
 
@@ -130,42 +160,25 @@ export default {
       this.gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
 
       // Gain value increases to 0.1 over 0.01 seconds (fade in)
-      this.gainNode.gain.linearRampToValueAtTime(0.05, this.audioContext.currentTime + 0.02);
+      this.gainNode.gain.linearRampToValueAtTime(0.04, this.audioContext.currentTime + 0.12);
 
       this.osc.start(this.audioContext.currentTime);
 
       // Gain value decreases to 0 over 0.01 seconds (fade out)
-      this.gainNode.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + 0.02);
+      this.gainNode.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + 0.18);
 
-      this.osc.stop(this.audioContext.currentTime + 0.04);
+      this.osc.stop(this.audioContext.currentTime + 0.2);
 
     },
-    playGloppySound() {
-      this.osc = this.audioContext.createOscillator();
-      this.gainNode = this.audioContext.createGain();
-      this.osc.connect(this.gainNode);
-      this.gainNode.connect(this.audioContext.destination);
+    generateScale(size, root, ratios) {
+      //size, rootNote, scale, ratios, iteration_patterns (what directions and how do they play out)
+      // adding in musicality: 3-3-3-2 random up and down would be a musical pattern
+      // adding in chord progression: changing base frequency every few notes 1 4 5 1 
+        // look for two new-lines: next paragraph is next chord
+        // could generate all possible notes ahead of time
+      // every N notes, drop a bass chord in, or add lots of sustain, 
 
-      this.osc.type = 'sine';  // you can experiment with 'sine', 'square', 'sawtooth', 'triangle' 
-      this.osc.frequency.setValueAtTime(200, this.audioContext.currentTime);
-
-      // create a frequency ramp that goes up and down
-      this.osc.frequency.exponentialRampToValueAtTime(400, this.audioContext.currentTime + 0.01);
-      this.osc.frequency.exponentialRampToValueAtTime(200, this.audioContext.currentTime + 0.02);
-
-      this.gainNode.gain.setValueAtTime(0.05, this.audioContext.currentTime);
-
-      // add some fade-in and fade-out to the glop
-      this.gainNode.gain.linearRampToValueAtTime(0.2, this.audioContext.currentTime + 0.01);
-      this.gainNode.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + 0.02);
-
-      this.osc.start(this.audioContext.currentTime);
-      this.osc.stop(this.audioContext.currentTime + 0.04);
-    },
-    generatePentatonicScale(size) {
-      let root = 440; // base frequency
-      let ratios = [1, 9 / 8, 5 / 4, 4 / 3, 3 / 2]; // pentatonic scale
-
+      //let ratios =  [1, 9/8, 5/4, 45/32, 3/2, 8/5]; // pentatonic scale
       let frequencies = []; // array to store our frequencies
 
       for (let i = 0; i < size; i++) {
@@ -174,7 +187,7 @@ export default {
 
         frequencies[i] = parseInt(root * Math.pow(2, octave) * ratios[note]);
       }
-      
+
       return frequencies;
     }
   },
