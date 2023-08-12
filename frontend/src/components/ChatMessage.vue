@@ -8,7 +8,9 @@
 <script>
 import MarkdownIt from 'markdown-it';
 
-const md = new MarkdownIt();
+const md = new MarkdownIt({
+    breaks: true
+});
 
 md.renderer.rules.fence = (tokens, idx) => {
     const token = tokens[idx];
