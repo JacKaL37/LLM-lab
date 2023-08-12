@@ -153,6 +153,10 @@ app.post('/chat', async (req: Request, res: Response) => {
     res.json({ message: aiResponse.content });
 });
 
+app.post('/convo', async (req: Request, res: Response) => {
+    //const req.body.
+})
+
 // setup web socket server
 const wsPort = 3001;
 const wss = new WebSocket.Server({ port: wsPort }); // You can choose a different port
