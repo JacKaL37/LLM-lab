@@ -172,7 +172,7 @@ export default {
         let octave = Math.floor(i / 5);
         let note = i % 5;
 
-        frequencies[i] = root * Math.pow(2, octave) * ratios[note];
+        frequencies[i] = parseInt(root * Math.pow(2, octave) * ratios[note]);
       }
       
       return frequencies;
