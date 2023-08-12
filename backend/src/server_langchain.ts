@@ -154,7 +154,7 @@ app.post('/chat', async (req: Request, res: Response) => {
 });
 
 app.post('/convo', async (req: Request, res: Response) => {
-    //const req.body.
+    res.json({ conversation })
 })
 
 // setup web socket server
