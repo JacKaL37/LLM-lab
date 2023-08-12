@@ -1,38 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WebSocket Tester</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Tester</title>
+    <style>
+        pre {
+            white-space: pre-wrap;
+        }
+    </style>
 </head>
+
 <body>
-  <input type="text" id="userInput" placeholder="Type a message...">
-  <button onclick="sendMessage()">Send</button>
-  <div id="messages"></div>
+    <input type="text" id="userInput" placeholder="Type a message..." onsubmit="sendMessage()">
+    <button onclick="sendMessage()">Send</button>
+    <pre id="messages"></pre>
 
-  <script>
-    // Update this to your server's URL
-    const socket = new WebSocket('ws://104.229.89.14:3001');
+    <script>
+        // Update this to your server's URL
+        const socket = new WebSocket('ws://104.229.89.14:3001');
 
-    socket.onopen = () => {
-      console.log('Connection opened');
-    };
+        socket.onopen = () => {
+            console.log('Connection opened');
+        };
 
-    socket.onmessage = (event) => {
-      const messageDiv = document.getElementById('messages');
-      const JSONmsg = JSON.parse(event.data);
+        socket.onmessage = (event) => {
+            const messageDiv = document.getElementById('messages');
+            const JSONmsg = JSON.parse(event.data);
+            
+            messageDiv.innerHTML += JSONmsg.token;
+            console.log('Received:', event.data);
+        };
 
-      messageDiv.innerHTML += JSONmsg.token;
-      console.log('Received:', event.data);
-    };
+        function sendMessage() {
+            const userInput = document.getElementById('userInput').value;
+            if (userInput.trim() === '') return;
 
-    function sendMessage() {
-      const userInput = document.getElementById('userInput').value;
-      if (userInput.trim() === '') return;
+            socket.send(JSON.stringify({ message: userInput }));
+            document.getElementById('userInput').value = '';
+        }
+        const userInput = document.getElementById('userInput');
 
-      socket.send(JSON.stringify({ message: userInput }));
-      document.getElementById('userInput').value = '';
-    }
-  </script>
+        userInput.addEventListener('keyup', function (event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+    </script>
 </body>
+
 </html>
