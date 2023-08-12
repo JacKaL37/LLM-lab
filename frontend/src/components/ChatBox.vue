@@ -24,7 +24,10 @@ export default {
       userMessage: '',
       isSending: false,
       conversation_history: [],
-      currentAIresponse: {role: "assistant", content:""}
+      currentAIresponse: {role: "assistant", content:""},
+      audioContext: new (window.AudioContext || window.webkitAudioContext)(),
+      osc: this.audioContext,
+      gainNode: null
     };
   },
   computed: {
@@ -44,6 +47,7 @@ export default {
       const JSONmsg = JSON.parse(event.data);
       if(JSONmsg.type == "token"){
         this.currentAIresponse.content += JSONmsg.content;
+        this.playTickSound();
         this.scrollCheck();
       } else if(JSONmsg.type == "aiResponse"){
         this.conversation_history.push({role:"assistant", content:JSONmsg.content});
@@ -100,7 +104,48 @@ export default {
         this.$refs.textarea.style.height = `${scrollHeight - verticalPadding}px`;
       })
     },
+    playTickSound() {
+        this.osc = this.audioContext.createOscillator();
+        this.gainNode = this.audioContext.createGain();
+        this.osc.frequency.value = 200;
+        this.osc.connect(this.gainNode);
+        this.gainNode.connect(this.audioContext.destination);
+      
+        // Gain value starts from 0
+        this.gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+        
+        // Gain value increases to 0.1 over 0.01 seconds (fade in)
+        this.gainNode.gain.linearRampToValueAtTime(0.05, this.audioContext.currentTime + 0.02);
+      
+        this.osc.start(this.audioContext.currentTime);
+        
+        // Gain value decreases to 0 over 0.01 seconds (fade out)
+        this.gainNode.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + 0.02);
+      
+        this.osc.stop(this.audioContext.currentTime + 0.04);
+    },
+    playGloppySound() {
+      this.osc = this.audioContext.createOscillator();
+      this.gainNode = this.audioContext.createGain();
+      this.osc.connect(this.gainNode);
+      this.gainNode.connect(this.audioContext.destination);
+      
+      this.osc.type = 'sine';  // you can experiment with 'sine', 'square', 'sawtooth', 'triangle' 
+      this.osc.frequency.setValueAtTime(200, this.audioContext.currentTime);  
 
+      // create a frequency ramp that goes up and down
+      this.osc.frequency.exponentialRampToValueAtTime(400, this.audioContext.currentTime + 0.01); 
+      this.osc.frequency.exponentialRampToValueAtTime(200, this.audioContext.currentTime + 0.02);
+
+      this.gainNode.gain.setValueAtTime(0.05, this.audioContext.currentTime); 
+
+      // add some fade-in and fade-out to the glop
+      this.gainNode.gain.linearRampToValueAtTime(0.2, this.audioContext.currentTime + 0.01);
+      this.gainNode.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + 0.02);
+
+      this.osc.start(this.audioContext.currentTime);
+      this.osc.stop(this.audioContext.currentTime + 0.04);
+    }
   },
 };
 </script>
