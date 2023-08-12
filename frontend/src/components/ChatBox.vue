@@ -1,7 +1,7 @@
 <template>
   <div class="chatbox">
-    <div class="chathistory">
-      <ChatMessage v-for="(message, index) in messages" :key="index" :message="message" />
+    <div class="chathistory" ref="chathistory">
+      <ChatMessage v-for="(message, index) in message_list" :key="index" :message="message" />
     </div>
     
     <div class="input-area">
@@ -13,9 +13,7 @@
 </template>
 
 <script>
-import axios from 'axios';
-import ChatMessage from './ChatMessage.vue'
-
+import ChatMessage from './ChatMessage.vue';
 
 export default {
   components: {
@@ -25,48 +23,84 @@ export default {
     return {
       userMessage: '',
       isSending: false,
-      messages: [
-      ],
+      conversation_history: [],
+      currentAIresponse: {role: "assistant", content:""}
+    };
+  },
+  computed: {
+      message_list(){
+        if (this.currentAIresponse.content!=''){
+          return this.conversation_history.concat({role:"assistant", content:this.currentAIresponse.content});
+        }
+        return this.conversation_history
+      }
+  },
+  mounted() {
+    // Connect to the WebSocket server on port 3001
+    this.socket = new WebSocket('ws://104.229.89.14:3001');
+
+    // Listen for incoming messages and handle them
+    this.socket.onmessage = (event) => {
+      const JSONmsg = JSON.parse(event.data);
+      if(JSONmsg.type == "token"){
+        this.currentAIresponse.content += JSONmsg.content;
+        this.scrollCheck();
+      } else if(JSONmsg.type == "aiResponse"){
+        this.conversation_history.push({role:"assistant", content:JSONmsg.content});
+        this.currentAIresponse.content = '';
+        this.isSending = false;
+        this.$nextTick(() => {
+          this.$refs.textarea.focus();
+        });
+      }
     };
   },
   methods: {
-    allowNewline() {
-      // Do nothing
-    },
-    expandTextarea() {
-      this.$refs.textarea.style.height = 'auto';
-      const scrollHeight = this.$refs.textarea.scrollHeight;
-      const verticalPadding = 2 * 10; // 2 * padding-top
-      this.$refs.textarea.style.height = `${scrollHeight - verticalPadding}px`;
-    },
+    // Other methods stay the same
     async sendMessage() {
       const message = this.userMessage.trim();
       this.userMessage = '';
-      this.$nextTick(() => {
-        this.expandTextarea();
-      });
 
       if (message !== '') {
+        this.scrollCheck();
+        this.expandTextarea();
+
         this.isSending = true;
 
-        this.messages.push({
+        this.conversation_history.push({
           role: 'user',
           content: message,
         });
 
-        //const response = await axios.post('http://localhost:3000/chat', { 
-        const response = await axios.post('http://104.229.89.14:3000/chat', { 
-          message: message,
-        });
-
-        this.messages.push({
-          role: 'assistant',
-          content: response.data.message,
-        });
-
-        this.isSending = false;
+        // Send the message over WebSocket
+        this.socket.send(JSON.stringify({ message: message }));
       }
     },
+    scrollCheck() {
+    // this gets the .chathistory div
+      const chatHistory = this.$refs.chathistory;
+    
+      // check if .chathistory scroll was already at the bottom
+      if (chatHistory.scrollTop + chatHistory.clientHeight === chatHistory.scrollHeight) {
+        // if it was, wait for dom to update then scroll to new bottom 
+        this.$nextTick(() => {
+          chatHistory.scrollTop = chatHistory.scrollHeight;
+        });
+      }
+      // if chat wasn't already at the bottom, don't do anything!
+    },
+    allowNewline() {
+      // Do nothing
+    },
+    expandTextarea() {
+      this.$nextTick(() => {
+        this.$refs.textarea.style.height = 'auto';
+        const scrollHeight = this.$refs.textarea.scrollHeight;
+        const verticalPadding = 2 * 10; // 2 * padding-top
+        this.$refs.textarea.style.height = `${scrollHeight - verticalPadding}px`;
+      })
+    },
+
   },
 };
 </script>
@@ -80,9 +114,10 @@ export default {
   width: 100%;
   max-width: 700px;
   margin: 0 auto;
-  padding: 10px;
+  padding: 20px;
   border-radius: 10px;
   background-color: #202020;
+  font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 .chathistory {
@@ -91,11 +126,28 @@ export default {
   align-items: center;
   width: 100%;
   min-height: 250px;
+  max-height: 500px; 
+  overflow: auto;
+}
+
+.chathistory::-webkit-scrollbar {
+    width: 4px;
+    height: 8px;
+}
+
+.chathistory::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chathistory::-webkit-scrollbar-thumb {
+    background-color: rgba(125, 125, 125, 0.7);
+    border-radius: 4px;
 }
 
 .input-area {
   display: flex;
   flex-direction: row;
+  align-items: stretch;
   width: 100%;
   margin-top: 20px;
   border-radius: 5px;
@@ -110,18 +162,18 @@ export default {
   outline: none;
   overflow: auto;
   background-color: #383838;
-  border-radius: 5px;
+  border-radius: 20px;
   font-size: 12pt;
-  font-family: roboto;
+  font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   color: white;
   max-height: 320px;
   width: 50px;
+  padding: 16px;
 }
 
 .send-button {
-  align-self: flex-end;
-  width: 50px;
-  height: 50px;
+  align-self: stretch;
+  width: 70px;
   border: none;
   color: white;
   background-color: #555555;
@@ -132,6 +184,8 @@ export default {
 .input:disabled, .send-button:disabled {
   opacity: 0.1
 }
+
+
 
 
 </style>

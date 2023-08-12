@@ -83,8 +83,8 @@ export default {
     border-radius: 10px;
     color: white;
     font-size: 12pt;
-    font-family: roboto;
-    overflow: auto;
+    font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    overflow: none;
     /*white-space: pre-wrap;*/
 }
 
@@ -166,6 +166,16 @@ export default {
 :deep(.codebody)::-webkit-scrollbar-thumb {
     background-color: rgba(125, 125, 125, 0.7);
     border-radius: 4px;
+}
+
+@keyframes slidein {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+.message {
+  animation: slidein 0.5s ease;
+  /* rest of your css */
 }
 </style>
   

@@ -7,7 +7,7 @@ import { HumanMessage, AIMessage, SystemMessage, BaseMessage } from "langchain/s
 
 import http from "http";
 import { Server } from "socket.io";
-
+import WebSocket from 'ws';
 
 
 
@@ -88,7 +88,7 @@ async function runLangChainChatStream(humanMsg: HumanMessage, ws: WebSocket): Pr
             {
                 handleLLMNewToken(token: string) {
                     console.log({ token });
-                    ws.send(JSON.stringify({ "token": token }))
+                    ws.send(JSON.stringify({ "type":"token", "content":token }))
                 },
             },
         ],
@@ -117,19 +117,37 @@ const transcriptLogFile = `${logsDir}/${formattedTime}/transcript-${formattedTim
 
 fs.appendFileSync(transcriptLogFile, `📝system: ${systemMsg}\n\n\n`)
 
+
+//setup app
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 
-const httpServer = http.createServer(app);
-const io = new Server(httpServer, {
-    // options if needed
+//setup http server
+const httpPort = process.env.HTTP_PORT || 3000;
+
+
+app.listen(httpPort, () => {
+    console.log(`Server is running on port ${httpPort}`);
 });
 
-import WebSocket from 'ws';
 
-const wss = new WebSocket.Server({ port: 3001 }); // You can choose a different port
+app.post('/chat', async (req: Request, res: Response) => {
+    const userInput = req.body.message;
+    const userMessage = new HumanMessage(userInput)
+    const aiResponse = await runLangChainChat(userMessage);
+
+    const logEntry = { user: userMessage.content, ai: aiResponse.content };
+    console.log(`🧠user: ${logEntry.user}\n🤖ai: ${logEntry.ai}`);
+    fs.appendFileSync(transcriptLogFile, `🧠user: ${logEntry.user}\n🤖ai: ${logEntry.ai}\n\n`);
+
+    res.json({ message: aiResponse.content });
+});
+
+// setup web socket server
+const wsPort = 3001;
+const wss = new WebSocket.Server({ port: wsPort }); // You can choose a different port
 
 wss.on('connection', (ws) => {
     console.log('New WebSocket connection');
@@ -145,37 +163,16 @@ wss.on('connection', (ws) => {
 
         const aiResponse: AIMessage = await runLangChainChatStream(userMessage, ws);
 
-        ws.send(JSON.stringify({ "aiResponse": aiResponse.content }));
-    });
-});
-
-io.on("connection", (socket) => {
-    console.log("User connected!");
-
-    // Handle receiving a message from the client
-    socket.on("sendMessage", async (data) => {
-        const userInput = data.message;
-        const userMessage = new HumanMessage(userInput);
-
-        const aiResponse: AIMessage = await runLangChainChat(userMessage);
-
-        const logEntry = { user: userMessage.content, ai: aiResponse.content };
-        console.log(`🧠user: ${logEntry.user}\n🤖ai: ${logEntry.ai}`);
-        fs.appendFileSync(transcriptLogFile, `🧠user: ${logEntry.user}\n🤖ai: ${logEntry.ai}\n\n`);
-
-        // Send the AI's response back to the client
-        socket.emit("receiveMessage", aiResponse.content);
+        ws.send(JSON.stringify({ "type":"aiResponse", "content":aiResponse.content }));
     });
 
     // Handle user disconnecting
-    socket.on("disconnect", () => {
+    ws.on("disconnect", () => {
         console.log("User disconnected 😢");
     });
 });
 
 
-const port = process.env.PORT || 3000;
-httpServer.listen(port, () => {
-    console.log(`🚀 Server's cruisin' on port ${port}`);
-});
+
+
 
