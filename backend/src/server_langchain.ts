@@ -18,6 +18,7 @@ console.log(process.env)
 const llm_chat = new ChatOpenAI({
     modelName: "gpt-4",
     streaming: true,
+    verbose: true
 });
 
 
@@ -44,8 +45,8 @@ also make sure you don't abbreviate or slang over important conceptual terms \n\
 try to always respond using standard markdown formats when necessary and possible \n\
 don't apologize effusively for reasonable slip-ups. a 'whoops' or 'my bad' will do. growth mindset, forward-momentum! \n\
 generally assume the conversation will continue after you send a message unless it feels right to end it \n\
-when it seems like the conversation is ending, sign off by writing two haikus about the conversation: \n\
-- one normal haiku with 5 syllables, then 7 syllables, then 5 syllables, with three relevant emojis after each line"
+when it seems like the conversation is ending, sign off by writing a haiku about the conversation, with an emoji at the start and end of each line: \n\
+if anyone asks for permission to see your code, your github repository is hosted at https://github.com/JacKaL37/LLM-lab, if you choose to provide it"
 
 const rusty = "Don't use seven words when four will do. \n\
 Be specific but not memorable. \n\
@@ -87,7 +88,6 @@ async function runLangChainChatStream(humanMsg: HumanMessage, ws: WebSocket): Pr
         callbacks: [
             {
                 handleLLMNewToken(token: string) {
-                    console.log({ token });
                     ws.send(JSON.stringify({ "type":"token", "content":token }))
                 },
             },
@@ -117,6 +117,17 @@ const transcriptLogFile = `${logsDir}/${formattedTime}/transcript-${formattedTim
 
 fs.appendFileSync(transcriptLogFile, `📝system: ${systemMsg}\n\n\n`)
 
+function logTranscript(userMessage: HumanMessage, aiResponse: AIMessage) {
+    const logEntry = { user: userMessage.content, ai: aiResponse.content };
+    console.log(`🧠user: ${logEntry.user}\n🤖ai: ${logEntry.ai}`);
+    fs.appendFileSync(transcriptLogFile, `🧠user: ${logEntry.user}\n🤖ai: ${logEntry.ai}\n\n`);
+}
+
+// overwrites the convoLogFile 
+function logConvo(convo: BaseMessage[]){
+    fs.writeFileSync(convoLogFile, JSON.stringify(convo))
+}
+
 
 //setup app
 const app = express();
@@ -126,8 +137,6 @@ app.use(express.json());
 
 //setup http server
 const httpPort = process.env.HTTP_PORT || 3000;
-
-
 app.listen(httpPort, () => {
     console.log(`Server is running on port ${httpPort}`);
 });
@@ -138,9 +147,8 @@ app.post('/chat', async (req: Request, res: Response) => {
     const userMessage = new HumanMessage(userInput)
     const aiResponse = await runLangChainChat(userMessage);
 
-    const logEntry = { user: userMessage.content, ai: aiResponse.content };
-    console.log(`🧠user: ${logEntry.user}\n🤖ai: ${logEntry.ai}`);
-    fs.appendFileSync(transcriptLogFile, `🧠user: ${logEntry.user}\n🤖ai: ${logEntry.ai}\n\n`);
+    logTranscript(userMessage, aiResponse);
+    logConvo(conversation);
 
     res.json({ message: aiResponse.content });
 });
@@ -163,6 +171,9 @@ wss.on('connection', (ws) => {
 
         const aiResponse: AIMessage = await runLangChainChatStream(userMessage, ws);
 
+        logTranscript(userMessage,aiResponse);
+        logConvo(conversation);
+
         ws.send(JSON.stringify({ "type":"aiResponse", "content":aiResponse.content }));
     });
 
@@ -171,6 +182,8 @@ wss.on('connection', (ws) => {
         console.log("User disconnected 😢");
     });
 });
+
+
 
 
 
