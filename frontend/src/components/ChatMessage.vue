@@ -7,16 +7,34 @@
   
 <script>
 import MarkdownIt from 'markdown-it';
+import hljs from 'highlight.js';
 
 const md = new MarkdownIt({
-    breaks: true
+    breaks: true,
+    highlight: function (str, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+            try {
+                return hljs.highlight(lang, str).value;
+            } catch (__) {
+                // whoops 🤷‍♂️
+            }
+        }
+        return '';
+    }
 });
 
 md.renderer.rules.fence = (tokens, idx) => {
     const token = tokens[idx];
     const type = md.utils.escapeHtml(token.info)
-    const content = md.utils.escapeHtml(token.content);
-    const button = '<button class="copy-button">📋 copy code</button>';
+
+    let content = token.content;
+    if (token.info && hljs.getLanguage(token.info)) {
+        content = hljs.highlight(token.info, content).value;
+    } else {
+        content = md.utils.escapeHtml(content);
+    }
+
+    const button = '<button class="copy-button" @click="copyToClipboard">📋 copy code</button>';
 
     return `<div class="codeblock"> \
                 
@@ -38,7 +56,7 @@ export default {
             button.addEventListener('click', (event) => {
                 const codeBlock = event.target.closest('.codeblock');
                 const code = codeBlock.querySelector('code').textContent;
-                try{
+                try {
                     navigator.clipboard.writeText(code);
                 } catch (err) {
                     this.unsecuredCopyToClipboard(code);
@@ -56,12 +74,21 @@ export default {
         renderMarkdown(markdownString) {
             return md.render(markdownString);
         },
+        copyToClipboard(event) {
+            const codeBlock = event.target.closest('.codeblock');
+            const code = codeBlock.querySelector('code').textContent;
+            try {
+                navigator.clipboard.writeText(code);
+            } catch (err) {
+                this.unsecuredCopyToClipboard(code);
+            }
+        },
         //PROMISE: this is temporary until SSL certificates become viable for the project
         unsecuredCopyToClipboard(text) {
             const falseClipboard = document.createElement("textarea");
             falseClipboard.value = text;
             document.body.appendChild(falseClipboard);
-            falseClipboard.focus({preventScroll:true});
+            falseClipboard.focus({ preventScroll: true });
             falseClipboard.select();
             try {
                 document.execCommand('copy');
@@ -130,7 +157,7 @@ export default {
     padding: 10px;
     font-size: 10pt;
     font-family: robot-mono, monospace;
-    color: white;
+    color: #F2058C;
 }
 
 :deep(.copy-button) {
@@ -151,7 +178,7 @@ export default {
 :deep(.codebody) {
     background-color: #00000088;
     overflow-y: auto;
-    color: white;
+    color: #F2058C;
     border-radius: 0 0 10px 10px;
     padding-left: 10px;
 }
@@ -170,14 +197,50 @@ export default {
     border-radius: 4px;
 }
 
+
+
+
+
+
 @keyframes slidein {
-  from { transform: translateY(20px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .message {
-  animation: slidein 0.5s ease;
-  /* rest of your css */
+    animation: slidein 0.5s ease;
+    /* rest of your css */
+
 }
+
+code {
+    color: #F2058C;
+}
+
+
+@import 'highlight.js/styles/default.css';
+
+.hljs {
+    background: #1a1b26;
+    color: #978a8a;
+}
+
+.hljs-string {
+    color: #e58f65;
+}
+
+.hljs-keyword {
+    color: #d4759b;
+}
+
+
+/* add more as needed */
 </style>
   
