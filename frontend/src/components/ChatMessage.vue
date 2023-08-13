@@ -109,7 +109,7 @@ export default {
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid;
-    border-radius: 10px;
+    border-radius: 16px;
     color: white;
     font-size: 12pt;
     font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -118,20 +118,20 @@ export default {
 }
 
 .message ::v-deep {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
 }
 
-.message.user {
+.message.human {
     align-self: flex-end;
     background-color: #2e1d2e;
     color: #ff60ff;
     border-bottom-right-radius: 0;
 }
 
-.message.assistant {
+.message.ai {
     align-self: flex-start;
     background-color: #0e2324;
     color: #57f9ff;
