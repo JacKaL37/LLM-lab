@@ -58,10 +58,11 @@ export default {
         this.scrollCheck();
 
       } else if (JSONmsg.type == "aiResponse") {
-        
+
         this.conversation_history.push({ role: "ai", content: JSONmsg.content });
         this.currentAIresponse.content = '';
-        
+        this.playTickSynth();
+
         this.isSending = false;
         this.$nextTick(() => {
           this.$refs.textarea.focus();
@@ -72,7 +73,7 @@ export default {
 
     this.scalePatterns = {
       "Constant": [1],
-      "Pentatonic": [1, 9/8, 5/4, 3/2, 5/3],
+      "Pentatonic": [1, 9 / 8, 5 / 4, 3 / 2, 5 / 3],
       "Blues Scale": [1, 6 / 5, 4 / 3, 7 / 5, 3 / 2, 8 / 5],
       "Minor Pentatonic": [1, 6 / 5, 4 / 3, 3 / 2, 8 / 5],
       "Major Scale": [1, 9 / 8, 5 / 4, 4 / 3, 3 / 2, 5 / 3, 15 / 8],
@@ -95,7 +96,7 @@ export default {
       "Melodic Minor Scale (Desc)": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5]
     }
 
-    this.baseNote = 440
+    this.baseNote = 440 //A4
 
     this.notesInScale = 6
 
@@ -164,7 +165,7 @@ export default {
       this.currentNotePointer = (this.currentNotePointer + this.scaleNotes.length) % this.scaleNotes.length;
 
       this.osc.frequency.value = this.scaleNotes[this.currentNotePointer]
-      console.log("token freq.: " + this.scaleNotes[this.currentNotePointer] + "hz")
+      //console.log("token freq.: " + this.scaleNotes[this.currentNotePointer] + "hz")
 
       this.osc.connect(this.gainNode);
       this.gainNode.connect(this.audioContext.destination);
@@ -184,15 +185,20 @@ export default {
 
     },
     playTickSynth() {
-      const synth = new Tone.Synth().toDestination();
+      const gain = new Tone.Gain(0.03).toDestination(); // change 0.5 to any value between 0-1 for gain level
+      //const synth = new Tone.Synth().connect(gain);
+      const polySynth = new Tone.PolySynth().connect(gain);
 
       //brownian pentatonic wandering
       this.currentNotePointer += parseInt(Math.floor((Math.random() * 5) - 2));
       this.currentNotePointer = (this.currentNotePointer + this.scaleNotes.length) % this.scaleNotes.length;
+      //let freq = this.scaleNotes[this.currentNotePointer];
 
-      let freq = this.scaleNotes[this.currentNotePointer];
-      synth.triggerAttackRelease(freq, "8n"); // create a note that lasts an eighth-note
-      console.log("token freq.: " + freq + "hz");
+      //synth.triggerAttackRelease(freq, "16n");
+      const baseNote = this.scaleNotes[0]
+      polySynth.triggerAttackRelease([baseNote/16, baseNote/4, baseNote/8], "32n"); 
+      //console.log("token freq.: " + freq + "hz");
+
     },
     generateScale(size, root, ratios) {
       //size, rootNote, scale, ratios, iteration_patterns (what directions and how do they play out)
@@ -201,6 +207,7 @@ export default {
       // look for two new-lines: next paragraph is next chord
       // could generate all possible notes ahead of time
       // every N notes, drop a bass chord in, or add lots of sustain, 
+      // switch to monotone for code!!
 
       //let ratios =  [1, 9/8, 5/4, 45/32, 3/2, 8/5]; // pentatonic scale
       let frequencies = []; // array to store our frequencies
