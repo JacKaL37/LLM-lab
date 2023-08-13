@@ -25,7 +25,7 @@ export default {
       userMessage: '',
       isSending: false,
       conversation_history: [],
-      currentAIresponse: { role: "assistant", content: "" },
+      currentAIresponse: { role: "ai", content: "" },
       audioContext: new (window.AudioContext || window.webkitAudioContext)(),
       osc: this.audioContext,
       gainNode: null
@@ -34,7 +34,7 @@ export default {
   computed: {
     message_list() {
       if (this.currentAIresponse.content != '') {
-        return this.conversation_history.concat({ role: "assistant", content: this.currentAIresponse.content });
+        return this.conversation_history.concat({ role: "ai", content: this.currentAIresponse.content });
       }
       return this.conversation_history
     }
@@ -46,14 +46,20 @@ export default {
     // Listen for incoming messages and handle them
     this.socket.onmessage = (event) => {
       const JSONmsg = JSON.parse(event.data);
+
       if (JSONmsg.type == "token") {
         this.currentAIresponse.content += JSONmsg.content;
         this.playTickSound();
         this.scrollCheck();
 
+      } else if (JSONmsg.type == "convo_init") {
+        const convo_content = JSON.parse(JSONmsg.content);
+        this.conversation_history = convo_content.slice(1);
+        this.scrollCheck();
+
       } else if (JSONmsg.type == "aiResponse") {
         
-        this.conversation_history.push({ role: "assistant", content: JSONmsg.content });
+        this.conversation_history.push({ role: "ai", content: JSONmsg.content });
         this.currentAIresponse.content = '';
         
         this.isSending = false;
@@ -62,6 +68,7 @@ export default {
         });
       }
     };
+
 
     this.scalePatterns = {
       "Constant": [1],
@@ -90,7 +97,7 @@ export default {
 
     this.baseNote = 440
 
-    this.notesInScale = 11
+    this.notesInScale = 6
 
     this.scaleNotes = this.generateScale(this.notesInScale, this.baseNote, this.scalePatterns["Blues Scale"]);
     console.log(this.scaleNotes)
@@ -110,7 +117,7 @@ export default {
         this.isSending = true;
 
         this.conversation_history.push({
-          role: 'user',
+          role: 'human',
           content: message,
         });
 

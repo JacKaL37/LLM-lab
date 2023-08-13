@@ -163,6 +163,14 @@ const wss = new WebSocket.Server({ port: wsPort }); // You can choose a differen
 
 wss.on('connection', (ws) => {
     console.log('New WebSocket connection');
+    
+    let convo = []
+    for(const c of conversation){
+        convo.push({"role": c._getType(), "content": c.content})
+    }
+    ws.send(JSON.stringify(
+        {"type":"convo_init", "content": JSON.stringify(convo)}
+    ));
 
     ws.on('message', async (sentData) => {
         const message = sentData.toString();
