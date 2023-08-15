@@ -6,8 +6,12 @@
 
     <div class="input-area">
       <textarea ref="textarea" v-model="userMessage" placeholder="send a message" :disabled="isSending" class="input"
-        @keydown.enter.exact.prevent="sendMessage" @keydown.shift.enter.exact="allowNewline" @input="expandTextarea" />
+        @keydown.enter.exact.prevent="onEnterKey" @input="expandTextarea" />
       <button @click="sendMessage" :disabled="isSending" class="send-button">Send</button>
+    </div>
+
+    <div class="audio-area">
+      <audio ref="audioElement"></audio>
     </div>
   </div>
 </template>
@@ -26,9 +30,11 @@ export default {
       isSending: false,
       conversation_history: [],
       currentAIresponse: { role: "ai", content: "" },
-      audioContext: new (window.AudioContext || window.webkitAudioContext)(),
-      osc: this.audioContext,
-      gainNode: null
+      audioContext: null,
+      streamDestination: null,
+      osc: null,
+      gainNode: null,
+      audioStarted: false,
     };
   },
   computed: {
@@ -40,74 +46,40 @@ export default {
     }
   },
   mounted() {
-    // Connect to the WebSocket server on port 3001
-    this.socket = new WebSocket('ws://104.229.89.14:3001');
 
-    // Listen for incoming messages and handle them
-    this.socket.onmessage = (event) => {
-      const JSONmsg = JSON.parse(event.data);
+    // Setup socket
 
-      if (JSONmsg.type == "token") {
-        this.currentAIresponse.content += JSONmsg.content;
-        this.playTickSound();
-        this.scrollCheck();
+    this.setupSocket();
 
-      } else if (JSONmsg.type == "convo_init") {
-        const convo_content = JSON.parse(JSONmsg.content);
-        this.conversation_history = convo_content.slice(1);
-        this.scrollCheck();
+    // Listen for visibility change and setup socket again if page becomes visible.
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        this.setupSocket(); // Try to reconnect
+      } 
+    });
 
-      } else if (JSONmsg.type == "aiResponse") {
+    // Setup Musicality
 
-        this.conversation_history.push({ role: "ai", content: JSONmsg.content });
-        this.currentAIresponse.content = '';
-        this.playTickSynth();
+    this.setupMusicality();
 
-        this.isSending = false;
-        this.$nextTick(() => {
-          this.$refs.textarea.focus();
-        });
-      }
-    };
+    // Setup Audio
 
-
-    this.scalePatterns = {
-      "Constant": [1],
-      "Pentatonic": [1, 9 / 8, 5 / 4, 3 / 2, 5 / 3],
-      "Blues Scale": [1, 6 / 5, 4 / 3, 7 / 5, 3 / 2, 8 / 5],
-      "Minor Pentatonic": [1, 6 / 5, 4 / 3, 3 / 2, 8 / 5],
-      "Major Scale": [1, 9 / 8, 5 / 4, 4 / 3, 3 / 2, 5 / 3, 15 / 8],
-      "Minor Scale": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5],
-      "Whole Tone": [1, 9 / 8, 5 / 4, 45 / 32, 3 / 2, 8 / 5],
-
-      "Dorian Mode": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5],
-      "Mixolydian Mode": [1, 9 / 8, 5 / 4, 4 / 3, 3 / 2, 5 / 3, 16 / 9],
-      "Lydian Mode": [1, 9 / 8, 5 / 4, 45 / 32, 3 / 2, 5 / 3, 15 / 8],
-      "Phrygian Mode": [1, 16 / 15, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5],
-
-      "Locrian Mode": [1, 16 / 15, 6 / 5, 64 / 45, 8 / 5, 16 / 9, 32 / 15],
-      "Maqam Bayati": [1, 3 / 4, 3 / 2, 2, 3, 4],
-      "Maqam Hijaz": [1, 5 / 4, 3 / 2, 7 / 4, 2],
-      "Maqam Rast": [1, 9 / 8, 5 / 4, 4 / 3, 3 / 2, 5 / 3, 7 / 2, 2],
-      "Maqam Sikah": [1, 3 / 2, 2, 3, 4],
-      "Octotonic Scale": [1, 9 / 8, 6 / 5, 3 / 2, 8 / 5, 5 / 3, 7 / 4, 15 / 8],
-      "Harmonic Minor Scale": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 15 / 8],
-      "Melodic Minor Scale (Asc)": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 5 / 3, 15 / 8],
-      "Melodic Minor Scale (Desc)": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5]
-    }
-
-    this.baseNote = 440 //A4
-
-    this.notesInScale = 6
-
-    this.scaleNotes = this.generateScale(this.notesInScale, this.baseNote, this.scalePatterns["Blues Scale"]);
-    console.log(this.scaleNotes)
-
-    this.currentNotePointer = 0;
+    this.setupAudio();  
   },
   methods: {
-    // Other methods stay the same
+    async onEnterKey(event) {
+      if (/Mobi|Android/i.test(navigator.userAgent) || event.shiftKey == true) {
+        this.userMessage += "\n";
+      } else {
+        await this.sendMessage();
+      }
+
+    },
     async sendMessage() {
+      if (this.audioContext.state != 'running'){
+        console.log("setting up audio context");
+        this.setupAudio();
+      }
       const message = this.userMessage.trim();
       this.userMessage = '';
 
@@ -125,7 +97,7 @@ export default {
         // Send the message over WebSocket
         this.socket.send(JSON.stringify({ message: message }));
       }
-    },
+    },  
     scrollCheck() {
       // this gets the .chathistory div
       const chatHistory = this.$refs.chathistory;
@@ -139,9 +111,6 @@ export default {
       }
       // if chat wasn't already at the bottom, don't do anything!
     },
-    allowNewline() {
-      // Do nothing
-    },
     expandTextarea() {
       this.$nextTick(() => {
         this.$refs.textarea.style.height = 'auto';
@@ -149,6 +118,89 @@ export default {
         const verticalPadding = 2 * 10; // 2 * padding-top
         this.$refs.textarea.style.height = `${scrollHeight - verticalPadding}px`;
       })
+    },
+    setupSocket() {
+      // Connect to the WebSocket server on port 3001
+      this.socket = new WebSocket('ws://104.229.89.14:3001');
+
+      // Listen for incoming messages and handle them
+      this.socket.onmessage = (event) => {
+        const JSONmsg = JSON.parse(event.data);
+
+        if (JSONmsg.type == "token") {
+          this.currentAIresponse.content += JSONmsg.content;
+          this.playTickSound();
+          this.scrollCheck();
+
+        } else if (JSONmsg.type == "convo_init") {
+          const convo_content = JSON.parse(JSONmsg.content);
+          this.conversation_history = convo_content.slice(1);
+          this.scrollCheck();
+
+        } else if (JSONmsg.type == "aiResponse") {
+
+          this.conversation_history.push({ role: "ai", content: JSONmsg.content });
+          this.currentAIresponse.content = '';
+          this.playTickSynth();
+
+          this.isSending = false;
+          this.$nextTick(() => {
+            this.$refs.textarea.focus();
+          });
+        }
+      };
+    },
+    setupAudio() {
+
+      this.audioContext = new (window.AudioContext || window.webkitAudioContext)
+      // Setup audio
+      this.streamDestination = this.audioContext.createMediaStreamDestination()
+
+      this.$refs.audioElement.srcObject = this.streamDestination.stream
+
+      try {
+        this.$refs.audioElement.play();
+      } catch (err) {
+        // handle error here 
+        console.log('AudioContext tried to start before user interaction.');
+      } 
+      
+
+    },
+    setupMusicality() {
+      this.scalePatterns = {
+        "Constant": [1],
+        "Pentatonic": [1, 9 / 8, 5 / 4, 3 / 2, 5 / 3],
+        "Blues Scale": [1, 6 / 5, 4 / 3, 7 / 5, 3 / 2, 8 / 5],
+        "Minor Pentatonic": [1, 6 / 5, 4 / 3, 3 / 2, 8 / 5],
+        "Major Scale": [1, 9 / 8, 5 / 4, 4 / 3, 3 / 2, 5 / 3, 15 / 8],
+        "Minor Scale": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5],
+        "Whole Tone": [1, 9 / 8, 5 / 4, 45 / 32, 3 / 2, 8 / 5],
+
+        "Dorian Mode": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5],
+        "Mixolydian Mode": [1, 9 / 8, 5 / 4, 4 / 3, 3 / 2, 5 / 3, 16 / 9],
+        "Lydian Mode": [1, 9 / 8, 5 / 4, 45 / 32, 3 / 2, 5 / 3, 15 / 8],
+        "Phrygian Mode": [1, 16 / 15, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5],
+
+        "Locrian Mode": [1, 16 / 15, 6 / 5, 64 / 45, 8 / 5, 16 / 9, 32 / 15],
+        "Maqam Bayati": [1, 3 / 4, 3 / 2, 2, 3, 4],
+        "Maqam Hijaz": [1, 5 / 4, 3 / 2, 7 / 4, 2],
+        "Maqam Rast": [1, 9 / 8, 5 / 4, 4 / 3, 3 / 2, 5 / 3, 7 / 2, 2],
+        "Maqam Sikah": [1, 3 / 2, 2, 3, 4],
+        "Octotonic Scale": [1, 9 / 8, 6 / 5, 3 / 2, 8 / 5, 5 / 3, 7 / 4, 15 / 8],
+        "Harmonic Minor Scale": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 15 / 8],
+        "Melodic Minor Scale (Asc)": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 5 / 3, 15 / 8],
+        "Melodic Minor Scale (Desc)": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5]
+      }
+
+      this.baseNote = 440 //A4
+
+      this.notesInScale = 6
+
+      this.scaleNotes = this.generateScale(this.notesInScale, this.baseNote, this.scalePatterns["Blues Scale"]);
+      console.log(this.scaleNotes)
+
+      this.currentNotePointer = 0;
     },
     playTickSound() {
       //attack, sustain, decay, release, wave-type
@@ -168,7 +220,7 @@ export default {
       //console.log("token freq.: " + this.scaleNotes[this.currentNotePointer] + "hz")
 
       this.osc.connect(this.gainNode);
-      this.gainNode.connect(this.audioContext.destination);
+      this.gainNode.connect(this.streamDestination);
 
       // Gain value starts from 0
       this.gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
@@ -185,7 +237,8 @@ export default {
 
     },
     playTickSynth() {
-      const gain = new Tone.Gain(0.03).toDestination(); // change 0.5 to any value between 0-1 for gain level
+      Tone.setContext(this.audioContext) 
+      const gain = new Tone.Gain(0.03).toDestination(); 
       //const synth = new Tone.Synth().connect(gain);
       const polySynth = new Tone.PolySynth().connect(gain);
 
@@ -196,7 +249,7 @@ export default {
 
       //synth.triggerAttackRelease(freq, "16n");
       const baseNote = this.scaleNotes[0]
-      polySynth.triggerAttackRelease([baseNote/16, baseNote/4, baseNote/8], "32n"); 
+      polySynth.triggerAttackRelease([baseNote / 16, baseNote / 4, baseNote / 8], "32n");
       //console.log("token freq.: " + freq + "hz");
 
     },
