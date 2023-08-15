@@ -14,3 +14,14 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+
+#app{
+  display: flex;
+  flex-direction: column;
+  height: 95vh;
+  margin: 0 auto;
+}
+
+</style>
