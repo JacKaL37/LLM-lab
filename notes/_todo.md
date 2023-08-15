@@ -11,3 +11,5 @@ time to make the tree thing
 - try to finish retrieving some sort of yahoo.json 
   - implement a vectorstore 
   - at end of conversation, spit out most relevant yahoo answer thread. 
+
+- 
