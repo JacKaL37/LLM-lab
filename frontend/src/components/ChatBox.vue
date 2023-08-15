@@ -6,7 +6,7 @@
 
     <div class="input-area">
       <textarea ref="textarea" v-model="userMessage" placeholder="send a message" :disabled="isSending" class="input"
-        @keydown.enter.exact.prevent="onEnterKey" @input="expandTextarea" />
+        @keydown.enter.exact.prevent="onEnterKey" @input="expandTextarea(); scrollCheck();" />
       <button @click="sendMessage" :disabled="isSending" class="send-button">Send</button>
     </div>
 
@@ -35,6 +35,7 @@ export default {
       osc: null,
       gainNode: null,
       audioStarted: false,
+      userInteracted: false,
     };
   },
   computed: {
@@ -279,14 +280,17 @@ export default {
 </script>
 
 <style scoped>
+
 .chatbox {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   width: 100%;
   max-width: 700px;
   margin: 0 auto;
+  height: 95vh;
+  overflow: auto;
   padding: 0px;
   border-radius: 10px;
   background-color: #202020;
@@ -296,25 +300,29 @@ export default {
 .chathistory {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   align-items: center;
   width: 100%;
   min-height: 250px;
-  max-height: 500px;
   overflow: auto;
 }
 
-.chathistory::-webkit-scrollbar {
+::-webkit-scrollbar {
   width: 4px;
   height: 8px;
 }
 
-.chathistory::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.chathistory::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background-color: rgba(125, 125, 125, 0.7);
   border-radius: 4px;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 .input-area {
@@ -322,7 +330,6 @@ export default {
   flex-direction: row;
   align-items: stretch;
   width: 100%;
-  margin-top: 20px;
   border-radius: 5px;
   background-color: #383838;
 }
@@ -339,7 +346,7 @@ export default {
   font-size: 12pt;
   font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   color: white;
-  max-height: 320px;
+  max-height: 300px;
   width: 50px;
   padding: 16px;
 }
