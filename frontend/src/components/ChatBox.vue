@@ -103,8 +103,10 @@ export default {
       // this gets the .chathistory div
       const chatHistory = this.$refs.chathistory;
 
+      const threshold = 50;
+
       // check if .chathistory scroll was already at the bottom
-      if (chatHistory.scrollTop + chatHistory.clientHeight === chatHistory.scrollHeight) {
+      if (chatHistory.scrollTop + chatHistory.clientHeight + threshold >= chatHistory.scrollHeight) {
         // if it was, wait for dom to update then scroll to new bottom 
         this.$nextTick(() => {
           chatHistory.scrollTop = chatHistory.scrollHeight;
