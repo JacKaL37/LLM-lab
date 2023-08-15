@@ -11,6 +11,7 @@ import hljs from 'highlight.js';
 
 const md = new MarkdownIt({
     breaks: true,
+    fence: true,
     highlight: function (str, lang) {
         if (lang && hljs.getLanguage(lang)) {
             try {
@@ -23,9 +24,16 @@ const md = new MarkdownIt({
     }
 });
 
+md.block.ruler.disable('code');
+md.renderer.rules.code_inline = function (tokens, idx) {
+    return `${tokens[idx].content}`;
+};
+
 md.renderer.rules.fence = (tokens, idx) => {
     const token = tokens[idx];
     const type = md.utils.escapeHtml(token.info)
+
+
 
     let content = token.content;
     if (token.info && hljs.getLanguage(token.info)) {
