@@ -105,13 +105,18 @@ export default {
 
       const threshold = 50;
 
-      // check if .chathistory scroll was already at the bottom
-      if (chatHistory.scrollTop + chatHistory.clientHeight + threshold >= chatHistory.scrollHeight) {
+      //check if chathistory exists before we do anything
+      if (chatHistory){
+        // check if .chathistory scroll was already at the bottom
+        if (chatHistory.scrollTop + chatHistory.clientHeight + threshold >= chatHistory.scrollHeight) {
         // if it was, wait for dom to update then scroll to new bottom 
         this.$nextTick(() => {
           chatHistory.scrollTop = chatHistory.scrollHeight;
         });
       }
+      }
+      
+      
       // if chat wasn't already at the bottom, don't do anything!
     },
     expandTextarea() {
