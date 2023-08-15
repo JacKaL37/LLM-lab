@@ -25,9 +25,6 @@ const md = new MarkdownIt({
 });
 
 md.block.ruler.disable('code');
-md.renderer.rules.code_inline = function (tokens, idx) {
-    return `${tokens[idx].content}`;
-};
 
 md.renderer.rules.fence = (tokens, idx) => {
     const token = tokens[idx];
