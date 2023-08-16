@@ -1,4 +1,4 @@
-<template>
+<template @input="userHasInteracted = true;">
   <div class="chatbox">
     <div class="chathistory" ref="chathistory">
       <ChatMessage v-for="(message, index) in message_list" :key="index" :message="message" />
@@ -6,7 +6,7 @@
 
     <div class="input-area">
       <textarea ref="textarea" v-model="userMessage" placeholder="send a message" :disabled="isSending" class="input"
-        @keydown.enter.exact.prevent="onEnterKey" @input="expandTextarea(); scrollCheck();" />
+        @keydown.enter.exact.prevent="onEnterKey" @input="onUserTextInput" />
       <button @click="sendMessage" :disabled="isSending" class="send-button">Send</button>
     </div>
 
@@ -18,7 +18,6 @@
 
 <script>
 import ChatMessage from './ChatMessage.vue';
-import * as Tone from 'tone';
 
 export default {
   components: {
@@ -56,7 +55,7 @@ export default {
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
         this.setupSocket(); // Try to reconnect
-      } 
+      }
     });
 
     // Setup Musicality
@@ -65,7 +64,7 @@ export default {
 
     // Setup Audio
 
-    this.setupAudio();  
+    this.setupAudio();
   },
   methods: {
     async onEnterKey(event) {
@@ -77,8 +76,8 @@ export default {
 
     },
     async sendMessage() {
-      if (this.audioContext.state != 'running'){
-        console.log("setting up audio context");
+      if (this.audioContext.state != 'running') {
+        //console.log("setting up audio context");
         this.setupAudio();
       }
       const message = this.userMessage.trim();
@@ -98,7 +97,7 @@ export default {
         // Send the message over WebSocket
         this.socket.send(JSON.stringify({ message: message }));
       }
-    },  
+    },
     scrollCheck() {
       // this gets the .chathistory div
       const chatHistory = this.$refs.chathistory;
@@ -106,17 +105,17 @@ export default {
       const threshold = 50;
 
       //check if chathistory exists before we do anything
-      if (chatHistory){
+      if (chatHistory) {
         // check if .chathistory scroll was already at the bottom
         if (chatHistory.scrollTop + chatHistory.clientHeight + threshold >= chatHistory.scrollHeight) {
-        // if it was, wait for dom to update then scroll to new bottom 
-        this.$nextTick(() => {
-          chatHistory.scrollTop = chatHistory.scrollHeight;
-        });
+          // if it was, wait for dom to update then scroll to new bottom 
+          this.$nextTick(() => {
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+          });
+        }
       }
-      }
-      
-      
+
+
       // if chat wasn't already at the bottom, don't do anything!
     },
     expandTextarea() {
@@ -130,6 +129,10 @@ export default {
     setupSocket() {
       // Connect to the WebSocket server on port 3001
       this.socket = new WebSocket('ws://104.229.89.14:3001');
+
+      if(this.audioContext.isStopped){
+        this.audioContext.resume();
+      }
 
       // Listen for incoming messages and handle them
       this.socket.onmessage = (event) => {
@@ -149,7 +152,7 @@ export default {
 
           this.conversation_history.push({ role: "ai", content: JSONmsg.content });
           this.currentAIresponse.content = '';
-          this.playTickSynth();
+          this.playTickChord();
 
           this.isSending = false;
           this.$nextTick(() => {
@@ -167,13 +170,22 @@ export default {
       this.$refs.audioElement.srcObject = this.streamDestination.stream
 
       try {
-        this.$refs.audioElement.play();
+        if (this.userHasInteracted) {
+          this.$refs.audioElement.play();
+        }
       } catch (err) {
         // handle error here 
         console.log('AudioContext tried to start before user interaction.');
-      } 
-      
+      }
 
+
+    },
+    onUserTextInput(){
+      this.expandTextarea(); 
+      this.scrollCheck();
+      if (this.audioContext.state === 'running' && this.userHasInteracted) {
+        this.playTickSound();
+      } 
     },
     setupMusicality() {
       this.scalePatterns = {
@@ -211,22 +223,20 @@ export default {
       this.currentNotePointer = 0;
     },
     async playTickSound() {
+
       //attack, sustain, decay, release, wave-type
       this.osc = this.audioContext.createOscillator();
       this.gainNode = this.audioContext.createGain();
-      //this.osc.type = "sine", "sawtooth", "square", "triangle", "custom"
-      this.osc.type = "sine"
 
-      //samples randomly from a list of possible numbers
-      //this.osc.frequency.value = this.scaleNotes[Math.floor(Math.random() * this.scaleNotes.length)];
+      //set types
+      this.osc.type = "sine"  //"sine", "sawtooth", "square", "triangle", "custom"
 
       //brownian pentatonic wandering
       this.currentNotePointer += parseInt(Math.floor((Math.random() * 5) - 2));
       this.currentNotePointer = (this.currentNotePointer + this.scaleNotes.length) % this.scaleNotes.length;
-
       this.osc.frequency.value = this.scaleNotes[this.currentNotePointer]
-      //console.log("token freq.: " + this.scaleNotes[this.currentNotePointer] + "hz")
 
+      //connections
       this.osc.connect(this.gainNode);
       this.gainNode.connect(this.streamDestination);
 
@@ -244,21 +254,46 @@ export default {
       this.osc.stop(this.audioContext.currentTime + 0.2);
 
     },
-    async playTickSynth() {
-      Tone.setContext(this.audioContext) 
-      const gain = new Tone.Gain(0.03).toDestination(); 
-      const polySynth = new Tone.PolySynth().connect(gain);
+    async playTickChord() {
+      let osc1 = this.audioContext.createOscillator();
+      let osc2 = this.audioContext.createOscillator();
+      let osc3 = this.audioContext.createOscillator();
+      let osc4 = this.audioContext.createOscillator();
+      let gainNode = this.audioContext.createGain();
 
-      //brownian pentatonic wandering
-      this.currentNotePointer += parseInt(Math.floor((Math.random() * 5) - 2));
-      this.currentNotePointer = (this.currentNotePointer + this.scaleNotes.length) % this.scaleNotes.length;
-      //let freq = this.scaleNotes[this.currentNotePointer];
+      osc1.type = "sine"
+      osc2.type = "sine"
+      osc3.type = "sine"
+      osc4.type = "sine"
 
-      //synth.triggerAttackRelease(freq, "16n");
-      const baseNote = this.scaleNotes[0]
-      polySynth.triggerAttackRelease([baseNote / 16, baseNote / 4, baseNote / 8], "32n");
-      //console.log("token freq.: " + freq + "hz");
+      osc1.frequency.value = this.scaleNotes[0] / 2
+      osc2.frequency.value = this.scaleNotes[0] / 4
+      osc3.frequency.value = this.scaleNotes[0] / 8
+      osc4.frequency.value = this.scaleNotes[0] / 16
 
+      osc1.connect(gainNode);
+      osc2.connect(gainNode);
+      osc3.connect(gainNode);
+      osc4.connect(gainNode);
+      gainNode.connect(this.streamDestination);
+
+      gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+
+      // Gain value increases to 0.1 over 0.01 seconds (fade in)
+      gainNode.gain.linearRampToValueAtTime(0.05, this.audioContext.currentTime + 0.01);
+
+      osc1.start(this.audioContext.currentTime);
+      osc2.start(this.audioContext.currentTime);
+      osc3.start(this.audioContext.currentTime);
+      osc4.start(this.audioContext.currentTime);
+
+      // Gain value decreases to 0 over 0.01 seconds (fade out)
+      gainNode.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + 0.3);
+
+      osc1.stop(this.audioContext.currentTime + 0.4);
+      osc2.stop(this.audioContext.currentTime + 0.4);
+      osc3.stop(this.audioContext.currentTime + 0.4);
+      osc4.stop(this.audioContext.currentTime + 0.4);
     },
     generateScale(size, root, ratios) {
       //size, rootNote, scale, ratios, iteration_patterns (what directions and how do they play out)
@@ -286,7 +321,6 @@ export default {
 </script>
 
 <style scoped>
-
 .chatbox {
   display: flex;
   flex-direction: column;
