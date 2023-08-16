@@ -65,7 +65,7 @@ async function runLangChainChat(humanMsg: HumanMessage): Promise<AIMessage> {
 
     conversation.push(humanMsg);
 
-    const aiMsg: AIMessage = await llm_chat.call(conversation, {
+    const aiMsg: AIMessage = await llm_chat_fast.call(conversation, {
         callbacks: [
             {
                 handleLLMNewToken(token: string) {
@@ -84,7 +84,7 @@ async function runLangChainChatStream(humanMsg: HumanMessage, ws: WebSocket): Pr
 
     conversation.push(humanMsg);
 
-    const aiMsg: AIMessage = await llm_chat.call(conversation, {
+    const aiMsg: AIMessage = await llm_chat_fast.call(conversation, {
         callbacks: [
             {
                 handleLLMNewToken(token: string) {

@@ -29,6 +29,8 @@ time to make the tree thing
   - conversation tree
     - ? incorporating LLM swapping in the tree. has potential! but may be logistically impossible.
   - document loader
+  - non-shitty conversation memory management
+  - token cost estimation-- critical for users to learn
   - persistent memory somehow: local storage, or database? both viable. 
   - download conversation histories (or even just copy)
   - student conversation golemstrings:
