@@ -16,6 +16,7 @@ time to make the tree thing
   - more audio messing about
   - animating portions of tokens when certain things occur (like grabbing the last words before a ! and having them shake and grow)
 - backend: add logging for tokens by timestamp (mission critical)
+- backend: refactor into distinct scripts / objects / etc
 - frontend: mess with <audio> tag
   - further: make custom component
 - frontend: refactor into more components:
