@@ -32,6 +32,7 @@ time to make the tree thing
   - persistent memory somehow: local storage, or database? both viable. 
   - download conversation histories (or even just copy)
   - student conversation golemstrings:
+    - conversation duration steering advice: "when the conversation is at about 1000 words, start wrapping it up, thanking them for their time, then wrap up the conversation with the haiku"
     - paper contents (vectorstore? or just in context?), 
     - open-ended prompt for the whole conversation-- e.g., my "Final Thought" journal prompts
     - student interest profiles, potentially! 
