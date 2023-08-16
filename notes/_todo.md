@@ -12,4 +12,27 @@ time to make the tree thing
   - implement a vectorstore 
   - at end of conversation, spit out most relevant yahoo answer thread. 
 
-- 
+- funsies:
+  - more audio messing about
+  - animating portions of tokens when certain things occur (like grabbing the last words before a ! and having them shake and grow)
+- backend: add logging for tokens by timestamp (mission critical)
+- frontend: mess with <audio> tag
+  - further: make custom component
+- frontend: refactor into more components:
+  - Components: ConvoBox, ConvoMessage, CodeBox, ToneBox (could be composable, better as a full component)
+  - Composables: WebSocketComposable, AxiosPostComposable, MarkdownParserComposable
+- fixes:
+  - audio fails to restart properly in ios
+- new features:
+  - llm swapping
+  - conversation tree
+    - ? incorporating LLM swapping in the tree. has potential! but may be logistically impossible.
+  - document loader
+  - persistent memory somehow: local storage, or database? both viable. 
+  - download conversation histories (or even just copy)
+  - student conversation golemstrings:
+    - paper contents (vectorstore? or just in context?), 
+    - open-ended prompt for the whole conversation-- e.g., my "Final Thought" journal prompts
+    - student interest profiles, potentially! 
+  - IDs / login / identity management
+  
