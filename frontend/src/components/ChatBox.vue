@@ -1,16 +1,16 @@
-<template @input="userHasInteracted = true;">
-  <div class="chatbox">
+<template>
+  <div class="chatbox" @input="userHasInteracted = true;">
     <div class="chathistory" ref="chathistory">
       <ChatMessage v-for="(message, index) in message_list" :key="index" :message="message" />
     </div>
 
-    <div class="input-area">
+    <div class="input-area" @input="userHasInteracted = true;">
       <textarea ref="textarea" v-model="userMessage" placeholder="send a message" :disabled="isSending" class="input"
         @keydown.enter.exact.prevent="onEnterKey" @input="onUserTextInput" />
       <button @click="sendMessage" :disabled="isSending" class="send-button">Send</button>
     </div>
 
-    <div class="audio-area">
+    <div class="audio-area" @input="userHasInteracted = true;">
       <audio ref="audioElement"></audio>
     </div>
   </div>
@@ -218,7 +218,7 @@ export default {
       this.notesInScale = 6
 
       this.scaleNotes = this.generateScale(this.notesInScale, this.baseNote, this.scalePatterns["Blues Scale"]);
-      console.log(this.scaleNotes)
+      //console.log(this.scaleNotes)
 
       this.currentNotePointer = 0;
     },
