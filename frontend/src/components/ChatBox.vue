@@ -183,9 +183,9 @@ export default {
     onUserTextInput(){
       this.expandTextarea(); 
       this.scrollCheck();
-      if (this.audioContext.state === 'running' && this.userHasInteracted) {
-        this.playTickSound();
-      } 
+      ///if (this.audioContext.state === 'running' && this.userHasInteracted) {
+      ///  this.playTickSound();
+      ///} 
     },
     setupMusicality() {
       this.scalePatterns = {
