@@ -30,7 +30,7 @@ export default {
       isSending: false,
       conversation_history: [],
       currentAIresponse: { role: "ai", content: "" },
-      audioContext: null,
+      audioContext: new (window.AudioContext || window.webkitAudioContext),
       streamDestination: null,
       osc: null,
       gainNode: null,
@@ -210,7 +210,7 @@ export default {
 
       this.currentNotePointer = 0;
     },
-    playTickSound() {
+    async playTickSound() {
       //attack, sustain, decay, release, wave-type
       this.osc = this.audioContext.createOscillator();
       this.gainNode = this.audioContext.createGain();
@@ -244,10 +244,9 @@ export default {
       this.osc.stop(this.audioContext.currentTime + 0.2);
 
     },
-    playTickSynth() {
+    async playTickSynth() {
       Tone.setContext(this.audioContext) 
       const gain = new Tone.Gain(0.03).toDestination(); 
-      //const synth = new Tone.Synth().connect(gain);
       const polySynth = new Tone.PolySynth().connect(gain);
 
       //brownian pentatonic wandering
