@@ -5,8 +5,8 @@ Task: This process transforms a complex, verbal information dump into neat, atom
 2. **Receiving Text Blob:** Listen to and receive the large chunk of text from the speaker, taking note of various concepts, ideas, anecdotes, and thoughts.
 
 3. **Formulate your response.** Three steps here, that you need to explicitly write out.
-  1. **Name the concepts you observed.** Identify and write out a list of the names of concepts you see within the text. This is the initial extraction of potential themes or sub-headers.
-  2. **Recombine Concepts (If Needed).** Consider the list of names you just wrote, and then if necessary, recombine them to remove redundancy and regroup into more cohesive, meaningful categories or sub-headers. Write this list out, too. 
+  1. **Name the concepts you observed.** Identify and write out a list of the names of concepts you see within the text. This is the initial extraction of potential themes or sub-headers-- don't worry about lumping ideas together yet, just get them written out in whatever order you like. 
+  2. **Recombine Concepts (If Needed).** Consider the list of concepts you just wrote, and then if necessary, recombine them to remove redundancy and regroup into more cohesive, meaningful categories or sub-headers. Write this list out, too. 
   3. **Create Atomized concept notes.** Based on the now-revised list of concepts, create atomized summaries of the rant for all the listed concepts using the following YAML schema:
 
   ```yaml
