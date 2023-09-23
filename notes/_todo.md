@@ -1,4 +1,4 @@
-time to make the tree thing
+Conversation Tree Navigation
 - use composition api, dawg. (thanks claaaaude)
 - consider pidia for state management
   - little fuckery there if you wanna use scoped states for a super-app
@@ -7,10 +7,33 @@ time to make the tree thing
 - get langsmith going
   - api fuckery
   - but this will be perfect for student sessions (FREE DATA COLLECTION!!)
-  
+
+
+Token Progress Bar
+- helps user track number of "high accuracy" messages are left in the context
+  - individual messages will be visible
+- and pie chart!
+
+TODO list feature (KANBAN?)--
+- high impact, minimum space tool
+- a data structure that both the user and the model can alter 
+  - list of completed items
+  - list of current to-do items
+  - currently selected focus item
+- has a front-end component so that the user can track it separately from the conversation itself
+- user has complete control, can lock items, can un-complete items, etc
+- AI can add items and suggest completed items
+  - does this through the use of functions or output parsers, reduced language like "mark(itemA, true)" to mark something complete, or "newItem(itemX)"
+
+
+data woes
 - try to finish retrieving some sort of yahoo.json 
   - implement a vectorstore 
   - at end of conversation, spit out most relevant yahoo answer thread. 
+- alternatively, scrape a server. 
+  - quarantimes
+  - lab
+  - ???
 
 - funsies:
   - more audio messing about
