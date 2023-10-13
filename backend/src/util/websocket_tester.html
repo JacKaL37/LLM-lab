@@ -19,7 +19,10 @@
 
     <script>
         // Update this to your server's URL
-        const socket = new WebSocket('ws://104.229.89.14:3001');
+        let token = "ggbotapi-1199299301957388239120"
+        let token64 = btoa(token);
+
+        const socket = new WebSocket('ws://104.229.89.14:8092/chat_stateless' + '?token=' + token64);
 
         socket.onopen = () => {
             console.log('Connection opened');
@@ -37,7 +40,33 @@
             const userInput = document.getElementById('userInput').value;
             if (userInput.trim() === '') return;
 
-            socket.send(JSON.stringify({ message: userInput }));
+            payload = {
+                "model": "gpt-4",
+                "temperature": 0.7,
+                "system_prompts": [
+                    "Personality: big millennial energy, minimal punctuation and capitalization, vibey, emojis and swearing are allowed",
+                    "Task: chat with the user about their own interests, and help relate their interests to the course concepts below",
+                    "Concepts: [lecture notes about computational modeling of cognitive processes]"
+                ],
+                "uid": "812345679",
+                "context_route": ["COG366","M01","812345679"],
+                "conversation": [
+                    { "role": "user", "content": "Hello, you're a cool guy." },
+                    { "role": "ai", "content": "Aw, thanks!" },
+                    { "role": "user", "content": "I'm really interested in cognitive science." },
+                    { "role": "ai", "content": "That's great! I can help you with that." },
+                    { "role": "user", "content": "What is computational modeling?" },
+                    { "role": "ai", "content": "Computational modeling is a way to simulate cognitive processes using computer programs." },
+                    { "role": "user", "content": "How does it work?" },
+                    { "role": "ai", "content": "It works by creating a computer program that simulates the cognitive process you're interested in." },
+                    { "role": "user", "content": "That's cool!" },
+                    { "role": "ai", "content": "I'm glad you think so!" },
+                    { "role": "user", "content": "I'm going to go now." },
+                    { "role": "ai", "content": "Goodbye!"}
+                ]
+            }
+
+            socket.send(JSON.stringify(payload));
             document.getElementById('userInput').value = '';
         }
         const userInput = document.getElementById('userInput');
