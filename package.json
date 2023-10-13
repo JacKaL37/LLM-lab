@@ -7,7 +7,8 @@
     "build": "cd frontend && npm run build && cd ../backend && npm run build && cd ..",
     "start": "concurrently -k -c \"magentaBright,cyanBright\"  \"npm run start --prefix ./backend\" \"npm run serve --prefix ./frontend\"",
     "dev": "concurrently -k -c \"magentaBright,cyanBright\" \"cd backend && nodemon dist/server_openai.js\" \"cd frontend && ts-node run serve\"",
-    "testing": "concurrently -k -c \"magentaBright,cyanBright\"  \"npm run testing --prefix ./backend\" \"npm run serve --prefix ./frontend\""
+    "testing": "concurrently -k -c \"magentaBright,cyanBright\"  \"npm run testing --prefix ./backend\" \"npm run serve --prefix ./frontend\"",
+    "testing-front": "npm run serve --prefix ./frontend"
   },
   "keywords": [],
   "author": "",
