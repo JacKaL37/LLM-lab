@@ -131,6 +131,7 @@ export default {
 }
 
 .message ::v-deep {
+    margin-top: 10px;
     padding-top: 8px;
     padding-bottom: 8px;
     padding-left: 16px;
