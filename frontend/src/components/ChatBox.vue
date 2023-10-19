@@ -285,6 +285,10 @@ export default {
       }
     },
     downloadFile() {
+      if(this.conversation_histories[this.conversation_index].length == 0){
+        return
+      }
+
       let formattedConversation = this.conversation_histories[this.conversation_index].map(message => {
         return `${message.role === 'human' ? 'human🧠' : 'ai🔮'}:\n${message.content}\n`;
       }).join('\n');
