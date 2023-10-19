@@ -1,5 +1,20 @@
 <template>
   <div class="chatbox" @input="userHasInteracted = true;">
+    <div class="top-panel" :disabled="isSending"> 
+      <div class="top-panel-left">
+        <button @click="clearHistories" class="clear-button" :disabled="isSending">💥</button>
+        <button @click="clearCurrentHistory" class="clear-button" :disabled="isSending">❌</button>
+      </div>
+      
+      <div class="top-panel-right"> 
+        <button @click="prev_chat" class="clear-button" :disabled="prevDisabled">⬅️</button>
+        <span>{{ conversation_index + 1 }} / {{ conversation_histories.length }}</span>
+        <button @click="next_chat" class="clear-button"  :disabled="nextDisabled">
+          {{conversation_index<conversation_histories.length-1 ? "➡️" : "➕"}}
+        </button>
+      </div>
+    </div>
+    
     <div class="chathistory" ref="chathistory">
       <ChatMessage v-for="(message, index) in message_list" :key="index" :message="message" />
     </div>
@@ -7,7 +22,7 @@
     <div class="input-area" @input="userHasInteracted = true;">
       <textarea ref="textarea" v-model="userMessage" placeholder="send a message" :disabled="isSending" class="input"
         @keydown.enter.exact.prevent="onEnterKey" @input="onUserTextInput" />
-      <button @click="sendMessage" :disabled="isSending" class="send-button">Send</button>
+      <button @click="sendMessage" :disabled="isSending" class="send-button">📲</button>
     </div>
 
     <div class="audio-area" @input="userHasInteracted = true;">
@@ -27,22 +42,83 @@ export default {
     return {
       userMessage: '',
       isSending: false,
-      conversation_history: [],
+      conversation_histories: [[]],
       currentAIresponse: { role: "ai", content: "" },
       audioContext: new (window.AudioContext || window.webkitAudioContext),
       streamDestination: null,
       osc: null,
       gainNode: null,
+
+      user_id: "8XXXXXXXX", 
+      conversation_index: 0,
+      use_case: ["COG366", "M01"],
+      
+      list_of_approved_IDs:[
+        "8XXXXXXXX"
+      ],
+
+      system_prompts: [
+        "USER_INFO: human is a student who has heard of all the LECTURE_MATERIAL but isn't super well-versed yet",
+        "PERSONALITY: you, the AI, have big millennial energy, minimal punctuation and capitalization, vibey, occasional emojis where relevant and occasional swearing for emphasis are allowed (just don't be mean), more laid-back and chill than dorky",
+        "TASK: you're a calmly curious interviewer, asking questions about their interests. after you get to know their interests through several interactions, start relating their interests to the LECTURE_MATERIAL",
+        "LECTURE_MATERIAL: these are stubs, use them for inspiration for bringing in other related concepts [computational modeling vs math or stats modeling, cognitive processes as information transformation, emergent complexity, ACT-R and modeling behavior in real-time, SPAUN and modeling neurological processes, Transformers and modeling language itself with high precision, phineas gage, perceptrons, ANNs, CNNs, GPT-4 as the Spaceship on the Front Lawn]",
+        "STYLE: brief when possible, but get detailed when explaining something. use markdown as much as possible, especially when emphasizing concepts",
+        "REFLECTION_PROMPT: use this to guide the conversation-- `where have you seen complex systems in your life that you think could benefit from computational modeling? what cognitive processes have you noticed that you wish were better understood?",
+        "SOURCE LINKING: frequently produce markdown links to relevant **concepts**, mostly wikipedia. the links themselves should come right after the concept, and the label should be some emojis that capture the concept. example: `**concept**[(🔍🌐)](https://en.wikipedia.org/wiki/Concept)`",
+        "WRAPUP_HAIKU: when the conversation is over, add a friendly haiku summarizing the interaction in ` fences, with emojis", 
+      ],
+      model: "gpt-4",
+      temperature: 0.7,
+      
       audioStarted: false,
       userInteracted: false,
+      api_token: "Z2dib3RhcGktMTE5OTI5OTMwMTk1NzM4ODIzOTEyMA==",
+      payload_schema: {
+                "ids": {
+                    "timestamp": Date.now(),
+                    "uid": "812345679",
+                    "use_case": ["COG366","M01"],
+                },
+                "config": {
+                  "model_name": "gpt-4",
+                  "temperature": 0.7,
+                },
+                "system_prompts": [
+                      "Personality: big millennial energy, minimal punctuation and capitalization, vibey, emojis and swearing are allowed (just don't be mean), more chill than dorky",
+                      "Task: chat with the user about their own interests, and help relate their interests to the course concepts below",
+                      "Concepts: [lecture notes about computational modeling of cognitive processes]",
+                      "Wrap-up: when the conversation is over, add a friendly haiku summarizing the interaction in ` fences, with emojis"
+                ],
+                "conversation_history": [
+                    {role: "human", content: "hey, you're a pretty chill bot."},
+                    {role: "ai",    content: "aw, shucks! 🙈"},
+                    {role: "human", content: "i'm kinda into this cognitive science thing."},
+                    {role: "ai",    content: "oh, rad! i can totally help with that."},
+                    {role: "human", content: "so what's this computational modeling biz?"},
+                    {role: "ai",    content: "it's like making a computer play pretend, but with cognitive processes."},
+                    {role: "human", content: "and how's that work?"},
+                    {role: "ai",    content: "you whip up a program that acts out the cognitive process you're curious about."},
+                    {role: "human", content: "damn, that's cool!"},
+                    {role: "ai",    content: "stoked you think so!"}
+                ],
+                "new_user_input": "gotta bounce now!",
+            },
     };
   },
   computed: {
     message_list() {
       if (this.currentAIresponse.content != '') {
-        return this.conversation_history.concat({ role: "ai", content: this.currentAIresponse.content });
+        return this.conversation_histories[this.conversation_index].concat({ role: "ai", content: this.currentAIresponse.content });
       }
-      return this.conversation_history
+      return this.conversation_histories[this.conversation_index];
+    },
+    nextDisabled(){
+      let atListEnd = (this.conversation_index >= this.conversation_histories.length -1)
+      let emptyList = (this.conversation_histories[this.conversation_index].length == 0)
+      return (atListEnd && emptyList) || this.isSending
+    },
+    prevDisabled(){
+      return this.conversation_index <= 0 || this.isSending
     }
   },
   mounted() {
@@ -57,6 +133,9 @@ export default {
         this.setupSocket(); // Try to reconnect
       }
     });
+
+    this.conversation_histories = JSON.parse(localStorage.getItem('conversation_histories')) || [[]];
+    this.conversation_index = JSON.parse(localStorage.getItem('conversation_index')) || 0;
 
     // Setup Musicality
 
@@ -80,22 +159,125 @@ export default {
         //console.log("setting up audio context");
         this.setupAudio();
       }
-      const message = this.userMessage.trim();
-      this.userMessage = '';
 
-      if (message !== '') {
-        this.scrollCheck();
-        this.expandTextarea();
-
+      if (this.userMessage.trim() !== '') {
         this.isSending = true;
 
-        this.conversation_history.push({
-          role: 'human',
-          content: message,
-        });
-
         // Send the message over WebSocket
-        this.socket.send(JSON.stringify({ message: message }));
+        await this.socket.send(JSON.stringify(this.get_payload()));
+
+        this.conversation_histories[this.conversation_index].push({
+          role: 'human',
+          content: this.userMessage.trim(),
+        });
+        //localStorage.setItem('conversation_histories', JSON.stringify(this.conversation_histories));
+
+        this.userMessage = "";
+        this.scrollCheck();
+        this.expandTextarea();
+      }
+    },
+    setupSocket() {
+      // Connect to the WebSocket server on port 3001
+      //this.socket = new WebSocket('ws://104.229.89.14:3001');
+      this.socket = new WebSocket('ws://104.229.89.14:8092/chat_stateless' + '?token=' + this.api_token)
+      
+      if(this.audioContext.isStopped){
+        this.audioContext.resume();
+      }
+
+      // Listen for incoming messages and handle them
+      this.socket.onmessage = (event) => {
+        const JSONmsg = JSON.parse(event.data);
+        console.log(JSONmsg);
+
+        if (JSONmsg.type == "token") {
+          //console.log("token received");
+          this.currentAIresponse.content += JSONmsg.content;
+          //console.log(this.currentAIresponse.content);
+          this.playTickSound();
+          //console.log("tick played")
+          this.scrollCheck();
+          //console.log("scroll checked")
+
+        } else if (JSONmsg.type == "ai_response") {
+
+          this.conversation_histories[this.conversation_index].push({ role: "ai", content: JSONmsg.content });
+          localStorage.setItem('conversation_histories', JSON.stringify(this.conversation_histories));
+
+          this.currentAIresponse.content = '';
+          this.playTickChord();
+
+          this.isSending = false;
+          this.$nextTick(() => {
+            this.$refs.textarea.focus();
+          });
+        }
+        //console.log("message exited")
+        //console.log(this.socket.bufferedAmount);
+      };
+    },
+    get_payload(){
+      let payload = {
+                "ids": {
+                    "timestamp": Date.now(),
+                    "uid": this.user_id,
+                    "use_case": this.use_case,
+                },
+                "config": {
+                  "model_name": this.model,
+                  "temperature": this.temperature,
+                },
+                "system_prompts": this.system_prompts,
+                "conversation_history": this.conversation_histories[this.conversation_index],
+                "new_user_input": this.userMessage.trim(),
+            }
+      return payload
+    },
+    get_context_route(){
+      return this.user_id + "/" + this.use_case.join("_")
+    },
+    next_chat(){
+      console.log(this.conversation_histories[this.conversation_index])
+      if(this.conversation_histories[this.conversation_index].length != 0){
+        if(this.conversation_index < this.conversation_histories.length - 1){
+          this.conversation_index += 1
+          console.log("moving to existing conversation: " + this.conversation_index)
+          localStorage.setItem('conversation_index', JSON.stringify(this.conversation_index));
+        } else {
+          this.conversation_histories.push([])
+          this.conversation_index += 1
+          console.log("creating new conversation at: " + this.conversation_index)
+          localStorage.setItem('conversation_index', JSON.stringify(this.conversation_index));
+        }
+      }
+    },
+    prev_chat(){
+      if(this.conversation_index > 0){
+        this.conversation_index -= 1
+        localStorage.setItem('conversation_index', JSON.stringify(this.conversation_index));
+      }
+    },
+    clearHistories() {
+      if(confirm("Are you sure you want to clear your histories?")){
+        if(confirm("Seriously, this permanently deletes all your chats.")){
+          localStorage.removeItem('conversation_histories');
+          localStorage.removeItem('conversation_index')
+          this.conversation_histories = [[]];
+          this.conversation_index = 0;
+        }
+      }
+    },
+    clearCurrentHistory() {
+      let isEmpty = this.conversation_histories[this.conversation_index].length == 0
+      if(isEmpty){
+        return
+      }
+      if(confirm("Delete the current conversation?")){
+        this.conversation_histories.splice(this.conversation_index, 1);
+        this.conversation_index = Math.max(0, this.conversation_index - 1);
+        localStorage.setItem('conversation_histories', JSON.stringify(this.conversation_histories));
+        localStorage.setItem('conversation_index', JSON.stringify(this.conversation_index));
       }
     },
     scrollCheck() {
@@ -126,41 +308,7 @@ export default {
         this.$refs.textarea.style.height = `${scrollHeight - verticalPadding}px`;
       })
     },
-    setupSocket() {
-      // Connect to the WebSocket server on port 3001
-      this.socket = new WebSocket('ws://104.229.89.14:3001');
-
-      if(this.audioContext.isStopped){
-        this.audioContext.resume();
-      }
-
-      // Listen for incoming messages and handle them
-      this.socket.onmessage = (event) => {
-        const JSONmsg = JSON.parse(event.data);
-
-        if (JSONmsg.type == "token") {
-          this.currentAIresponse.content += JSONmsg.content;
-          this.playTickSound();
-          this.scrollCheck();
-
-        } else if (JSONmsg.type == "convo_init") {
-          const convo_content = JSON.parse(JSONmsg.content);
-          this.conversation_history = convo_content.slice(1);
-          this.scrollCheck();
-
-        } else if (JSONmsg.type == "aiResponse") {
-
-          this.conversation_history.push({ role: "ai", content: JSONmsg.content });
-          this.currentAIresponse.content = '';
-          this.playTickChord();
-
-          this.isSending = false;
-          this.$nextTick(() => {
-            this.$refs.textarea.focus();
-          });
-        }
-      };
-    },
+    
     setupAudio() {
 
       this.audioContext = new (window.AudioContext || window.webkitAudioContext)
@@ -333,8 +481,43 @@ export default {
   overflow: auto;
   padding: 0px;
   border-radius: 10px;
-  background-color: #202020;
+  background-color: #0D0019; /*#202020;*/
   font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+.top-panel, .top-panel-left, .top-panel-right{
+  display: flex;
+  justify-content: space-between;
+  height: 30px;
+  color: white;
+  font-family: monospace;
+  background-color: #22073B;
+}
+
+
+
+.top-panel button, .top-panel span{
+  width: 30px; /* adjust as needed */
+  height: 30px; /* adjust as needed */
+  border-radius: 20%; /* this makes it round */
+  padding: 0; /* removes extra padding */
+  display: flex; /* centers the emoji */
+  align-items: center; /* centers the emoji */
+  justify-content: center; /* centers the emoji */
+  font-size: 20px; /* adjust as needed */
+  line-height: 1; /* adjust as needed */
+  vertical-align: middle; /* centers the emoji */
+  background: transparent;
+}
+
+.top-panel button:disabled{
+  opacity: 0.3;
+}
+
+.top-panel span{
+  font-size: 12px;
+  width: 50px;
+  align-self: center;
 }
 
 .chathistory {
@@ -347,17 +530,20 @@ export default {
   overflow: auto;
 }
 
+
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background-color: #22073B;
+  
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(125, 125, 125, 0.7);
+  /* background-color: rgba(125, 125, 125, 0.7); */
+  background-color: #6F00FD;
   border-radius: 4px;
 }
 
@@ -371,7 +557,7 @@ export default {
   align-items: stretch;
   width: 100%;
   border-radius: 5px;
-  background-color: #383838;
+  background-color: #22073B;
 }
 
 .input {
@@ -381,7 +567,7 @@ export default {
   resize: none;
   outline: none;
   overflow: auto;
-  background-color: #383838;
+  background-color: #22073B;
   border-radius: 20px;
   font-size: 12pt;
   font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -391,14 +577,21 @@ export default {
   padding: 16px;
 }
 
+.clear-button{
+  border: none;
+  color: white;
+  background-color: #22073B;
+}
+
 .send-button {
   align-self: stretch;
   width: 70px;
   border: none;
   color: white;
-  background-color: #555555;
+  background-color: #22073B;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 40px;
 }
 
 .input:disabled,
