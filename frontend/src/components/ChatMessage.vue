@@ -1,6 +1,6 @@
 <template>
     <div class="message" :class="message.role">
-        <strong>{{ message.role }}</strong>
+        <strong class="role">{{ message.role=="human"?"🧠":"🔮"}}</strong>
         <span v-html="renderMarkdown(message.content)"></span>
     </div>
 </template>
@@ -53,6 +53,12 @@ md.renderer.rules.fence = (tokens, idx) => {
                     <pre><code>${content}</code></pre> \
                 </div> \
             </div>`;
+};
+md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+    // Add target="_blank" to all links
+    tokens[idx].attrPush(['target', '_blank']);
+    // pass token to default renderer.
+    return self.renderToken(tokens, idx, options);
 };
 
 export default {
@@ -110,7 +116,7 @@ export default {
 .message {
     display: flex;
     flex-direction: column;
-    width: 90%;
+    width: 85%;
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid;
@@ -131,18 +137,31 @@ export default {
     padding-right: 16px;
 }
 
+:deep a{
+    color: #FF00FF;
+}
+
+:deep a:visited{
+    color: #9500ff;
+}
+
 .message.human {
     align-self: flex-end;
-    background-color: #2e1d2e;
+    background-color: #0D0019;
     color: #ff60ff;
     border-bottom-right-radius: 0;
 }
 
 .message.ai {
     align-self: flex-start;
-    background-color: #0e2324;
+    background-color: #0D0019;
     color: #57f9ff;
     border-bottom-left-radius: 0;
+}
+
+.role{
+    font-size: 16pt;
+    font-family: monospace;
 }
 
 :deep(.codeblock) {
