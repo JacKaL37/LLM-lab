@@ -20,7 +20,7 @@
     <script>
         // Update this to your server's URL
         let token = "ggbotapi-1199299301957388239120"
-        let token64 = btoa(token);
+        let token64 = "Z2dib3RhcGktMTE5OTI5OTMwMTk1NzM4ODIzOTEyMA==";
 
         const socket = new WebSocket('ws://104.229.89.14:8092/chat_stateless' + '?token=' + token64);
 
@@ -49,6 +49,7 @@
                     "Concepts: [lecture notes about computational modeling of cognitive processes]"
                 ],
                 "uid": "812345679",
+                "timestamp": Date.now(),
                 "context_route": ["COG366","M01","812345679"],
                 "conversation": [
                     { "role": "user", "content": "Hello, you're a cool guy." },
