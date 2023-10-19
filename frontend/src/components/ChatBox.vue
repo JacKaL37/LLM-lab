@@ -140,6 +140,10 @@ export default {
 
     this.conversation_histories = JSON.parse(localStorage.getItem('conversation_histories')) || [[]];
     this.conversation_index = JSON.parse(localStorage.getItem('conversation_index')) || 0;
+
+    // sanity checks using min and max
+    this.conversation_index = Math.max(0, Math.min(this.conversation_index, this.conversation_histories.length - 1));
+
     this.$nextTick(() => {
       const chatHistory = this.$refs.chathistory;
       chatHistory.scrollTop = chatHistory.scrollHeight;
@@ -289,7 +293,13 @@ export default {
       }
       if(confirm("Delete the current conversation?")){
         this.conversation_histories.splice(this.conversation_index, 1);
-        this.conversation_index = Math.max(0, this.conversation_index - 1);
+        if (this.conversation_histories.length === 0) {
+          // If we've deleted the last conversation, reset everything
+          this.conversation_histories = [[]];
+          this.conversation_index = 0;
+        } else {
+          this.conversation_index = Math.max(0, this.conversation_index - 1);
+        }
         localStorage.setItem('conversation_histories', JSON.stringify(this.conversation_histories));
         localStorage.setItem('conversation_index', JSON.stringify(this.conversation_index));
       }
