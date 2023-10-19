@@ -239,7 +239,7 @@ export default {
       return payload
     },
     get_context_route(){
-      return this.user_id + "-" + this.use_case.join("-")
+      return  this.use_case.join("-") + "-" + this.user_id
     },
     next_chat(){
       console.log(this.conversation_histories[this.conversation_index])
@@ -511,7 +511,7 @@ export default {
 .top-panel, .top-panel-left, .top-panel-right{
   display: flex;
   justify-content: space-between;
-  height: 30px;
+  height: 36px;
   color: white;
   font-family: monospace;
   background-color: #22073B;
@@ -520,8 +520,8 @@ export default {
 
 
 .top-panel button, .top-panel span{
-  width: 30px; /* adjust as needed */
-  height: 30px; /* adjust as needed */
+  width: 36px; /* adjust as needed */
+  height: 36px; /* adjust as needed */
   border-radius: 20%; /* this makes it round */
   padding: 0; /* removes extra padding */
   display: flex; /* centers the emoji */
@@ -579,7 +579,6 @@ export default {
   flex-direction: row;
   align-items: stretch;
   width: 100%;
-  border-radius: 5px;
   background-color: #22073B;
 }
 
@@ -613,7 +612,6 @@ export default {
   border: none;
   color: white;
   background-color: #22073B;
-  border-radius: 5px;
   cursor: pointer;
   font-size: 30px;
 }
