@@ -35,6 +35,13 @@ New endpoint: stateless
 + config
 ? saving output works directly rn (should, check the logger utility)
 
+
+STRETCH GOAL / STOPPING POINT:
+- get token color cycling going, hahahah. 
+- all tokens now components bound to spans. 
+
+
+
 schema: 
 
 payload = {
