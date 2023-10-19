@@ -151,6 +151,7 @@ export default {
     color: #ff60ff;
     border-color: #ff00ff88;
     border-bottom-right-radius: 0;
+    margin-right: 10px;
 }
 
 .message.ai {
@@ -159,6 +160,7 @@ export default {
     color: #57f9ff;
     border-color: #57f9ff88;
     border-bottom-left-radius: 0;
+    margin-left: 10px;
 }
 
 .role{
