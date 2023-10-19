@@ -577,6 +577,7 @@ export default {
   padding: 16px;
 }
 
+
 .clear-button{
   border: none;
   color: white;

@@ -119,8 +119,8 @@ export default {
     width: 85%;
     padding: 10px;
     margin-bottom: 10px;
-    border: 1px solid;
-    border-radius: 16px;
+    border: 2px solid;
+    border-radius: 30px;
     color: white;
     font-size: 12pt;
     font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -149,6 +149,7 @@ export default {
     align-self: flex-end;
     background-color: #0D0019;
     color: #ff60ff;
+    border-color: #ff00ff88;
     border-bottom-right-radius: 0;
 }
 
@@ -156,6 +157,7 @@ export default {
     align-self: flex-start;
     background-color: #0D0019;
     color: #57f9ff;
+    border-color: #57f9ff88;
     border-bottom-left-radius: 0;
 }
 
