@@ -3,15 +3,15 @@
     <div class="top-panel" :disabled="isSending"> 
       <div class="top-panel-left">
         <button @click="clearHistories" class="clear-button" :disabled="isSending">💥</button>
-        <button @click="clearCurrentHistory" class="clear-button" :disabled="isSending">❌</button>
+        <button @click="clearCurrentHistory" class="clear-button" :disabled="isSending || emptyConversation">❌</button>
       </div>
       
       <div class="top-panel-right"> 
+        <button @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
         <button @click="prev_chat" class="clear-button" :disabled="prevDisabled">⬅️</button>
         <span>{{ conversation_index + 1 }} / {{ conversation_histories.length }}</span>
-        <button @click="downloadFile" class="clear-button" :disabled="isSending">📥</button>
         <button @click="next_chat" class="clear-button"  :disabled="nextDisabled">
-          {{conversation_index<conversation_histories.length-1 ? "➡️" : "➕"}}
+          {{conversation_index<conversation_histories.length-1 ? "➡️" : "🆕"}}
         </button>
       </div>
     </div>
@@ -120,7 +120,10 @@ export default {
     },
     prevDisabled(){
       return this.conversation_index <= 0 || this.isSending
-    }
+    },
+    emptyConversation(){
+      return this.conversation_histories[this.conversation_index].length == 0
+    },
   },
   mounted() {
 
@@ -164,6 +167,9 @@ export default {
         this.setupAudio();
       }
 
+      let wasEmpty = this.isEmpty;
+      
+
       if (this.userMessage.trim() !== '') {
         this.isSending = true;
 
@@ -179,6 +185,11 @@ export default {
         this.userMessage = "";
         this.scrollCheck();
         this.expandTextarea();
+
+        if (wasEmpty) {
+          localStorage.setItem('conversation_histories', JSON.stringify(this.conversation_histories));
+          localStorage.setItem('conversation_index', JSON.stringify(this.conversation_index));
+        }
       }
     },
     setupSocket() {
@@ -252,7 +263,6 @@ export default {
           this.conversation_histories.push([])
           this.conversation_index += 1
           console.log("creating new conversation at: " + this.conversation_index)
-          localStorage.setItem('conversation_index', JSON.stringify(this.conversation_index));
         }
       }
     },
@@ -531,7 +541,7 @@ export default {
   display: flex; /* centers the emoji */
   align-items: center; /* centers the emoji */
   justify-content: center; /* centers the emoji */
-  font-size: 20px; /* adjust as needed */
+  font-size: 24px; /* adjust as needed */
   line-height: 1; /* adjust as needed */
   vertical-align: middle; /* centers the emoji */
   background: transparent;
@@ -542,8 +552,8 @@ export default {
 }
 
 .top-panel span{
-  font-size: 12px;
-  width: 50px;
+  font-size: 12pt;
+  width: 60px;
   align-self: center;
 }
 
