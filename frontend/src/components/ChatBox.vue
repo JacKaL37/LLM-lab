@@ -9,6 +9,7 @@
       <div class="top-panel-right"> 
         <button @click="prev_chat" class="clear-button" :disabled="prevDisabled">⬅️</button>
         <span>{{ conversation_index + 1 }} / {{ conversation_histories.length }}</span>
+        <button @click="downloadFile" class="clear-button" :disabled="isSending">📥</button>
         <button @click="next_chat" class="clear-button"  :disabled="nextDisabled">
           {{conversation_index<conversation_histories.length-1 ? "➡️" : "➕"}}
         </button>
@@ -136,7 +137,10 @@ export default {
 
     this.conversation_histories = JSON.parse(localStorage.getItem('conversation_histories')) || [[]];
     this.conversation_index = JSON.parse(localStorage.getItem('conversation_index')) || 0;
-
+    this.$nextTick(() => {
+      const chatHistory = this.$refs.chathistory;
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+    });
     // Setup Musicality
 
     this.setupMusicality();
@@ -235,7 +239,7 @@ export default {
       return payload
     },
     get_context_route(){
-      return this.user_id + "/" + this.use_case.join("_")
+      return this.user_id + "-" + this.use_case.join("-")
     },
     next_chat(){
       console.log(this.conversation_histories[this.conversation_index])
@@ -280,6 +284,19 @@ export default {
         localStorage.setItem('conversation_index', JSON.stringify(this.conversation_index));
       }
     },
+    downloadFile() {
+      let formattedConversation = this.conversation_histories[this.conversation_index].map(message => {
+        return `${message.role === 'human' ? 'human🧠' : 'ai🔮'}:\n${message.content}\n`;
+      }).join('\n');
+
+      let blob = new Blob([formattedConversation], {type: "text/plain;charset=utf-8"});
+      let url = URL.createObjectURL(blob);
+
+      let a = document.createElement('a');
+      a.href = url;
+      a.download = 'conversation_' + this.get_context_route() + "-" + this.conversation_index + '.txt';
+      a.click();
+    },
     scrollCheck() {
       // this gets the .chathistory div
       const chatHistory = this.$refs.chathistory;
@@ -309,6 +326,12 @@ export default {
       })
     },
     
+
+
+
+
+
+
     setupAudio() {
 
       this.audioContext = new (window.AudioContext || window.webkitAudioContext)
