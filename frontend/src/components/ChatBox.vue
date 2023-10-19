@@ -592,7 +592,7 @@ export default {
   background-color: #22073B;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 40px;
+  font-size: 30px;
 }
 
 .input:disabled,
