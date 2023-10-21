@@ -5,7 +5,10 @@
         <button @click="clearHistories" class="clear-button" :disabled="isSending">💥</button>
         <button @click="clearCurrentHistory" class="clear-button" :disabled="isSending || emptyConversation">❌</button>
       </div>
-      
+      <div class="top-panel-mid">
+        <input class="idInput" v-model="user_id" placeholder="user id" :disabled="isSending" />
+        <input class="tempInput" v-model.number="temperature" placeholder="temperature" :disabled="isSending" />
+      </div>
       <div class="top-panel-right"> 
         <button @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
         <button @click="prev_chat" class="clear-button" :disabled="prevDisabled">⬅️</button>
@@ -532,16 +535,34 @@ export default {
   font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
-.top-panel, .top-panel-left, .top-panel-right{
+.top-panel, .top-panel-left, .top-panel-right, .top-panel-mid{
   display: flex;
   justify-content: space-between;
+  align-items: center;
   height: 36px;
   color: white;
   font-family: monospace;
   background-color: #22073B;
 }
 
+.top-panel input{
+  background-color: #0D0019;
+  border: none;
+  border-radius: 20px;
+  text-align: center;
+  color: #57f9ff;
+  height: 80%;
+}
 
+.idInput{
+  width: 100px;
+  font-family: monospace;
+}
+
+.tempInput{
+  width: 50px;
+  font-family: monospace;
+}
 
 .top-panel button, .top-panel span{
   width: 36px; /* adjust as needed */
