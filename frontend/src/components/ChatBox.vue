@@ -1,16 +1,15 @@
 <template>
   <div class="chatbox" @input="userHasInteracted = true;">
-    <div class="top-panel" :disabled="isSending"> 
+    <div class="top-panel" :disabled="isSending" :style="{ zIndex: 10 }"> 
       <div class="top-panel-left">
-        <button @click="clearHistories" class="clear-button" :disabled="isSending || !validID">💥</button>
-        <button @click="clearCurrentHistory" class="clear-button" :disabled="isSending || !validID || emptyConversation">❌</button>
+        <button @click="showControlPanel = !showControlPanel" class="clear-button">
+          {{showControlPanel ? "🔼" : "🔽"}}
+        </button>
       </div>
       <div class="top-panel-mid">
-        <input class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id"/>
-        <input class="tempInput" v-model.number="temperature" placeholder="temperature" :disabled="isSending" />
+          <input class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id"/>
       </div>
       <div class="top-panel-right"> 
-        <button @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
         <button @click="prev_chat" class="clear-button" :disabled="prevDisabled">⬅️</button>
         <span>{{ conversation_index + 1 }} / {{ conversation_histories.length }}</span>
         <button @click="next_chat" class="clear-button"  :disabled="nextDisabled">
@@ -18,16 +17,35 @@
         </button>
       </div>
     </div>
+
+    <Transition name="slide-down" :style="{ zIndex: 9}">
+      <div class="top-panel" v-show="showControlPanel">
+        <div class="top-panel-mid">
+          <span>temp:</span>
+          <input class="tempInput" v-model.number="temperature" min="0.0" max="1.0" step="0.1" placeholder="temperature" :disabled="isSending" />
+        </div>
+        <div class="top-panel-right">
+          <button @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
+          <span style="width:20px"></span>
+          <button @click="clearHistories" class="clear-button" :disabled="isSending || !validID">💥</button>
+          <button @click="clearCurrentHistory" class="clear-button" :disabled="isSending || !validID || emptyConversation">❌</button>
+        </div>
+      </div>
+    </Transition>
+    
     
     <div class="chathistory" ref="chathistory">
       <ChatMessage v-for="(message, index) in message_list" :key="index" :message="message" />
     </div>
 
-    <div class="input-area" @input="userHasInteracted = true;" v-show="validID">
-      <textarea ref="textarea" v-model="userMessage" placeholder="send a message" :disabled="isSending || !validID" class="input"
-        @keydown.enter.exact.prevent="onEnterKey" @input="onUserTextInput" />
-      <button @click="sendMessage" :disabled="isSending" class="send-button">📲</button>
-    </div>
+    <Transition name="slide-up">
+      <div class="input-area" @input="userHasInteracted = true;" v-show="validID">
+        <textarea ref="textarea" v-model="userMessage" placeholder="send a message" :disabled="isSending || !validID" class="input"
+          @keydown.enter.exact.prevent="onEnterKey" @input="onUserTextInput" />
+        <button @click="sendMessage" :disabled="isSending" class="send-button">📲</button>
+      </div>
+    </Transition>
+    
 
     <div class="audio-area" @input="userHasInteracted = true;">
       <audio ref="audioElement"></audio>
@@ -52,13 +70,14 @@ export default {
       streamDestination: null,
       osc: null,
       gainNode: null,
+      showControlPanel: false,
 
-      user_id: "869420101", 
+      user_id: "", 
       conversation_index: 0,
       use_case: ["COG366", "M01"],
       
       list_of_approved_IDs:[
-        "869420101"
+        "BIRD UP!!"
       ],
 
       system_prompts: [
@@ -559,6 +578,7 @@ export default {
   text-align: center;
   color: #57f9ff;
   height: 80%;
+  font-size: 16px;
 }
 
 .idInput{
@@ -680,4 +700,23 @@ export default {
 .send-button:disabled {
   opacity: 0.1
 }
+
+.slide-down-enter-active,
+.slide-down-leave-active,
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.5s cubic-bezier(0.3, 0.2, 0.2, 1);
+}
+
+.slide-down-enter-from,
+.slide-down-leave-to{
+  transform: translateY(-100%);
+}
+.slide-up-enter-from,
+.slide-up-leave-to {
+  transform: translateY(100%);
+}
+
+
+
 </style>
