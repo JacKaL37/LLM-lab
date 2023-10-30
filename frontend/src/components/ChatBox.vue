@@ -23,8 +23,13 @@
       <div class="top-panel" v-show="showControlPanel && validID">
         <div class="top-panel-left">
           <button @click="temperature = 0.7" class="clear-button">🌡️</button>
-          <input style="width:100px;" type="range" class="tempInput" v-model.number="temperature" min="0.0" max="1.0" step="0.05" placeholder="temperature" :disabled="isSending" />
+          <input style="width:70px;" type="range" class="tempInput" v-model.number="temperature" min="0.0" max="1.0" step="0.05" placeholder="temperature" :disabled="isSending" />
           <span>{{parseFloat(temperature).toFixed(2)}}</span>
+        </div>
+        <div class="top-panel-mid">
+          <button @click="playAudio = !playAudio" class="clear-button">
+            {{playAudio ? "🔊" : "🔇"}}
+          </button>
         </div>
         <div class="top-panel-right">
           <button @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
@@ -74,6 +79,7 @@ export default {
       osc: null,
       gainNode: null,
       showControlPanel: false,
+      playAudio: true,
 
       user_id: "", 
       conversation_index: 0,
@@ -243,7 +249,9 @@ export default {
           //console.log("token received");
           this.currentAIresponse.content += JSONmsg.content;
           //console.log(this.currentAIresponse.content);
-          this.playTickSound();
+          if(this.playAudio){
+            this.playTickSound();
+          }
           //console.log("tick played")
           this.scrollCheck();
           //console.log("scroll checked")
@@ -254,7 +262,10 @@ export default {
           localStorage.setItem('conversation_histories', JSON.stringify(this.conversation_histories));
 
           this.currentAIresponse.content = '';
-          this.playTickChord();
+          
+          if(this.playAudio){
+            this.playTickChord();
+          }
 
           this.isSending = false;
           this.$nextTick(() => {
@@ -709,7 +720,7 @@ export default {
 .slide-down-leave-active,
 .slide-up-enter-active,
 .slide-up-leave-active {
-  transition: all 0.5s cubic-bezier(0.3, 0.2, 0.2, 1);
+  transition: all 0.37s cubic-bezier(0.3, 0.2, 0.2, 1);
 }
 
 .slide-down-enter-from,
