@@ -21,8 +21,8 @@
     <Transition name="slide-down" :style="{ zIndex: 9}">
       <div class="top-panel" v-show="showControlPanel">
         <div class="top-panel-mid">
-          <span>temp:</span>
-          <input class="tempInput" v-model.number="temperature" min="0.0" max="1.0" step="0.1" placeholder="temperature" :disabled="isSending" />
+          <span style="width:80px;">{{ parseFloat(temperature).toFixed(2) }}🌡️</span>
+          <input style="width:100px;" type="range" class="tempInput" v-model.number="temperature" min="0.0" max="1.0" step="0.05" placeholder="temperature" :disabled="isSending" />
         </div>
         <div class="top-panel-right">
           <button @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
@@ -580,6 +580,7 @@ export default {
   height: 80%;
   font-size: 16px;
 }
+
 
 .idInput{
   width: 100px;
