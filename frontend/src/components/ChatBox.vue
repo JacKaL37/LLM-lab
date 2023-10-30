@@ -2,11 +2,11 @@
   <div class="chatbox" @input="userHasInteracted = true;">
     <div class="top-panel" :disabled="isSending"> 
       <div class="top-panel-left">
-        <button @click="clearHistories" class="clear-button" :disabled="isSending">💥</button>
-        <button @click="clearCurrentHistory" class="clear-button" :disabled="isSending || emptyConversation">❌</button>
+        <button @click="clearHistories" class="clear-button" :disabled="isSending || !validID">💥</button>
+        <button @click="clearCurrentHistory" class="clear-button" :disabled="isSending || !validID || emptyConversation">❌</button>
       </div>
       <div class="top-panel-mid">
-        <input class="idInput" v-model="user_id" placeholder="user id" :disabled="isSending" />
+        <input class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id"/>
         <input class="tempInput" v-model.number="temperature" placeholder="temperature" :disabled="isSending" />
       </div>
       <div class="top-panel-right"> 
@@ -23,8 +23,8 @@
       <ChatMessage v-for="(message, index) in message_list" :key="index" :message="message" />
     </div>
 
-    <div class="input-area" @input="userHasInteracted = true;">
-      <textarea ref="textarea" v-model="userMessage" placeholder="send a message" :disabled="isSending" class="input"
+    <div class="input-area" @input="userHasInteracted = true;" v-show="validID">
+      <textarea ref="textarea" v-model="userMessage" placeholder="send a message" :disabled="isSending || !validID" class="input"
         @keydown.enter.exact.prevent="onEnterKey" @input="onUserTextInput" />
       <button @click="sendMessage" :disabled="isSending" class="send-button">📲</button>
     </div>
@@ -53,12 +53,12 @@ export default {
       osc: null,
       gainNode: null,
 
-      user_id: "8XXXXXXXX", 
+      user_id: "869420101", 
       conversation_index: 0,
       use_case: ["COG366", "M01"],
       
       list_of_approved_IDs:[
-        "8XXXXXXXX"
+        "869420101"
       ],
 
       system_prompts: [
@@ -127,6 +127,9 @@ export default {
     emptyConversation(){
       return this.conversation_histories[this.conversation_index].length == 0
     },
+    validID(){
+      return this.list_of_approved_IDs.includes(this.user_id)
+    }
   },
   mounted() {
 
@@ -143,6 +146,7 @@ export default {
 
     this.conversation_histories = JSON.parse(localStorage.getItem('conversation_histories')) || [[]];
     this.conversation_index = JSON.parse(localStorage.getItem('conversation_index')) || 0;
+    this.user_id = JSON.parse(localStorage.getItem('user_id')) || '';
 
     // sanity checks using min and max
     this.conversation_index = Math.max(0, Math.min(this.conversation_index, this.conversation_histories.length - 1));
@@ -306,6 +310,9 @@ export default {
         localStorage.setItem('conversation_histories', JSON.stringify(this.conversation_histories));
         localStorage.setItem('conversation_index', JSON.stringify(this.conversation_index));
       }
+    },
+    storeID(){
+      localStorage.setItem('user_id', JSON.stringify(this.user_id));
     },
     downloadFile() {
       if(this.conversation_histories[this.conversation_index].length == 0){
@@ -596,6 +603,14 @@ export default {
   width: 100%;
   min-height: 250px;
   overflow: auto;
+}
+
+.chathistory:disabled{
+  opacity: 0.3;
+}
+
+.chathistory ChatMessage:disabled{
+  opacity: 0.3;
 }
 
 
