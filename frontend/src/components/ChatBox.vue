@@ -185,7 +185,7 @@ export default {
     });
     // Setup Musicality
 
-    this.setupMusicality();
+    this.setupMusicality("Blues Scale");
 
     // Setup Audio
 
@@ -425,7 +425,7 @@ export default {
       ///  this.playTickSound();
       ///} 
     },
-    setupMusicality() {
+    setupMusicality(patternName) {
       this.scalePatterns = {
         "Constant": [1],
         "Pentatonic": [1, 9 / 8, 5 / 4, 3 / 2, 5 / 3],
@@ -455,7 +455,7 @@ export default {
 
       this.notesInScale = 6
 
-      this.scaleNotes = this.generateScale(this.notesInScale, this.baseNote, this.scalePatterns["Blues Scale"]);
+      this.scaleNotes = this.generateScale(this.notesInScale, this.baseNote, this.scalePatterns[patternName]);
       //console.log(this.scaleNotes)
 
       this.currentNotePointer = 0;
