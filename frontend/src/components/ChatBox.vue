@@ -7,7 +7,8 @@
         </button>
       </div>
       <div class="top-panel-mid">
-          <input class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id"/>
+          <input class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id"
+                :style="{ color: validID ? '#FF00FF' : '#FFFFFF'}" />
       </div>
       <div class="top-panel-right"> 
         <button @click="prev_chat" class="clear-button" :disabled="prevDisabled">⬅️</button>
@@ -19,15 +20,17 @@
     </div>
 
     <Transition name="slide-down" :style="{ zIndex: 9}">
-      <div class="top-panel" v-show="showControlPanel">
-        <div class="top-panel-mid">
-          <span style="width:80px;">{{ parseFloat(temperature).toFixed(2) }}🌡️</span>
+      <div class="top-panel" v-show="showControlPanel && validID">
+        <div class="top-panel-left">
+          <button @click="temperature = 0.7" class="clear-button">🌡️</button>
           <input style="width:100px;" type="range" class="tempInput" v-model.number="temperature" min="0.0" max="1.0" step="0.05" placeholder="temperature" :disabled="isSending" />
+          <span>{{parseFloat(temperature).toFixed(2)}}</span>
         </div>
         <div class="top-panel-right">
           <button @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
-          <span style="width:20px"></span>
+          <span style="width:12px"></span>
           <button @click="clearHistories" class="clear-button" :disabled="isSending || !validID">💥</button>
+          <span style="width:12px"></span>
           <button @click="clearCurrentHistory" class="clear-button" :disabled="isSending || !validID || emptyConversation">❌</button>
         </div>
       </div>
@@ -554,7 +557,7 @@ export default {
   max-width: 700px;
   margin: 0 auto;
   height: 95vh;
-  overflow: auto;
+  overflow: hidden;
   padding: 0px;
   border-radius: 10px;
   background-color: #0D0019; /*#202020;*/
