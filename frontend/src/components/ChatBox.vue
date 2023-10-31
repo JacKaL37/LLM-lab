@@ -26,10 +26,10 @@
       <div class="top-panel" v-show="showControlPanel && validID">
         <div class="top-panel-left">
           <button title="reset temperature" @click="temperature = 0.7" class="clear-button">🌡️</button>
-          <input title="adjust temperature [0.0 to 1.0]"
+          <input title="adjust temperature (0 = consistency, 1 = creativity)"
             style="width:70px;" type="range" class="tempInput" v-model.number="temperature" 
             min="0.0" max="1.0" step="0.05" placeholder="temperature" :disabled="isSending" />
-          <span title="current temperature">{{parseFloat(temperature).toFixed(2)}}</span>
+          <span title="current temperature (0 = consistency, 1 = creativity)">{{parseFloat(temperature).toFixed(2)}}</span>
         </div>
         <div class="top-panel-mid">
           <button :title="playAudio ? 'mute sound' : 'unmute sound'"
@@ -47,11 +47,9 @@
       </div>
     </Transition>
     
-    <Transition>
-      <div class="chathistory" ref="chathistory">
-        <ChatMessage v-for="(message, index) in message_list" :key="index" :message="message" />
-      </div>
-    </Transition>
+    <div class="chathistory" ref="chathistory">
+      <ChatMessage v-for="(message, index) in message_list" :key="index" :message="message" />
+    </div>
     
 
     <Transition name="slide-up">
@@ -95,7 +93,15 @@ export default {
       use_case: ["COG366", "M01"],
       
       list_of_approved_IDs:[
-        "BIRD UP!!"
+        "805892463","805732331","806026611","805506406",
+        "805902179","805884854","805857554","805966383",
+        "806118360","805928198","806072370","805962358",
+        "806188682","806016048","805967944","806049942",
+        "805776424","805883559","805921933","806317615",
+        "803024801","804578458","805746954","804239455",
+        "805962379","806323698","806203592","805904307",
+        "806181108","806069549","806203305","806022292",
+        "805918958","BIRD UP!!"
       ],
 
       system_prompts: [
@@ -211,10 +217,8 @@ export default {
 
     },
     async sendMessage() {
-      if (this.audioContext.state != 'running') {
-        //console.log("setting up audio context");
-        this.setupAudio();
-      }
+      //console.log("setting up audio context");
+      this.setupAudio();
 
       let wasEmpty = this.isEmpty;
       
