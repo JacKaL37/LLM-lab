@@ -583,8 +583,12 @@ export default {
   --hot-fuscia: #FF00FF;
   --hot-fuscia-faded: #FF00FF88;
   --hot-cerise: #FF00A8;
+  /*
   --button-color: linear-gradient(.48turn, var(--popout-color) 0%, var(--foreground-color) 80%, var(--base-color) 100%);
   --button-focus-color: linear-gradient(.98turn, var(--popout-color) 0%, var(--foreground-color) 80%, var(--base-color) 100%);
+  */
+  --button-color: conic-gradient(from -20deg, var(--popout-color), var(--popout-color), var(--foreground-color),var(--base-color), var(--base-color), var(--foreground-color),var(--popout-color), var(--popout-color));
+  --button-focus-color: conic-gradient(from 160deg, var(--popout-color), var(--popout-color), var(--foreground-color),var(--base-color), var(--base-color), var(--foreground-color),var(--popout-color), var(--popout-color));
 }
 .chatbox {
   display: flex;
