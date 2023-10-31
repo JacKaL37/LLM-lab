@@ -1,19 +1,22 @@
 <template>
   <div class="chatbox" @input="userHasInteracted = true;">
+
     <div class="top-panel" :disabled="isSending" :style="{ zIndex: 10 }"> 
       <div class="top-panel-left">
-        <button @click="showControlPanel = !showControlPanel" class="clear-button">
+        <button :title="showControlPanel ? 'hide panel':'show panel'" 
+          @click="showControlPanel = !showControlPanel;" class="clear-button">
           {{showControlPanel ? "🔼" : "🔽"}}
         </button>
       </div>
       <div class="top-panel-mid">
-          <input class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id"
+          <input title="input valid user id" class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id"
                 :style="{ color: validID ? '#FF00FF' : '#FFFFFF'}" />
       </div>
       <div class="top-panel-right"> 
-        <button @click="prev_chat" class="clear-button" :disabled="prevDisabled">⬅️</button>
-        <span>{{ conversation_index + 1 }} / {{ conversation_histories.length }}</span>
-        <button @click="next_chat" class="clear-button"  :disabled="nextDisabled">
+        <button title="previous chat" @click="prev_chat" class="clear-button" :disabled="prevDisabled">⬅️</button>
+        <span title="current chat id">{{ conversation_index + 1 }} / {{ conversation_histories.length }}</span>
+        <button :title="conversation_index<conversation_histories.length-1 ? 'next chat' : 'new chat'" 
+          @click="next_chat" class="clear-button"  :disabled="nextDisabled">
           {{conversation_index<conversation_histories.length-1 ? "➡️" : "🆕"}}
         </button>
       </div>
@@ -22,35 +25,41 @@
     <Transition name="slide-down" :style="{ zIndex: 9}">
       <div class="top-panel" v-show="showControlPanel && validID">
         <div class="top-panel-left">
-          <button @click="temperature = 0.7" class="clear-button">🌡️</button>
-          <input style="width:70px;" type="range" class="tempInput" v-model.number="temperature" min="0.0" max="1.0" step="0.05" placeholder="temperature" :disabled="isSending" />
-          <span>{{parseFloat(temperature).toFixed(2)}}</span>
+          <button title="reset temperature" @click="temperature = 0.7" class="clear-button">🌡️</button>
+          <input title="adjust temperature [0.0 to 1.0]"
+            style="width:70px;" type="range" class="tempInput" v-model.number="temperature" 
+            min="0.0" max="1.0" step="0.05" placeholder="temperature" :disabled="isSending" />
+          <span title="current temperature">{{parseFloat(temperature).toFixed(2)}}</span>
         </div>
         <div class="top-panel-mid">
-          <button @click="playAudio = !playAudio" class="clear-button">
+          <button :title="playAudio ? 'mute sound' : 'unmute sound'"
+            @click="playAudio = !playAudio; setupAudio();" class="clear-button">
             {{playAudio ? "🔊" : "🔇"}}
           </button>
         </div>
         <div class="top-panel-right">
-          <button @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
+          <button title="download current conversation to text file" @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
           <span style="width:12px"></span>
-          <button @click="clearHistories" class="clear-button" :disabled="isSending || !validID">💥</button>
+          <button title="delete ALL conversation histories" @click="clearHistories" class="clear-button" :disabled="isSending || !validID">💥</button>
           <span style="width:12px"></span>
-          <button @click="clearCurrentHistory" class="clear-button" :disabled="isSending || !validID || emptyConversation">❌</button>
+          <button title="delete current conversation" @click="clearCurrentHistory" class="clear-button" :disabled="isSending || !validID || emptyConversation">❌</button>
         </div>
       </div>
     </Transition>
     
+    <Transition>
+      <div class="chathistory" ref="chathistory">
+        <ChatMessage v-for="(message, index) in message_list" :key="index" :message="message" />
+      </div>
+    </Transition>
     
-    <div class="chathistory" ref="chathistory">
-      <ChatMessage v-for="(message, index) in message_list" :key="index" :message="message" />
-    </div>
 
     <Transition name="slide-up">
       <div class="input-area" @input="userHasInteracted = true;" v-show="validID">
-        <textarea ref="textarea" v-model="userMessage" placeholder="send a message" :disabled="isSending || !validID" class="input"
+        <textarea title="type a message to interact with the ai"
+          ref="textarea" v-model="userMessage" placeholder="send a message" :disabled="isSending || !validID" class="input"
           @keydown.enter.exact.prevent="onEnterKey" @input="onUserTextInput" />
-        <button @click="sendMessage" :disabled="isSending" class="send-button">📲</button>
+        <button title="send message" @click="sendMessage" :disabled="isSending || userMessage==''" class="send-button">▶️</button>
       </div>
     </Transition>
     
@@ -79,7 +88,7 @@ export default {
       osc: null,
       gainNode: null,
       showControlPanel: false,
-      playAudio: true,
+      playAudio: false,
 
       user_id: "", 
       conversation_index: 0,
@@ -97,7 +106,7 @@ export default {
         "STYLE: brief when possible, but get detailed when explaining something. use markdown as much as possible, especially when emphasizing concepts",
         //"REFLECTION_PROMPT: use this to guide the conversation-- `where have you seen complex systems in your life that you think could benefit from computational modeling? what cognitive processes have you noticed that you wish were better understood?",
         "SOURCE LINKING: frequently produce markdown links to relevant **concepts**, mostly wikipedia. the links themselves should come right after the concept, and the label should be some emojis that capture the concept. example: `**concept**[(🔍🌐)](https://en.wikipedia.org/wiki/Concept)`",
-        "WRAPUP_HAIKU: when the conversation is over, add a friendly haiku summarizing the interaction in ` fences, with emojis", 
+        "DOWNBEAT_HAIKU: at the end of your longer messages, add a friendly haiku summarizing the message's content in ` fences, with emojis", 
       ],
       model: "gpt-4",
       temperature: 0.7,
@@ -116,10 +125,10 @@ export default {
                   "temperature": 0.7,
                 },
                 "system_prompts": [
-                      "Personality: big millennial energy, minimal punctuation and capitalization, vibey, emojis and swearing are allowed (just don't be mean), more chill than dorky",
-                      "Task: chat with the user about their own interests, and help relate their interests to the course concepts below",
-                      "Concepts: [lecture notes about computational modeling of cognitive processes]",
-                      "Wrap-up: when the conversation is over, add a friendly haiku summarizing the interaction in ` fences, with emojis"
+                      "PERSONALITY: style and how to act",
+                      "GOALS: what the system is trying to do",
+                      "TASK: description",
+                      "MORE PROMPTS: etcetcetc"
                 ],
                 "conversation_history": [
                     {role: "human", content: "hey, you're a pretty chill bot."},
@@ -190,6 +199,7 @@ export default {
     // Setup Audio
 
     this.setupAudio();
+
   },
   methods: {
     async onEnterKey(event) {
@@ -559,6 +569,19 @@ export default {
 </script>
 
 <style scoped>
+
+* {
+  --foreground-color: #3a0057;
+  --base-color: #120025;
+  --popout-color: #7e20d6;
+  --hot-aqua: #57f9ff66;
+  --hot-indigo: #6F00FD;
+  --hot-fuscia: #FF00FF;
+  --hot-fuscia-faded: #FF00FF88;
+  --hot-cerise: #FF00A8;
+  --button-color: linear-gradient(.48turn, var(--popout-color) 0%, var(--foreground-color) 80%, var(--base-color) 100%);
+  --button-focus-color: linear-gradient(.98turn, var(--popout-color) 0%, var(--foreground-color) 80%, var(--base-color) 100%);
+}
 .chatbox {
   display: flex;
   flex-direction: column;
@@ -571,7 +594,7 @@ export default {
   overflow: hidden;
   padding: 0px;
   border-radius: 10px;
-  background-color: #0D0019; /*#202020;*/
+  background-color: var(--base-color); /*#202020;*/
   font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
@@ -582,11 +605,11 @@ export default {
   height: 36px;
   color: white;
   font-family: monospace;
-  background-color: #22073B;
+  background-color: var(--foreground-color);
 }
 
 .top-panel input{
-  background-color: #0D0019;
+  background-color: var(--base-color);
   border: none;
   border-radius: 20px;
   text-align: center;
@@ -599,6 +622,7 @@ export default {
 .idInput{
   width: 100px;
   font-family: monospace;
+  font-weight: bold;
 }
 
 .tempInput{
@@ -617,8 +641,18 @@ export default {
   font-size: 24px; /* adjust as needed */
   line-height: 1; /* adjust as needed */
   vertical-align: middle; /* centers the emoji */
-  background: transparent;
+
 }
+
+.top-panel button, .send-button{
+  background: var(--button-color);
+  border-radius: 10px;
+}
+
+.top-panel button:active, .send-button:active{
+  background: var(--button-focus-color);
+}
+
 
 .top-panel button:disabled{
   opacity: 0.3;
@@ -655,13 +689,13 @@ export default {
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #22073B;
+  background-color: var(--foreground-color);
   
 }
 
 ::-webkit-scrollbar-thumb {
   /* background-color: rgba(125, 125, 125, 0.7); */
-  background-color: #6F00FD;
+  background-color: var(--hot-indigo);
   border-radius: 4px;
 }
 
@@ -674,7 +708,7 @@ export default {
   flex-direction: row;
   align-items: stretch;
   width: 100%;
-  background-color: #22073B;
+  background-color: var(--foreground-color);
 }
 
 .input {
@@ -684,7 +718,7 @@ export default {
   resize: none;
   outline: none;
   overflow: auto;
-  background-color: #22073B;
+  background-color: var(--foreground-color);
   border-radius: 20px;
   font-size: 12pt;
   font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -698,7 +732,7 @@ export default {
 .clear-button{
   border: none;
   color: white;
-  background-color: #22073B;
+  background-color: var(--foreground-color);
 }
 
 .send-button {
@@ -706,10 +740,11 @@ export default {
   width: 70px;
   border: none;
   color: white;
-  background-color: #22073B;
   cursor: pointer;
   font-size: 30px;
 }
+
+
 
 .input:disabled,
 .send-button:disabled {
