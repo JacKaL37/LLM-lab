@@ -112,7 +112,7 @@ export default {
         "STYLE: brief when possible, but get detailed when explaining something. use markdown as much as possible, especially when emphasizing concepts",
         //"REFLECTION_PROMPT: use this to guide the conversation-- `where have you seen complex systems in your life that you think could benefit from computational modeling? what cognitive processes have you noticed that you wish were better understood?",
         "SOURCE LINKING: frequently produce markdown links to relevant **concepts**, mostly wikipedia. the links themselves should come right after the concept, and the label should be some emojis that capture the concept. example: `**concept**[(🔍🌐)](https://en.wikipedia.org/wiki/Concept)`",
-        "DOWNBEAT_HAIKU: at the end of your longer messages, add a friendly haiku summarizing the message's content in ` fences, with emojis", 
+        "SUMMARY_HAIKU: at the end of your longer explanations, add a friendly haiku summarizing the message's content in ` fences, with emojis", 
       ],
       model: "gpt-4",
       temperature: 0.7,
@@ -206,6 +206,8 @@ export default {
 
     this.setupAudio();
 
+    this.expandTextarea();
+
   },
   methods: {
     async onEnterKey(event) {
@@ -248,8 +250,10 @@ export default {
     setupSocket() {
       // Connect to the WebSocket server on port 3001
       //this.socket = new WebSocket('ws://104.229.89.14:3001');
-      this.socket = new WebSocket('ws://104.229.89.14:8092/chat_stateless' + '?token=' + this.api_token)
-      
+      if (!this.socket || this.socket.readyState == WebSocket.CLOSED){
+        this.socket = new WebSocket('ws://104.229.89.14:8092/chat_stateless' + '?token=' + this.api_token)
+      }
+
       if(this.audioContext.isStopped){
         this.audioContext.resume();
       }
@@ -577,7 +581,7 @@ export default {
 * {
   --foreground-color: #3a0057;
   --base-color: #120025;
-  --popout-color: #7e20d6;
+  --popout-color: #7631b6b4;
   --hot-aqua: #57f9ff66;
   --hot-indigo: #6F00FD;
   --hot-fuscia: #FF00FF;
@@ -587,7 +591,7 @@ export default {
   --button-color: linear-gradient(.48turn, var(--popout-color) 0%, var(--foreground-color) 80%, var(--base-color) 100%);
   --button-focus-color: linear-gradient(.98turn, var(--popout-color) 0%, var(--foreground-color) 80%, var(--base-color) 100%);
   */
-  --button-color: conic-gradient(from -20deg, var(--popout-color), var(--popout-color), var(--foreground-color),var(--base-color), var(--base-color), var(--foreground-color),var(--popout-color), var(--popout-color));
+  --button-color: conic-gradient(from -20deg, var(--popout-color), var(--popout-color), var(--foreground-color),var(--base-color), var(--foreground-color),var(--popout-color), var(--popout-color));
   --button-focus-color: conic-gradient(from 160deg, var(--popout-color), var(--popout-color), var(--foreground-color),var(--base-color), var(--base-color), var(--foreground-color),var(--popout-color), var(--popout-color));
 }
 .chatbox {
@@ -639,8 +643,8 @@ export default {
 }
 
 .top-panel button, .top-panel span{
-  width: 36px; /* adjust as needed */
-  height: 36px; /* adjust as needed */
+  width: 32px; /* adjust as needed */
+  height: 32px; /* adjust as needed */
   border-radius: 20%; /* this makes it round */
   padding: 0; /* removes extra padding */
   display: flex; /* centers the emoji */
@@ -649,7 +653,8 @@ export default {
   font-size: 20px; /* adjust as needed */
   line-height: 1; /* adjust as needed */
   vertical-align: middle; /* centers the emoji */
-
+  margin: 2px;
+  color: #FFFFFFaa;
 }
 
 .top-panel button, .send-button{
@@ -744,12 +749,17 @@ export default {
 }
 
 .send-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   align-self: stretch;
   width: 70px;
   border: none;
   color: white;
   cursor: pointer;
   font-size: 30px;
+  justify-content: center;
+  align-items: center;
 }
 
 
