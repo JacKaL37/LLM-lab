@@ -25,17 +25,17 @@
     <Transition name="slide-down" :style="{ zIndex: 9}">
       <div class="top-panel" v-show="showControlPanel && validID">
         <div class="top-panel-left">
+          <button :title="playAudio ? 'mute sound' : 'unmute sound'"
+            @click="playAudio = !playAudio; setupAudio();" class="clear-button">
+            {{playAudio ? "🔊" : "🔇"}}
+          </button>
+        </div>
+        <div class="top-panel-mid">
           <button title="reset temperature" @click="temperature = 0.7" class="clear-button">🌡️</button>
           <input title="adjust temperature (0 = consistency, 1 = creativity)"
             style="width:70px;" type="range" class="tempInput" v-model.number="temperature" 
             min="0.0" max="1.0" step="0.05" placeholder="temperature" :disabled="isSending" />
           <span title="current temperature (0 = consistency, 1 = creativity)">{{parseFloat(temperature).toFixed(2)}}</span>
-        </div>
-        <div class="top-panel-mid">
-          <button :title="playAudio ? 'mute sound' : 'unmute sound'"
-            @click="playAudio = !playAudio; setupAudio();" class="clear-button">
-            {{playAudio ? "🔊" : "🔇"}}
-          </button>
         </div>
         <div class="top-panel-right">
           <button title="download current conversation to text file" @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
@@ -642,7 +642,7 @@ export default {
   display: flex; /* centers the emoji */
   align-items: center; /* centers the emoji */
   justify-content: center; /* centers the emoji */
-  font-size: 24px; /* adjust as needed */
+  font-size: 20px; /* adjust as needed */
   line-height: 1; /* adjust as needed */
   vertical-align: middle; /* centers the emoji */
 
