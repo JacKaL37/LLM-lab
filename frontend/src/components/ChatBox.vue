@@ -11,11 +11,13 @@
       <div class="top-panel-mid">
           <input title="input valid user id" class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id"
                 :style="{ color: validID ? '#FF00FF' : '#FFFFFF'}" />
-          <select title="select a conversation prompt set" v-model="prompts_id">
+          
+          <select title="select a conversation prompt set" v-model="prompts_id" v-if="user_id === 'BIRD UP!!'">
             <option v-for="key in this.prompt_options" :key="key" :value="key">
               {{ key }}
             </option>
           </select>
+          
       </div>
       <div class="top-panel-right"> 
         <button title="previous chat" @click="prev_chat" class="clear-button" :disabled="prevDisabled">⬅️</button>
@@ -110,7 +112,7 @@ export default {
         "805918958","BIRD UP!!"
       ],
 
-      prompts_id: "general",
+      prompts_id: "explore_CogModels",
       prompt_options: Object.keys(systemPrompts),
       system_prompts: systemPrompts,
       model: "gpt-4",
