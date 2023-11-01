@@ -11,10 +11,15 @@
       <div class="top-panel-mid">
           <input title="input valid user id" class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id"
                 :style="{ color: validID ? '#FF00FF' : '#FFFFFF'}" />
+          <select title="select a conversation prompt set" v-model="prompts_id">
+            <option v-for="key in this.prompt_options" :key="key" :value="key">
+              {{ key }}
+            </option>
+          </select>
       </div>
       <div class="top-panel-right"> 
         <button title="previous chat" @click="prev_chat" class="clear-button" :disabled="prevDisabled">⬅️</button>
-        <span title="current chat id">{{ conversation_index + 1 }} / {{ conversation_histories.length }}</span>
+        <span title="current chat id">{{conversation_index + 1}}/{{conversation_histories.length}}</span>
         <button :title="conversation_index<conversation_histories.length-1 ? 'next chat' : 'new chat'" 
           @click="next_chat" class="clear-button"  :disabled="nextDisabled">
           {{conversation_index<conversation_histories.length-1 ? "➡️" : "🆕"}}
@@ -105,6 +110,8 @@ export default {
         "805918958","BIRD UP!!"
       ],
 
+      prompts_id: "general",
+      prompt_options: Object.keys(systemPrompts),
       system_prompts: systemPrompts,
       model: "gpt-4",
       temperature: 0.7,
@@ -297,7 +304,7 @@ export default {
                   "model_name": this.model,
                   "temperature": this.temperature,
                 },
-                "system_prompts": this.system_prompts,
+                "system_prompts": this.system_prompts[this.prompts_id],
                 "conversation_history": this.conversation_histories[this.conversation_index],
                 "new_user_input": this.userMessage.trim(),
             }
@@ -371,7 +378,7 @@ export default {
 
       let a = document.createElement('a');
       a.href = url;
-      a.download = 'conversation_' + this.get_context_route() + "-" + this.conversation_index + '.txt';
+      a.download = 'conversation_' + this.get_context_route() + "-" + this.prompts_id + "-" + this.conversation_index + '.txt';
       a.click();
     },
     scrollCheck() {
@@ -612,7 +619,7 @@ export default {
   background-color: var(--foreground-color);
 }
 
-.top-panel input{
+.top-panel input, .top-panel select{
   background-color: var(--base-color);
   border: none;
   border-radius: 20px;
@@ -620,6 +627,17 @@ export default {
   color: #57f9ff;
   height: 80%;
   font-size: 16px;
+}
+
+.top-panel select{
+  width: 100px;
+  font-size: 16px;
+  font-family: monospace;
+  font-weight: bold;
+  border: none;
+  border-radius: 20px;
+  text-align: center;
+  height: 80%;
 }
 
 
@@ -664,8 +682,8 @@ export default {
 }
 
 .top-panel span{
-  font-size: 12pt;
-  width: 60px;
+  font-size: 10pt;
+  width: 30px;
   align-self: center;
 }
 
