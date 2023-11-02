@@ -1,6 +1,7 @@
 <!-- this bot helped me build this bot! autopoetic-->
 
 <template>
+
   <div class="chatbox" @input="userHasInteracted = true;">
 
     <div class="top-panel" :disabled="isSending" :style="{ zIndex: 10 }"> 
@@ -98,6 +99,7 @@ export default {
       showControlPanel: false,
       playAudio: false,
 
+
       user_id: "", 
       conversation_index: 0,
       use_case: ["COG366", "M01"],
@@ -122,7 +124,10 @@ export default {
       
       audioStarted: false,
       userInteracted: false,
+
       api_token: "Z2dib3RhcGktMTE5OTI5OTMwMTk1NzM4ODIzOTEyMA==",
+      backendURL: "104.229.89.14:8092",
+      
       payload_schema: {
                 "ids": {
                     "timestamp": Date.now(),
@@ -254,7 +259,7 @@ export default {
       // Connect to the WebSocket server on port 3001
       //this.socket = new WebSocket('ws://104.229.89.14:3001');
       if (!this.socket || this.socket.readyState == WebSocket.CLOSED){
-        this.socket = new WebSocket('ws://localhost:8092/chat_stateless' + '?token=' + this.api_token)
+        this.socket = new WebSocket("ws://" + this.backendURL + '/chat_stateless?token=' + this.api_token)
       }
 
       if(this.audioContext.isStopped){
@@ -380,10 +385,37 @@ export default {
       let blob = new Blob([formattedConversation], {type: "text/plain;charset=utf-8"});
       let url = URL.createObjectURL(blob);
 
+      let filename = 'conversation_' + this.get_context_route() + "-" + this.prompts_id + "-" + this.conversation_index
+      let extension = ".txt" 
       let a = document.createElement('a');
+
+      this.saveToServer(formattedConversation, filename, extension, this.use_case.concat([this.user_id]))
+
       a.href = url;
-      a.download = 'conversation_' + this.get_context_route() + "-" + this.prompts_id + "-" + this.conversation_index + '.txt';
+      a.download = filename + extension;
       a.click();
+    },
+    async saveToServer(blob, filename, extension, path){
+      console.log(blob, filename, extension, path)
+      let xhr = new XMLHttpRequest();
+      let url = "http://" + this.backendURL + "/file_dump";
+
+      xhr.open("POST", url, true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          console.log('File sent to server');
+        }
+      };
+      let data = JSON.stringify({
+        "blob": blob,
+        "filename": filename,
+        "extension": extension,
+        "context_path": path
+      });
+
+      xhr.send(data);
     },
     scrollCheck() {
       // this gets the .chathistory div
