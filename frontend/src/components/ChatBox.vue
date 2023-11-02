@@ -1,3 +1,5 @@
+<!-- this bot helped me build this bot! autopoetic-->
+
 <template>
   <div class="chatbox" @input="userHasInteracted = true;">
 
@@ -252,7 +254,7 @@ export default {
       // Connect to the WebSocket server on port 3001
       //this.socket = new WebSocket('ws://104.229.89.14:3001');
       if (!this.socket || this.socket.readyState == WebSocket.CLOSED){
-        this.socket = new WebSocket('ws://104.229.89.14:8092/chat_stateless' + '?token=' + this.api_token)
+        this.socket = new WebSocket('ws://localhost:8092/chat_stateless' + '?token=' + this.api_token)
       }
 
       if(this.audioContext.isStopped){
