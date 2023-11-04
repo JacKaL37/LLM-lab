@@ -1,3 +1,21 @@
 {
-    "display": "fullscreen"
-}
+    "name": "cogmate 🧠🔮 - ur thinkin buddy",
+    "short_name": "cogmate",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#000000",
+    "orientation": "portrait-primary",
+    "icons": [
+      {
+        "src": "/brain.svg",
+        "sizes": "any",
+        "type": "image/svg+xml"
+      },
+      {
+        "src": "/brain.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      }
+    ]
+  }
