@@ -1,6 +1,6 @@
 {
     "name": "cogmate 🧠🔮 - ur thinkin buddy",
-    "short_name": "cogmate",
+    "short_name": "cogmate🧠🔮",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#000000",
@@ -14,7 +14,7 @@
       },
       {
         "src": "/brain.png",
-        "sizes": "192x192",
+        "sizes": "600x600",
         "type": "image/png"
       }
     ]
