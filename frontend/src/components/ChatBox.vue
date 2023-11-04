@@ -67,7 +67,10 @@
         <textarea title="type a message to interact with the ai"
           ref="textarea" v-model="userMessage" placeholder="send a message" :disabled="isSending || !validID" class="input"
           @keydown.enter.exact.prevent="onEnterKey" @input="onUserTextInput" />
-        <button title="send message" @click="sendMessage" :disabled="isSending || userMessage==''" class="send-button">▶️</button>
+        <button title="send message" @click="sendMessage" :disabled="isSending || userMessage==''" class="send-button">
+          <img class="brainIcon" src="../assets/brain_slow.gif" v-show="!isSending" alt="brain">
+          <img class="brainIcon" src="../assets/brain_quick.gif" v-show="isSending" alt="brain">
+        </button>
       </div>
     </Transition>
     
@@ -125,8 +128,8 @@ export default {
       audioStarted: false,
       userInteracted: false,
 
-      api_token: "Z2dib3RhcGktMTE5OTI5OTMwMTk1NzM4ODIzOTEyMA==",
-      backendURL: "104.229.89.14:8092",
+      backendURL: process.env.VUE_APP_JONBOT_BACKEND_URL,
+      api_token: process.env.VUE_APP_JONBOT_API_TOKEN,
       
       payload_schema: {
                 "ids": {
@@ -626,8 +629,8 @@ export default {
   --button-color: linear-gradient(.48turn, var(--popout-color) 0%, var(--foreground-color) 80%, var(--base-color) 100%);
   --button-focus-color: linear-gradient(.98turn, var(--popout-color) 0%, var(--foreground-color) 80%, var(--base-color) 100%);
   */
-  --button-color: conic-gradient(from -20deg, var(--popout-color), var(--popout-color), var(--foreground-color),var(--base-color), var(--foreground-color),var(--popout-color), var(--popout-color));
-  --button-focus-color: conic-gradient(from 160deg, var(--popout-color), var(--popout-color), var(--foreground-color),var(--base-color), var(--base-color), var(--foreground-color),var(--popout-color), var(--popout-color));
+  --button-color: radial-gradient(var(--base-color),var(--popout-color));
+  --button-focus-color: radial-gradient(var(--popout-color),var(--base-color));
 }
 .chatbox {
   display: flex;
@@ -675,6 +678,16 @@ export default {
   text-align: center;
   height: 80%;
 }
+
+.brainIcon{
+  width: 50vw; /* adjust this value as needed */
+  min-width: 50px; /* adjust this value as needed */
+  max-width: 200px; /* adjust this value as needed */
+  margin: 4px;
+  color: #57f9ff;
+  opacity: 1.0;
+}
+
 
 
 .idInput{
@@ -810,9 +823,8 @@ export default {
 
 
 
-.input:disabled,
-.send-button:disabled {
-  opacity: 0.1
+.input:disabled{
+  opacity: 0.5
 }
 
 .slide-down-enter-active,
