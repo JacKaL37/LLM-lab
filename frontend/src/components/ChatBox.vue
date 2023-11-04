@@ -230,11 +230,20 @@ export default {
   methods: {
     async onEnterKey(event) {
       if (/Mobi|Android/i.test(navigator.userAgent) || event.shiftKey == true) {
-        this.userMessage += "\n";
+        // Get the current cursor position and the end of the selection
+        let cursorPosition = this.$refs.textarea.selectionStart;
+        let selectionEnd = this.$refs.textarea.selectionEnd;
+
+        // Replace the selected text (or insert at the cursor position if no text is selected)
+        this.userMessage = this.userMessage.slice(0, cursorPosition) + "\n" + this.userMessage.slice(selectionEnd);
+
+        this.$nextTick(() => {
+          // Set the cursor position to its original position + 1 (to account for the newline)
+          this.$refs.textarea.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
+        });
       } else {
         await this.sendMessage();
       }
-
     },
     async sendMessage() {
       //console.log("setting up audio context");
