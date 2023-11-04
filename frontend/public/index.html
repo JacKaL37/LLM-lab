@@ -18,7 +18,16 @@
     <link rel="icon" href="<%= BASE_URL %>brain.svg">
     <title>cogmate 🧠🔮 - ur thinkin buddy</title>
     <style>
-      @media all and (display-mode: browser){
+      
+      body{
+        background-color: black;
+        position: fixed;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+      }
+      
+      @media all and (display-mode: standalone) and (max-width: 768px){
         body{
           background-color: black;
           position: fixed;
@@ -27,16 +36,6 @@
           height: calc(100%-24vh);
         }
       }
-      @media all and (display-mode: standalone){
-        body{
-          background-color: black;
-          position: fixed;
-          overflow: hidden;
-          width: 100%;
-          height: 100%;
-        }
-      }
-      
     </style>
   </head>
   <body>

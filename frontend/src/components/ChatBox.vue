@@ -655,19 +655,14 @@ export default {
   font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
-@media all and (display-mode: browser) {
+@media all and (display-mode: browser) and (max-width: 768px){
 /* styles for when your app is viewed in a browser */
 .chatbox {
 height: calc(100% - 60px); /* adjust this value as needed */
 }
 }
 
-@media all and (display-mode: standalone) {
-/* styles for when your app is installed on the home screen */
-.chatbox {
-height: 100%;
-}
-}
+
 
 .top-panel, .top-panel-left, .top-panel-right, .top-panel-mid{
   display: flex;
