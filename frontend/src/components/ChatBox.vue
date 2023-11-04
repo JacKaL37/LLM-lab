@@ -269,7 +269,7 @@ export default {
       // Connect to the WebSocket server on port 3001
       //this.socket = new WebSocket('ws://104.229.89.14:3001');
       if (!this.socket || this.socket.readyState == WebSocket.CLOSED){
-        this.socket = new WebSocket("ws://" + this.backendURL + '/chat_stateless?token=' + this.api_token)
+        this.socket = new WebSocket("wss://" + this.backendURL + '/chat_stateless?token=' + this.api_token)
       }
 
       if(this.audioContext.isStopped){
@@ -408,7 +408,7 @@ export default {
     async saveToServer(blob, filename, extension, path){
       console.log(blob, filename, extension, path)
       let xhr = new XMLHttpRequest();
-      let url = "http://" + this.backendURL + "/file_dump";
+      let url = "https://" + this.backendURL + "/file_dump";
 
       xhr.open("POST", url, true);
       xhr.setRequestHeader("Content-Type", "application/json");
