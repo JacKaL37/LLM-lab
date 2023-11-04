@@ -15,7 +15,7 @@
           <input title="input valid user id" class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id"
                 :style="{ color: validID ? '#FF00FF' : '#FFFFFF'}" />
           
-          <select title="select a conversation prompt set" v-model="prompts_id" v-if="user_id === 'BIRD UP!!'">
+          <select title="select a conversation prompt set" v-model="prompts_id" v-if="isDevID">
             <option v-for="key in this.prompt_options" :key="key" :value="key">
               {{ key }}
             </option>
@@ -116,7 +116,11 @@ export default {
         "803024801","804578458","805746954","804239455",
         "805962379","806323698","806203592","805904307",
         "806181108","806069549","806203305","806022292",
-        "805918958","testing","BIRD UP!!"
+        "805918958","testing","BIRD UP!!","8urIDhere"
+      ],
+
+      dev_IDs:[
+        "testing","BIRD UP!!"
       ],
 
       prompts_id: "explore_CogModels",
@@ -183,6 +187,9 @@ export default {
     },
     validID(){
       return this.list_of_approved_IDs.includes(this.user_id)
+    },
+    isDevID(){
+      return this.dev_IDs.includes(this.user_id)
     }
   },
   mounted() {
