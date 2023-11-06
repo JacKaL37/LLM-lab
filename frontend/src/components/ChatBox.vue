@@ -138,6 +138,8 @@ export default {
         "parasocialite","neonexdeath","hamethyst","iamdrdee","surgeus",
         "thecheat_ismyhero","avrocar","binderzfullofcats","jkl",
         "ezwuh","maikam","gonotquietly","ROSIEonFIRE",
+        "disobedientlib","titotequila","ninjateq","maveeah",
+        "DustyJBoludos","brandon.ck",
       ],
 
       friendPrompts:[
