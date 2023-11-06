@@ -120,7 +120,7 @@ export default {
       ],
 
       studentPrompts:[
-        "366:intro","366:explore"
+        "366:onramp","366:explore"
       ],
 
       devIDs:[
@@ -128,19 +128,20 @@ export default {
       ],
 
       devPrompts:[
-        "cogmate","GPT-4","BIRD-UP!!","pirate","366:intro","366:explore"
+        "cogmate","onramp","GPT-4","BIRD-UP!!","pirate","366:onramp","366:explore"
       ],
 
       friendIDs:[
         "sarcasticreindeer","micbar","squaredbear","_ember._",
         "cl0cked","jonmatthis","mgov_","llencelynn","kchortu",
         "therobotpants","iastranger","cybersea42","rawl28",
-        "parasocialite","neonexdeath","hamethyst",
-        "thecheat_ismyhero","avrocar","binderzfullofcats"
+        "parasocialite","neonexdeath","hamethyst","iamdrdee","surgeus",
+        "thecheat_ismyhero","avrocar","binderzfullofcats","jkl",
+        "ezwuh","maikam",
       ],
 
       friendPrompts:[
-        "cogmate","GPT-4","pirate"
+        "cogmate","onramp","GPT-4","pirate"
       ],
 
       prompts_id: "explore_CogModels",
