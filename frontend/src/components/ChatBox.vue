@@ -137,7 +137,7 @@ export default {
         "therobotpants","iastranger","cybersea42","rawl28",
         "parasocialite","neonexdeath","hamethyst","iamdrdee","surgeus",
         "thecheat_ismyhero","avrocar","binderzfullofcats","jkl",
-        "ezwuh","maikam",
+        "ezwuh","maikam","gonotquietly","ROSIEonFIRE",
       ],
 
       friendPrompts:[
