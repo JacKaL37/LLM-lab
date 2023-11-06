@@ -15,8 +15,8 @@
           <input title="input valid user id" class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id"
                 :style="{ color: validID ? '#FF00FF' : '#FFFFFF'}" />
           
-          <select title="select a conversation prompt set" v-model="prompts_id" v-if="isDevID">
-            <option v-for="key in this.prompt_options" :key="key" :value="key">
+          <select title="select a conversation prompt set" v-model="prompts_id" v-if="validID">
+            <option v-for="key in promptOptions" :key="key" :value="key">
               {{ key }}
             </option>
           </select>
@@ -107,7 +107,7 @@ export default {
       conversation_index: 0,
       use_case: ["COG366", "M01"],
       
-      list_of_approved_IDs:[
+      studentIDs:[
         "805892463","805732331","806026611","805506406",
         "805902179","805884854","805857554","805966383",
         "806118360","805928198","806072370","805962358",
@@ -116,15 +116,34 @@ export default {
         "803024801","804578458","805746954","804239455",
         "805962379","806323698","806203592","805904307",
         "806181108","806069549","806203305","806022292",
-        "805918958","testing","BIRD UP!!","8urIDhere"
+        "805918958","8urIDhere"
       ],
 
-      dev_IDs:[
+      studentPrompts:[
+        "366:intro","366:explore"
+      ],
+
+      devIDs:[
         "testing","BIRD UP!!"
       ],
 
+      devPrompts:[
+        "cogmate","GPT-4","BIRD-UP!!","pirate","366:intro","366:explore"
+      ],
+
+      friendIDs:[
+        "sarcasticreindeer","micbar","squaredbear","_ember._",
+        "cl0cked","jonmatthis","mgov_","llencelynn","kchortu",
+        "therobotpants","iastranger","cybersea42","rawl28",
+        "parasocialite","neonexdeath","hamethyst",
+        "thecheat_ismyhero","avrocar","binderzfullofcats"
+      ],
+
+      friendPrompts:[
+        "cogmate","GPT-4","pirate"
+      ],
+
       prompts_id: "explore_CogModels",
-      prompt_options: Object.keys(systemPrompts),
       system_prompts: systemPrompts,
       model: "gpt-4",
       temperature: 0.7,
@@ -186,10 +205,23 @@ export default {
       return this.conversation_histories[this.conversation_index].length == 0
     },
     validID(){
-      return this.list_of_approved_IDs.includes(this.user_id)
+      return this.studentIDs.includes(this.user_id) || this.devIDs.includes(this.user_id) || this.friendIDs.includes(this.user_id);
     },
     isDevID(){
       return this.dev_IDs.includes(this.user_id)
+    },
+    promptOptions(){
+      
+      console.log("computed the prompts!")
+      if (this.studentIDs.includes(this.user_id)){
+        return this.studentPrompts
+      } else if (this.devIDs.includes(this.user_id)){
+        return [...new Set([...this.devPrompts, ...this.studentPrompts, ...this.friendPrompts])]
+      } else if (this.friendIDs.includes(this.user_id)){
+        return this.friendPrompts
+      } else {
+        return []
+      }
     }
   },
   mounted() {
@@ -225,6 +257,8 @@ export default {
     this.setupAudio();
 
     this.expandTextarea();
+    
+    this.prompts_id = this.promptOptions[0]
 
   },
   methods: {
