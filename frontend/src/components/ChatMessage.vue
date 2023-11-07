@@ -266,7 +266,7 @@ message-header {
 }
 
 code {
-    color: #F2058C;
+    color: #FF00A8;
 }
 
 
