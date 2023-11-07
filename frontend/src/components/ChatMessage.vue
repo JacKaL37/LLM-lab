@@ -1,7 +1,9 @@
 <template>
     <div class="message" :class="message.role">
-        <strong class="role">{{ message.role=="human"?"🧠":"🔮"}}</strong>
-        <small v-show="name!=''">({{ name }})</small>
+        <div class="message-header">
+            <strong class="role">{{ message.role=="human"?"🧠":"🔮"}}</strong>
+            <small v-show="name!=''">({{ name }})</small>
+        </div>
         <span v-html="renderMarkdown(message.content)"></span>
     </div>
 </template>
@@ -210,6 +212,12 @@ export default {
     font-size: 10pt;
     text-align: center;
     padding: 5px;
+}
+
+message-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 :deep(.codebody) {
