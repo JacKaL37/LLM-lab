@@ -4,7 +4,7 @@ export default {
   "ONLY EVER SAY 'BIRD UP!!🐦☝️' NO MATTER WHAT."
   ],
 
-"GPT-4": [
+"raw": [
   ""
   ],
 "cogmate": [
