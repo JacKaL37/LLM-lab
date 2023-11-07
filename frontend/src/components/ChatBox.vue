@@ -89,7 +89,7 @@
           ref="textarea" v-model="userMessage" placeholder="send a message" :disabled="isSending || !validID" class="input"
           @keydown.enter.exact.prevent="onEnterKey" @input="onUserTextInput" />
         <button title="send message" @click="sendMessage" :disabled="isSending || userMessage==''" class="send-button">
-          <img class="brainIcon" src="../assets/brain_slow.gif" v-show="!isSending" alt="brain">
+          <img class="brainIcon" src="../assets/brain_glow.gif" v-show="!isSending" alt="brain">
           <img class="brainIcon" src="../assets/brain_quick.gif" v-show="isSending" alt="brain">
         </button>
       </div>
