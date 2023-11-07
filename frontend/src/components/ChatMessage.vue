@@ -1,6 +1,7 @@
 <template>
     <div class="message" :class="message.role">
         <strong class="role">{{ message.role=="human"?"🧠":"🔮"}}</strong>
+        <small v-show="name!=''">({{ name }})</small>
         <span v-html="renderMarkdown(message.content)"></span>
     </div>
 </template>
@@ -79,6 +80,11 @@ export default {
         message: {
             type: Object,
             required: true
+        }
+    },
+    computed: {
+        name() {
+            return this.message.name || '';
         }
     },
     methods: {

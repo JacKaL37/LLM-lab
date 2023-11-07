@@ -94,7 +94,11 @@ export default {
       userMessage: '',
       isSending: false,
       conversation_histories: [[]],
-      currentAIresponse: { role: "ai", content: "" },
+      
+      model: "gpt-4-1106-preview",
+      temperature: 0.7,
+
+      currentAIresponse: { role: "ai", content: "", name: this.model},
       audioContext: new (window.AudioContext || window.webkitAudioContext),
       streamDestination: null,
       osc: null,
@@ -148,8 +152,6 @@ export default {
 
       prompts_id: "explore_CogModels",
       system_prompts: systemPrompts,
-      model: "gpt-4-1106-preview",
-      temperature: 0.7,
       
       audioStarted: false,
       userInteracted: false,
@@ -174,16 +176,16 @@ export default {
                       "MORE PROMPTS: etcetcetc"
                 ],
                 "conversation_history": [
-                    {role: "human", content: "hey, you're a pretty chill bot."},
-                    {role: "ai",    content: "aw, shucks! 🙈"},
-                    {role: "human", content: "i'm kinda into this cognitive science thing."},
-                    {role: "ai",    content: "oh, rad! i can totally help with that."},
-                    {role: "human", content: "so what's this computational modeling biz?"},
-                    {role: "ai",    content: "it's like making a computer play pretend, but with cognitive processes."},
-                    {role: "human", content: "and how's that work?"},
-                    {role: "ai",    content: "you whip up a program that acts out the cognitive process you're curious about."},
-                    {role: "human", content: "damn, that's cool!"},
-                    {role: "ai",    content: "stoked you think so!"}
+                    {role: "human", name: "userID", content: "hey, you're a pretty chill bot."},
+                    {role: "ai",    name: "gpt-4",  content: "aw, shucks! 🙈"},
+                    {role: "human", name: "userID", content: "i'm kinda into this cognitive science thing."},
+                    {role: "ai",    name: "gpt-4",  content: "oh, rad! i can totally help with that."},
+                    {role: "human", name: "userID", content: "so what's this computational modeling biz?"},
+                    {role: "ai",    name: "gpt-4",  content: "it's like making a computer play pretend, but with cognitive processes."},
+                    {role: "human", name: "userID", content: "and how's that work?"},
+                    {role: "ai",    name: "gpt-4",  content: "you whip up a program that acts out the cognitive process you're curious about."},
+                    {role: "human", name: "userID", content: "damn, that's cool!"},
+                    {role: "ai",    name: "gpt-4",  content: "stoked you think so!"}
                 ],
                 "new_user_input": "gotta bounce now!",
             },
@@ -192,7 +194,7 @@ export default {
   computed: {
     message_list() {
       if (this.currentAIresponse.content != '') {
-        return this.conversation_histories[this.conversation_index].concat({ role: "ai", content: this.currentAIresponse.content });
+        return this.conversation_histories[this.conversation_index].concat({ role: "ai", content: this.currentAIresponse.content, name: this.model });
       }
       return this.conversation_histories[this.conversation_index];
     },
@@ -299,6 +301,7 @@ export default {
         this.conversation_histories[this.conversation_index].push({
           role: 'human',
           content: this.userMessage.trim(),
+          name: this.user_id
         });
         //localStorage.setItem('conversation_histories', JSON.stringify(this.conversation_histories));
 
@@ -341,7 +344,7 @@ export default {
 
         } else if (JSONmsg.type == "ai_response") {
 
-          this.conversation_histories[this.conversation_index].push({ role: "ai", content: JSONmsg.content });
+          this.conversation_histories[this.conversation_index].push({ role: "ai", content: JSONmsg.content, name: this.model});
           localStorage.setItem('conversation_histories', JSON.stringify(this.conversation_histories));
 
           this.currentAIresponse.content = '';
