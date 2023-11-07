@@ -10,70 +10,78 @@
           @click="showControlPanel = !showControlPanel; this.scrollCheck()" class="clear-button">
           {{showControlPanel ? "🔼" : "🔽"}}
         </button>
+        <button :title="playAudio ? 'mute sound' : 'unmute sound'"
+            @click="playAudio = !playAudio; setupAudio();" class="clear-button">
+            {{playAudio ? "🔊" : "🔇"}}
+          </button>
       </div>
       <div class="top-panel-mid">
-          
-        <select class="modelInput" title="select a model" v-model="model" v-show="isDevID || isFriendID">
-          <optgroup label="GPT-4">
-            <option v-for="key in modelOptions4" :key="key" :value="key">
-              {{ key }}
-            </option>
-          </optgroup>
-          <optgroup label="GPT-3.5"> 
-            <option v-for="key in modelOptions3" :key="key" :value="key">
-              {{ key }}
-            </option>
-          </optgroup>
-          <optgroup label="Preview Models"> 
-            <option v-for="key in modelOptionsPre" :key="key" :value="key">
-              {{ key }}
-            </option>
-          </optgroup>
-        </select>
-        
-        <select class="promptInput" title="select a conversation prompt set" v-model="prompts_id" v-if="validID">
-          <option class="promptInput" v-for="key in promptOptions" :key="key" :value="key">
-            {{ key }}
-          </option>
-        </select>
-
-        <input title="input valid user id" class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id"
-              :style="{ color: validID ? '#FF00FF' : '#FFFFFF'}" />
-
-          
-          
-      </div>
-      <div class="top-panel-right"> 
         <button title="previous chat" @click="prev_chat" class="clear-button" :disabled="prevDisabled">⬅️</button>
+        <span style="width:4px"></span>
         <span title="current chat id">{{conversation_index + 1}}/{{conversation_histories.length}}</span>
+        <span style="width:4px"></span>
         <button :title="conversation_index<conversation_histories.length-1 ? 'next chat' : 'new chat'" 
           @click="next_chat" class="clear-button"  :disabled="nextDisabled">
           {{conversation_index<conversation_histories.length-1 ? "➡️" : "🆕"}}
         </button>
+        
+
+          
+          
       </div>
+      <div class="top-panel-right">
+          <button title="download current conversation to text file" @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
+          <span style="width:4px"></span>
+          <button title="delete ALL conversation histories" @click="clearHistories" class="clear-button" :disabled="isSending || !validID">💥</button>
+          <span style="width:4px"></span>
+          <button title="delete current conversation" @click="clearCurrentHistory" class="clear-button" :disabled="isSending || !validID || emptyConversation">❌</button>
+        </div>
     </div>
 
     <Transition name="slide-down" :style="{ zIndex: 9}">
-      <div class="top-panel" v-show="showControlPanel && validID">
+      <div class="top-slide-panel" v-show="showControlPanel && validID">
         <div class="top-panel-left">
-          <button :title="playAudio ? 'mute sound' : 'unmute sound'"
-            @click="playAudio = !playAudio; setupAudio();" class="clear-button">
-            {{playAudio ? "🔊" : "🔇"}}
-          </button>
+          <div class="top-panel-left">
+            <span style="width:auto; padding:5px;">model:</span>
+            <select class="modelInput" title="select a model" v-model="model" v-show="isDevID || isFriendID">
+            <optgroup label="GPT-4">
+              <option v-for="key in modelOptions4" :key="key" :value="key">
+                {{ key }}
+              </option>
+            </optgroup>
+            <optgroup label="GPT-3.5"> 
+              <option v-for="key in modelOptions3" :key="key" :value="key">
+                {{ key }}
+              </option>
+            </optgroup>
+            <optgroup label="Preview Models"> 
+              <option v-for="key in modelOptionsPre" :key="key" :value="key">
+                {{ key }}
+              </option>
+            </optgroup>
+          </select>
+          </div>
+          <div class="top-panel-left">
+            <span style="width:auto; padding:5px;">prompts:</span>
+            <select class="promptInput" title="select a conversation prompt set" v-model="prompts_id" v-if="validID">
+            <option class="promptInput" v-for="key in promptOptions" :key="key" :value="key">
+              {{ key }}
+            </option>
+          </select>
+          </div>
+          <div class="top-panel-left">
+            <span style="width:auto; padding:5px;">userID:</span>
+            <input title="input valid user id" class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id"
+                :style="{ color: validID ? '#FF00FF' : '#FFFFFF'}" />
+          </div>
         </div>
         <div class="top-panel-mid">
+          <span style="width:auto; padding:5px;">temp:</span>
           <button title="reset temperature" @click="temperature = 0.7" class="clear-button">🌡️</button>
+          <span title="current temperature (0 = consistency, 1 = creativity)" style="width:auto; padding:5px;">{{parseFloat(temperature).toFixed(2)}}</span>
           <input title="adjust temperature (0 = consistency, 1 = creativity)"
             style="width:70px;" type="range" class="tempInput" v-model.number="temperature" 
             min="0.0" max="1.0" step="0.05" placeholder="temperature" :disabled="isSending" />
-          <span title="current temperature (0 = consistency, 1 = creativity)">{{parseFloat(temperature).toFixed(2)}}</span>
-        </div>
-        <div class="top-panel-right">
-          <button title="download current conversation to text file" @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
-          <span style="width:12px"></span>
-          <button title="delete ALL conversation histories" @click="clearHistories" class="clear-button" :disabled="isSending || !validID">💥</button>
-          <span style="width:12px"></span>
-          <button title="delete current conversation" @click="clearCurrentHistory" class="clear-button" :disabled="isSending || !validID || emptyConversation">❌</button>
         </div>
       </div>
     </Transition>
@@ -761,7 +769,17 @@ height: calc(100% - 60px); /* adjust this value as needed */
   background-color: var(--foreground-color);
 }
 
-.top-panel input, .top-panel select{
+.top-slide-panel{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  font-family: monospace;
+  background-color: var(--foreground-color);
+  flex-wrap: wrap;
+}
+
+.top-panel input, .top-panel select, .top-slide-panel input, .top-slide-panel select{
   background-color: var(--base-color);
   border: none;
   border-radius: 20px;
@@ -770,7 +788,7 @@ height: calc(100% - 60px); /* adjust this value as needed */
   font-size: 16px;
 }
 
-.top-panel select{
+.top-panel select, .top-slide-panel select{
   width: 100px;
   font-size: 16px;
   font-family: monospace;
@@ -820,7 +838,7 @@ select option {
   color: var(--hot-aqua);
 }
 
-.top-panel button, .top-panel span{
+.top-panel button, .top-panel span, .top-slide-panel button, .top-slide-panel span{
   width: 32px; /* adjust as needed */
   height: 32px; /* adjust as needed */
   border-radius: 20%; /* this makes it round */
@@ -835,21 +853,21 @@ select option {
   color: #FFFFFFaa;
 }
 
-.top-panel button, .send-button{
+.top-panel button, .top-slide-panel button, .send-button{
   background: var(--button-color);
   border-radius: 10px;
 }
 
-.top-panel button:active, .send-button:active{
+.top-panel button:active, .top-slide-panel button:active, .send-button:active{
   background: var(--button-focus-color);
 }
 
 
-.top-panel button:disabled{
+.top-panel button:disabled, .top-slide-panel button:disabled{
   opacity: 0.3;
 }
 
-.top-panel span{
+.top-panel span, .top-slide-panel span{
   font-size: 10pt;
   width: 30px;
   align-self: center;
