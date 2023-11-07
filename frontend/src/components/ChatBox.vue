@@ -148,7 +148,7 @@ export default {
 
       prompts_id: "explore_CogModels",
       system_prompts: systemPrompts,
-      model: "gpt-4",
+      model: "gpt-4-1106-preview",
       temperature: 0.7,
       
       audioStarted: false,
@@ -214,8 +214,6 @@ export default {
       return this.dev_IDs.includes(this.user_id)
     },
     promptOptions(){
-      
-      console.log("computed the prompts!")
       if (this.studentIDs.includes(this.user_id)){
         return this.studentPrompts
       } else if (this.devIDs.includes(this.user_id)){
@@ -228,10 +226,11 @@ export default {
     }
   },
   mounted() {
-
+    console.log("app mounted");
     // Setup socket
 
     this.setupSocket();
+    console.log("socket connected");
 
     // Listen for visibility change and setup socket again if page becomes visible.
     document.addEventListener('visibilitychange', () => {
@@ -254,6 +253,7 @@ export default {
     // Setup Musicality
 
     this.setupMusicality("Blues Scale");
+    console.log("musicality established")
 
     // Setup Audio
 
@@ -262,7 +262,7 @@ export default {
     this.expandTextarea();
     
     this.prompts_id = this.promptOptions[0]
-
+    console.log("mount setup complete")
   },
   methods: {
     async onEnterKey(event) {
@@ -285,6 +285,7 @@ export default {
     async sendMessage() {
       //console.log("setting up audio context");
       this.setupAudio();
+      console.log("sending message: \n" + this.userMessage.trim());
 
       let wasEmpty = this.isEmpty;
       
