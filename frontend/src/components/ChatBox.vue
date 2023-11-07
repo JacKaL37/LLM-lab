@@ -293,6 +293,15 @@ export default {
     this.prompts_id = this.promptOptions[0]
     console.log("mount setup complete")
   },
+  watch: {
+    promptOptions: function (newPromptOptions) {
+      if (newPromptOptions.includes(this.prompts_id)){
+        return
+      } else {
+        this.prompts_id = newPromptOptions[0]
+      }
+    },
+  },
   methods: {
     async onEnterKey(event) {
       if (/Mobi|Android/i.test(navigator.userAgent) || event.shiftKey == true) {
