@@ -12,14 +12,35 @@
         </button>
       </div>
       <div class="top-panel-mid">
-          <input title="input valid user id" class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id"
-                :style="{ color: validID ? '#FF00FF' : '#FFFFFF'}" />
           
-          <select title="select a conversation prompt set" v-model="prompts_id" v-if="validID">
-            <option v-for="key in promptOptions" :key="key" :value="key">
+        <select class="modelInput" title="select a model" v-model="model" v-show="isDevID || isFriendID">
+          <optgroup label="GPT-4">
+            <option v-for="key in modelOptions4" :key="key" :value="key">
               {{ key }}
             </option>
-          </select>
+          </optgroup>
+          <optgroup label="GPT-3.5"> 
+            <option v-for="key in modelOptions3" :key="key" :value="key">
+              {{ key }}
+            </option>
+          </optgroup>
+          <optgroup label="Preview Models"> 
+            <option v-for="key in modelOptionsPre" :key="key" :value="key">
+              {{ key }}
+            </option>
+          </optgroup>
+        </select>
+        
+        <select class="promptInput" title="select a conversation prompt set" v-model="prompts_id" v-if="validID">
+          <option class="promptInput" v-for="key in promptOptions" :key="key" :value="key">
+            {{ key }}
+          </option>
+        </select>
+
+        <input title="input valid user id" class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id"
+              :style="{ color: validID ? '#FF00FF' : '#FFFFFF'}" />
+
+          
           
       </div>
       <div class="top-panel-right"> 
@@ -95,7 +116,10 @@ export default {
       isSending: false,
       conversation_histories: [[]],
       
-      model: "gpt-4-1106-preview",
+      modelOptionsPre: ["gpt-4-1106-preview","gpt-3.5-turbo-1106",],
+      modelOptions3: ["gpt-3.5-turbo","gpt-3.5-turbo-16k","gpt-3.5-turbo-instruct"],
+      modelOptions4: ["gpt-4","gpt-4-32K"],
+      model: "gpt-4",
       temperature: 0.7,
 
       currentAIresponse: { role: "ai", content: "", name: this.model},
@@ -143,7 +167,7 @@ export default {
         "thecheat_ismyhero","avrocar","binderzfullofcats","jkl",
         "ezwuh","maikam","gonotquietly","ROSIEonFIRE",
         "disobedientlib","titotequila","ninjateq","maveeah",
-        "DustyJBoludos","brandon.ck",
+        "DustyJBoludos","brandon.ck","aehsoitgoes"
       ],
 
       friendPrompts:[
@@ -213,7 +237,10 @@ export default {
       return this.studentIDs.includes(this.user_id) || this.devIDs.includes(this.user_id) || this.friendIDs.includes(this.user_id);
     },
     isDevID(){
-      return this.dev_IDs.includes(this.user_id)
+      return this.devIDs.includes(this.user_id)
+    },
+    isFriendID(){
+      return this.friendIDs.includes(this.user_id)
     },
     promptOptions(){
       if (this.studentIDs.includes(this.user_id)){
@@ -677,8 +704,9 @@ export default {
   --foreground-color: #3a0057;
   --base-color: #120025;
   --popout-color: #7631b6b4;
-  --hot-aqua: #57f9ff66;
-  --hot-indigo: #6F00FD;
+  --hot-aqua: #57f9ff;
+  --hot-aqua-faded: #57f9ff88;
+  --hot-indigo: #6d2fff;
   --hot-fuscia: #FF00FF;
   --hot-fuscia-faded: #FF00FF88;
   --hot-cerise: #FF00A8;
@@ -729,7 +757,6 @@ height: calc(100% - 60px); /* adjust this value as needed */
   border: none;
   border-radius: 20px;
   text-align: center;
-  color: #57f9ff;
   height: 80%;
   font-size: 16px;
 }
@@ -750,7 +777,6 @@ height: calc(100% - 60px); /* adjust this value as needed */
   min-width: 50px; /* adjust this value as needed */
   max-width: 200px; /* adjust this value as needed */
   margin: 4px;
-  color: #57f9ff;
   opacity: 1.0;
 }
 
@@ -765,6 +791,24 @@ height: calc(100% - 60px); /* adjust this value as needed */
 .tempInput{
   width: 50px;
   font-family: monospace;
+}
+
+.modelInput{
+  color: var(--hot-aqua);
+}
+
+.promptInput{
+  color: #FFFFFF;
+}
+
+select optgroup{
+  text-align: left;
+  color: var(--hot-aqua-faded);
+}
+
+select option {
+  text-align: center;
+  color: var(--hot-aqua);
 }
 
 .top-panel button, .top-panel span{
@@ -833,7 +877,7 @@ height: calc(100% - 60px); /* adjust this value as needed */
 
 ::-webkit-scrollbar-thumb {
   /* background-color: rgba(125, 125, 125, 0.7); */
-  background-color: var(--hot-indigo);
+  background-color: var(--popout-color);
   border-radius: 4px;
 }
 
