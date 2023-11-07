@@ -39,11 +39,11 @@
     </div>
 
     <Transition name="slide-down" :style="{ zIndex: 9}">
-      <div class="top-slide-panel" v-show="showControlPanel && validID">
+      <div class="top-slide-panel" v-show="showControlPanel">
         <div class="top-panel-left">
-          <div class="top-panel-left">
+          <div class="top-panel-left" v-show="isDevID || isFriendID">
             <span style="width:auto; padding:5px;">model:</span>
-            <select class="modelInput" title="select a model" v-model="model" v-show="isDevID || isFriendID">
+            <select class="modelInput" title="select a model" v-model="model" >
             <optgroup label="GPT-4">
               <option v-for="key in modelOptions4" :key="key" :value="key">
                 {{ key }}
@@ -61,7 +61,7 @@
             </optgroup>
           </select>
           </div>
-          <div class="top-panel-left">
+          <div class="top-panel-left" v-show="validID">
             <span style="width:auto; padding:5px;">prompts:</span>
             <select class="promptInput" title="select a conversation prompt set" v-model="prompts_id" v-if="validID">
             <option class="promptInput" v-for="key in promptOptions" :key="key" :value="key">
@@ -75,7 +75,7 @@
                 :style="{ color: validID ? '#FF00FF' : '#FFFFFF'}" />
           </div>
         </div>
-        <div class="top-panel-mid">
+        <div class="top-panel-left" v-show="validID">
           <span style="width:auto; padding:5px;">temp:</span>
           <button title="reset temperature" @click="temperature = 0.7" class="clear-button">🌡️</button>
           <span title="current temperature (0 = consistency, 1 = creativity)" style="width:auto; padding:5px;">{{parseFloat(temperature).toFixed(2)}}</span>
@@ -771,7 +771,7 @@ height: calc(100% - 60px); /* adjust this value as needed */
 
 .top-slide-panel{
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   color: white;
   font-family: monospace;
