@@ -148,7 +148,7 @@ export default {
       ],
 
       studentPrompts:[
-        "366:onramp","366:explore"
+        "cogmate","366:onramp","366:explore"
       ],
 
       devIDs:[
