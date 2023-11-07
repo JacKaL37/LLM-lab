@@ -40,40 +40,38 @@
 
     <Transition name="slide-down" :style="{ zIndex: 9}">
       <div class="top-slide-panel" v-show="showControlPanel">
-        <div class="top-panel-left">
-          <div class="top-panel-left" v-show="isDevID || isFriendID">
-            <span style="width:auto; padding:5px;">model:</span>
-            <select class="modelInput" title="select a model" v-model="model" >
-            <optgroup label="GPT-4">
-              <option v-for="key in modelOptions4" :key="key" :value="key">
-                {{ key }}
-              </option>
-            </optgroup>
-            <optgroup label="GPT-3.5"> 
-              <option v-for="key in modelOptions3" :key="key" :value="key">
-                {{ key }}
-              </option>
-            </optgroup>
-            <optgroup label="Preview Models"> 
-              <option v-for="key in modelOptionsPre" :key="key" :value="key">
-                {{ key }}
-              </option>
-            </optgroup>
-          </select>
-          </div>
-          <div class="top-panel-left" v-show="validID">
-            <span style="width:auto; padding:5px;">prompts:</span>
-            <select class="promptInput" title="select a conversation prompt set" v-model="prompts_id" v-if="validID">
-            <option class="promptInput" v-for="key in promptOptions" :key="key" :value="key">
+        <div class="top-panel-left" v-show="isDevID || isFriendID">
+          <span style="width:auto; padding:5px;">model:</span>
+          <select class="modelInput" title="select a model" v-model="model" >
+          <optgroup label="GPT-4">
+            <option v-for="key in modelOptions4" :key="key" :value="key">
               {{ key }}
             </option>
-          </select>
-          </div>
-          <div class="top-panel-left">
-            <span style="width:auto; padding:5px;">userID:</span>
-            <input title="input valid user id" class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id"
-                :style="{ color: validID ? '#FF00FF' : '#FFFFFF'}" />
-          </div>
+          </optgroup>
+          <optgroup label="GPT-3.5"> 
+            <option v-for="key in modelOptions3" :key="key" :value="key">
+              {{ key }}
+            </option>
+          </optgroup>
+          <optgroup label="Preview Models"> 
+            <option v-for="key in modelOptionsPre" :key="key" :value="key">
+              {{ key }}
+            </option>
+          </optgroup>
+        </select>
+        </div>
+        <div class="top-panel-left" v-show="validID">
+          <span style="width:auto; padding:5px;">prompts:</span>
+          <select class="promptInput" title="select a conversation prompt set" v-model="prompts_id" v-if="validID">
+          <option class="promptInput" v-for="key in promptOptions" :key="key" :value="key">
+            {{ key }}
+          </option>
+        </select>
+        </div>
+        <div class="top-panel-left">
+          <span style="width:auto; padding:5px;">userID:</span>
+          <input title="input valid user id" class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id"
+              :style="{ color: validID ? '#FF00FF' : '#FFFFFF'}" />
         </div>
         <div class="top-panel-left" v-show="validID">
           <span style="width:auto; padding:5px;">temp:</span>
