@@ -5,8 +5,8 @@
             <small>
                 (
                 <code v-show="name!=''">{{ name }}</code>
-                <code v-show="prompt!=''">, {{ prompt }}</code>
-                <code v-show="temp!=''">, {{ temp }}</code>
+                <code v-show="prompt!=''">, 📑{{ prompt }}</code>
+                <code v-show="temp!=''">, 🌡️{{ temp }}</code>
                 )
             </small>
         </div>
