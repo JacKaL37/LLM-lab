@@ -11,7 +11,7 @@
           {{showControlPanel ? "🔼" : "🔽"}}
         </button>
         <button :title="playAudio ? 'mute sound' : 'unmute sound'"
-            @click="playAudio = !playAudio; setupAudio();" class="clear-button">
+            @click="toggleMute" class="clear-button">
             {{playAudio ? "🔊" : "🔇"}}
           </button>
       </div>
@@ -278,6 +278,7 @@ export default {
     this.conversation_histories = JSON.parse(localStorage.getItem('conversation_histories')) || [[]];
     this.conversation_index = JSON.parse(localStorage.getItem('conversation_index')) || 0;
     this.user_id = JSON.parse(localStorage.getItem('user_id')) || '';
+    this.playAudio = JSON.parse(localStorage.getItem('playAudio')) || false;
 
     // sanity checks using min and max
     this.conversation_index = Math.max(0, Math.min(this.conversation_index, this.conversation_histories.length - 1));
@@ -573,6 +574,11 @@ export default {
       }
 
 
+    },
+    toggleMute(){
+      this.playAudio = !this.playAudio;
+      localStorage.setItem('playAudio', JSON.stringify(this.playAudio));
+      this.setupAudio();
     },
     onUserTextInput(){
       this.expandTextarea(); 
