@@ -41,7 +41,7 @@
     <Transition name="slide-down" :style="{ zIndex: 9}">
       <div class="top-slide-panel" v-show="showControlPanel">
         <div class="top-panel-left" v-show="isDevID || isFriendID">
-          <span style="width:auto; padding:5px;">model:</span>
+          <span style="width:auto; padding:5px;">model:🔮</span>
           <select class="modelInput" title="select a model" v-model="model" >
           <optgroup label="GPT-4">
             <option v-for="key in modelOptions4" :key="key" :value="key">
@@ -61,7 +61,7 @@
         </select>
         </div>
         <div class="top-panel-left" v-show="validID">
-          <span style="width:auto; padding:5px;">prompts:</span>
+          <span style="width:auto; padding:5px;">prompts:📑</span>
           <select class="promptInput" title="select a conversation prompt set" v-model="prompts_id" v-if="validID">
           <option class="promptInput" v-for="key in promptOptions" :key="key" :value="key">
             {{ key }}
@@ -69,7 +69,7 @@
         </select>
         </div>
         <div class="top-panel-left">
-          <span style="width:auto; padding:5px;">userID:</span>
+          <span style="width:auto; padding:5px;">userID:🧠</span>
           <input title="input valid user id" class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id"
               :style="{ color: validID ? '#FF00FF' : '#FFFFFF'}" />
         </div>
