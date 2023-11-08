@@ -2,7 +2,13 @@
     <div class="message" :class="message.role">
         <div class="message-header">
             <strong class="role">{{ message.role=="human"?"🧠":"🔮"}}</strong>
-            <small v-show="name!=''">({{ name }})</small>
+            <small>
+                (
+                <code v-show="name!=''">{{ name }}</code>
+                <code v-show="prompt!=''">, {{ prompt }}</code>
+                <code v-show="temp!=''">, {{ temp }}</code>
+                )
+            </small>
         </div>
         <span v-html="renderMarkdown(message.content)"></span>
     </div>
@@ -87,6 +93,12 @@ export default {
     computed: {
         name() {
             return this.message.name || '';
+        },
+        temp() {
+            return this.message.temp || '';
+        },
+        prompt() {
+            return this.message.prompt || '';
         }
     },
     methods: {

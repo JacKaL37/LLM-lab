@@ -129,7 +129,7 @@ export default {
       model: "gpt-4",
       temperature: 0.7,
 
-      currentAIresponse: { role: "ai", content: "", name: this.model},
+      currentAIresponse: { role: "ai", content: "", name: this.model, temp: this.temperature, prompt: this.prompts_id},
       audioContext: new (window.AudioContext || window.webkitAudioContext),
       streamDestination: null,
       osc: null,
@@ -208,15 +208,15 @@ export default {
                 ],
                 "conversation_history": [
                     {role: "human", name: "userID", content: "hey, you're a pretty chill bot."},
-                    {role: "ai",    name: "gpt-4",  content: "aw, shucks! 🙈"},
+                    {role: "ai",    name: "gpt-4", temp: this.temperature, prompt: this.prompts_id,  content: "aw, shucks! 🙈"},
                     {role: "human", name: "userID", content: "i'm kinda into this cognitive science thing."},
-                    {role: "ai",    name: "gpt-4",  content: "oh, rad! i can totally help with that."},
+                    {role: "ai",    name: "gpt-4", temp: this.temperature, prompt: this.prompts_id,  content: "oh, rad! i can totally help with that."},
                     {role: "human", name: "userID", content: "so what's this computational modeling biz?"},
-                    {role: "ai",    name: "gpt-4",  content: "it's like making a computer play pretend, but with cognitive processes."},
+                    {role: "ai",    name: "gpt-4", temp: this.temperature, prompt: this.prompts_id,  content: "it's like making a computer play pretend, but with cognitive processes."},
                     {role: "human", name: "userID", content: "and how's that work?"},
-                    {role: "ai",    name: "gpt-4",  content: "you whip up a program that acts out the cognitive process you're curious about."},
+                    {role: "ai",    name: "gpt-4", temp: this.temperature, prompt: this.prompts_id,  content: "you whip up a program that acts out the cognitive process you're curious about."},
                     {role: "human", name: "userID", content: "damn, that's cool!"},
-                    {role: "ai",    name: "gpt-4",  content: "stoked you think so!"}
+                    {role: "ai",    name: "gpt-4", temp: this.temperature, prompt: this.prompts_id,  content: "stoked you think so!"}
                 ],
                 "new_user_input": "gotta bounce now!",
             },
@@ -225,7 +225,7 @@ export default {
   computed: {
     message_list() {
       if (this.currentAIresponse.content != '') {
-        return this.conversation_histories[this.conversation_index].concat({ role: "ai", content: this.currentAIresponse.content, name: this.model });
+        return this.conversation_histories[this.conversation_index].concat({ role: "ai", content: this.currentAIresponse.content, name: this.model, temp: this.temperature, prompt: this.prompts_id });
       }
       return this.conversation_histories[this.conversation_index];
     },
@@ -387,7 +387,7 @@ export default {
 
         } else if (JSONmsg.type == "ai_response") {
 
-          this.conversation_histories[this.conversation_index].push({ role: "ai", content: JSONmsg.content, name: this.model});
+          this.conversation_histories[this.conversation_index].push({ role: "ai", content: JSONmsg.content, name: this.model, temp: this.temperature, prompt: this.prompts_id});
           localStorage.setItem('conversation_histories', JSON.stringify(this.conversation_histories));
 
           this.currentAIresponse.content = '';
