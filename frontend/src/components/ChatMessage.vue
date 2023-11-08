@@ -6,7 +6,7 @@
                 (
                 <code v-show="name!=''">{{ name }}</code>
                 <code v-show="prompt!=''">, 📑{{ prompt }}</code>
-                <code v-show="temp!=''">, 🌡️{{ temp }}</code>
+                <code v-show="temp!=''">, 🌡️{{parseFloat(temp).toFixed(2)}}</code>
                 )
             </small>
         </div>
