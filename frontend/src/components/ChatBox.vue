@@ -178,7 +178,7 @@ export default {
       ],
 
       friendPrompts:[
-        "cogmate","onramp","raw","pirate"
+        "cogmate","onramp","raw","translate","pirate"
       ],
 
       prompts_id: "explore_CogModels",
