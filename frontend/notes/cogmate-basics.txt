@@ -1,0 +1,58 @@
+basics- https://cogmate.app/
+
+- ID entry: your student ID (got all of you, but let me know if not)
+
+- prompt selection: 366:onramp, 366:explore
+
+- sending messages
+  - responses stream in
+
+- upper right navigate conversations
+
+--- all stored locally! can reload. 
+  - saves state after each AI message completes
+  - uses "localStorage", so your stuff is persistent
+    - but, it's specific to WHERE you're using it-- browser, browser session, phone, etc
+
+- dropdown panel
+  - volume!
+  - temperature: 0-1, resets/defaults 0.7 (creativity vs consistency)
+  - save button (this is how you'll turn a conversation in)
+  - explode button: deletes all your conversations and states to start from scratch. (also helps with certain bugs, but I've squashed most of those)
+  - X button: deletes the current conversation
+
+
+text features:
+- uses GPT-4 (until yesterday dropped gpt-4-turbo, this is the most powerful!)
+  - this is a unique opportunity for most, as this is NOT the free version. if you haven't tried it, now's the time. 
+- the different prompt options are for different course tasks
+- it's great with markdown and code writing. 
+
+
+gpt-4 features:
+- compared to 3.5, it's much more powerful at deconstructing complex tasks, explanations, and overall anything that involves the more complex combination of ideas
+  - HOW does it do this? -- it's big, like, 10-100x bigger than gpt3.5. hidden layers provide room for more abstractions. 
+- it's better at understanding what you mean, not just the literal things you say. 
+  - HOW does it do this? -- embeddings. all your words are converted into large vectors of numbers that exist in a semantic space relative to others, and that is what gets encoded by the model, not your literal text strings. 
+
+general features:
+- it's an infinitely patient tutor
+- it's a domain expert (but you should still ALWAYS know enough about what you're doing to be able to check it)
+- it's a motivated collaborator
+- it listens. I know that's silly, it's the ELIZA effect, eh? 
+
+
+other cool app bits-- 
+- technically functions as a standalone web app
+  - on your phone, you can hit the "share" button in your default browser and then something like "add to home screen" (ios), or similar on android
+  - on desktop, your browser will have a little "download" button in the URL bar at the right, near the bookmark star in Chrome
+  - what it does is turn it into a little lightweight app that functions on its own
+
+
+You're welcome to use it as you like for the duration of the course!
+- only mild caution is, y'know, if you're using it all day every day, we might need to talk about you getting your own account, I'm not made of cash, haha
+- but that would be extreme, if you just wanna sit down with it on occasion and have an in-depth session, or pepper it with exploratory questions throughout the day, all that's great and I encourage it!
+
+
+no copyright lofi livestream from video:
+https://www.youtube.com/watch?v=IRp0zhUFi-M

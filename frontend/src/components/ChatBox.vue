@@ -174,7 +174,7 @@ export default {
         "thecheat_ismyhero","avrocar","binderzfullofcats","jkl",
         "ezwuh","maikam","gonotquietly","ROSIEonFIRE",
         "disobedientlib","titotequila","ninjateq","maveeah",
-        "DustyJBoludos","brandon.ck","aehsoitgoes"
+        "DustyJBoludos","brandon.ck","aehsoitgoes","amethystia"
       ],
 
       friendPrompts:[
