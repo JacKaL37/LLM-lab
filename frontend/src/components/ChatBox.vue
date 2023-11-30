@@ -163,7 +163,7 @@ export default {
       ],
 
       devPrompts:[
-        "cogmate","onramp","raw","BIRD-UP!!","pirate","366:onramp","366:explore"
+        "cogmate","onramp","grug","raw","BIRD-UP!!","pirate","366:onramp","366:explore"
       ],
 
       friendIDs:[
@@ -178,7 +178,7 @@ export default {
       ],
 
       friendPrompts:[
-        "cogmate","onramp","raw","translate","pirate"
+        "cogmate","onramp","grug","raw LLM","translate","pirate"
       ],
 
       prompts_id: "explore_CogModels",
