@@ -179,7 +179,7 @@ export default {
       ],
 
       friendPrompts:[
-        "cogmate","onramp","grug","raw","translate","pirate"
+        "cogmate","onramp","collab","grug","raw","translate","pirate"
       ],
 
       guestIDs:[
@@ -192,7 +192,7 @@ export default {
       ],
 
       guestPrompts: [
-        "cogmate", "onramp", "collab"
+        "cogmate", "raw", "onramp", "collab", "grug"
       ],
 
       prompts_id: "explore_CogModels",
