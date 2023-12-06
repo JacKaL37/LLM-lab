@@ -125,7 +125,7 @@ export default {
       
       modelOptionsPre: ["gpt-4-1106-preview","gpt-3.5-turbo-1106",],
       modelOptions3: ["gpt-3.5-turbo","gpt-3.5-turbo-16k","gpt-3.5-turbo-instruct"],
-      modelOptions4: ["gpt-4","gpt-4-32K"],
+      modelOptions4: ["gpt-4","gpt-4-32k"],
       model: "gpt-4",
       temperature: 0.7,
 
