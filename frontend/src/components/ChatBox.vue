@@ -174,11 +174,25 @@ export default {
         "thecheat_ismyhero","avrocar","binderzfullofcats","jkl",
         "ezwuh","maikam","gonotquietly","ROSIEonFIRE",
         "disobedientlib","titotequila","ninjateq","maveeah",
-        "DustyJBoludos","brandon.ck","aehsoitgoes","amethystia"
+        "DustyJBoludos","brandon.ck","aehsoitgoes","amethystia",
+        "snoelle",
       ],
 
       friendPrompts:[
-        "cogmate","onramp","grug","raw LLM","translate","pirate"
+        "cogmate","onramp","grug","raw","translate","pirate"
+      ],
+
+      guestIDs:[
+        "COG411-A", "COG411-B", "COG411-C", "COG411-D", "COG411-E",
+        "COG411-F", "COG411-G", "COG411-H", "COG411-I", "COG411-J",
+        "COG411-K", "COG411-L", "COG411-M", "COG411-N", "COG411-O",
+        "COG411-P", "COG411-Q", "COG411-R", "COG411-S", "COG411-T",
+        "COG411-U", "COG411-V", "COG411-W", "COG411-X", "COG411-Y",
+        "COG411-Z"
+      ],
+
+      guestPrompts: [
+        "cogmate", "onramp", "collab"
       ],
 
       prompts_id: "explore_CogModels",
@@ -241,7 +255,7 @@ export default {
       return this.conversation_histories[this.conversation_index].length == 0
     },
     validID(){
-      return this.studentIDs.includes(this.user_id) || this.devIDs.includes(this.user_id) || this.friendIDs.includes(this.user_id);
+      return this.studentIDs.includes(this.user_id) || this.devIDs.includes(this.user_id) || this.friendIDs.includes(this.user_id) || this.guestIDs.includes(this.user_id);
     },
     isDevID(){
       return this.devIDs.includes(this.user_id)
@@ -256,6 +270,8 @@ export default {
         return [...new Set([...this.devPrompts, ...this.studentPrompts, ...this.friendPrompts])]
       } else if (this.friendIDs.includes(this.user_id)){
         return this.friendPrompts
+      } else if (this.guestIDs.includes(this.user_id)){
+        return this.guestPrompts
       } else {
         return []
       }
