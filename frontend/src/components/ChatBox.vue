@@ -499,7 +499,7 @@ export default {
       }
 
       let formattedConversation = this.conversation_histories[this.conversation_index].map(message => {
-        return `--------------------------------------------------\n\n${message.role === 'human' ? '🧠human' : '🔮ai'}:\n${message.content}\n\n--------------------------------------------------\n\n`;
+        return `__________________________________________________\n\n${message.role === 'human' ? '🧠human' : '🔮ai'}:\n${message.content}\n\n__________________________________________________\n\n`;
       }).join('\n');
 
       let blob = new Blob([formattedConversation], {type: "text/plain;charset=utf-8"});
