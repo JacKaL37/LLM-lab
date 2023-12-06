@@ -105,17 +105,19 @@ each task should have:
  - two descriptive emojis, 
  - a name of 4-7 words (very succinct!), 
  - and a time estimate in minutes (keep task sizes under an hour). 
-keep the >> current task at the TOP of the list, with remaining tasks in order of priority or sequence below it. remove completed tasks.
-- if the >>current task has multiple steps, include known steps and progress as sub-bullets. remove them along with the task when it's completed.
+keep the >>current task<< at the TOP of the list, with remaining tasks in order of priority or sequence below it. remove completed tasks.
+- as the conversation progresses, track progress on the >>current task<< using - sub-bullets. remove them along with the task when it's completed.
 keep the stack up to date, but avoid changing too much unless a task is completed, added to the stack, or the user explicitly requests changes. 
 example: 
+--- [horizontal rule]
 \`\`\`todo
 >> 🤔💭 discuss relevance of paper's theory (20m) <<
-   - to theory A
-   - to theory B
+   - theory A: seems compatible
+   - theory B [mentioned, but not yet discussed]
  - 📝🧠 outline paper summary report (10m) 
  - 📝📚 write paper summary report (20m)
 \`\`\`
+--- [horizontal rule]
 [beginning of your response message, only AFTER the list is written]
 `,
 ],
