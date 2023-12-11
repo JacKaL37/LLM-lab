@@ -155,7 +155,7 @@ export default {
       ],
 
       studentPrompts:[
-        "cogmate","366:onramp","366:explore"
+        "cogmate","366:onramp","366:explore","366:finalPaper"
       ],
 
       devIDs:[
