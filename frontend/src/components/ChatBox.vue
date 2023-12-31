@@ -86,9 +86,9 @@
       </div>
       <div class="top-slide-panel" v-show="showControlPanel && validID">
           <span style="width:100%;">🧰custom prompts: 
-            <input type="checkbox" id="customPromptsEnabled" v-model="customPromptsEnabled" :disabled="isSending" />
+            <input type="checkbox" id="customPromptsEnabled" v-model="customPromptsEnabled" />
           </span>
-          <textarea type="text" style="background-color: var(--base-color); height: 10vh; margin: 5px;" title="write your own prompts here" class="input" v-model="customPrompt" placeholder="✨🧠write custom instructions here🔮✨" :disabled="isSending || !customPromptsEnabled" />
+          <textarea type="text" style="background-color: var(--base-color); height: 10vh; margin: 5px;" title="write your own prompts here" class="input" v-model="customPrompt" placeholder="✨🧠write custom instructions here🔮✨" :disabled="!customPromptsEnabled" />
       </div>
     </div>
     </Transition>
@@ -101,7 +101,7 @@
     <Transition name="slide-up">
       <div class="input-area" @input="userHasInteracted = true;" v-show="validID">
         <textarea type="text" title="type a message to interact with the ai"
-          ref="textarea" v-model="userMessage" placeholder="send a message" :disabled="isSending || !validID" class="input"
+          ref="textarea" v-model="userMessage" placeholder="send a message" :disabled="!validID" class="input"
           @keydown.enter.exact.prevent="onEnterKey" @input="onUserTextInput" />
         <button title="send message" @click="sendMessage" :disabled="isSending || userMessage==''" class="send-button">
           <img class="brainIcon" src="../assets/brain_glow.gif" v-show="!isSending" alt="brain">
@@ -356,7 +356,9 @@ export default {
           this.$refs.textarea.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
         });
       } else {
-        await this.sendMessage();
+        if(!this.isSending){
+          await this.sendMessage();
+        }
       }
     },
     async sendMessage() {
