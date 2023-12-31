@@ -39,6 +39,7 @@
     </div>
 
     <Transition name="slide-down" :style="{ zIndex: 9}">
+    <div>
       <div class="top-slide-panel" v-show="showControlPanel">
         <div class="top-panel-left" v-show="isDevID || isFriendID">
           <span style="width:auto; padding:5px;">🔮model:</span>
@@ -82,11 +83,12 @@
             
           <button title="reset temperature" @click="temperature = 0.7" class="clear-button">🌡️</button>
         </div>
-        <div class="top-panel-left" v-show="validID">
-          <span style="width:auto; padding:5px;">🧰customPrompt:</span>
-          <textarea title="write your own prompts here" class="customPromptInput" v-model="customPrompt" placeholder="custom prompts" :disabled="isSending" />
-        </div>
       </div>
+      <div class="top-slide-panel" v-show="showControlPanel && validID">
+          <span style="width:100%;">🧰custom prompts:</span>
+          <textarea style="background-color: var(--base-color); height: 10vh; margin: 5px;" title="write your own prompts here" class="input" v-model="customPrompt" placeholder="write custom instructions here" :disabled="isSending" />
+      </div>
+    </div>
     </Transition>
     
     <div class="chathistory" ref="chathistory">
@@ -431,7 +433,7 @@ export default {
     },
     get_payload(){
       let promptsArray = this.system_prompts[this.prompts_id];
-      if(this.customPrompts != ""){
+      if(this.customPrompt != ""){
         promptsArray = promptsArray.concat("----------\nADDITIONAL_INSTRUCTIONS\n-----------\n" + this.customPrompt + "\n----------------\n\n")
       }
       let payload = {
