@@ -86,7 +86,7 @@
       </div>
       <div class="top-slide-panel" v-show="showControlPanel && validID">
           <span style="width:100%;">🧰custom prompts:</span>
-          <textarea style="background-color: var(--base-color); height: 10vh; margin: 5px;" title="write your own prompts here" class="input" v-model="customPrompt" placeholder="write custom instructions here" :disabled="isSending" />
+          <textarea style="background-color: var(--base-color); height: 10vh; margin: 5px;" title="write your own prompts here" class="input" v-model="customPrompt" placeholder="✨🧠write custom instructions here🔮✨" :disabled="isSending" />
       </div>
     </div>
     </Transition>
