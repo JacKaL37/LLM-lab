@@ -20,7 +20,9 @@ export default {
 #app{
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  align-self: center;
+  justify-self: center;
+  height: 99vh;
   width: 100vw;
   margin: 0;
 }
