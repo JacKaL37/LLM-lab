@@ -20,8 +20,8 @@ export default {
 #app{
   display: flex;
   flex-direction: column;
-  height: 95vh;
-  width: 95vw;
+  height: 99vh;
+  width: 99vw;
   margin: 0;
 }
 

@@ -82,6 +82,10 @@
             
           <button title="reset temperature" @click="temperature = 0.7" class="clear-button">🌡️</button>
         </div>
+        <div class="top-panel-left" v-show="validID">
+          <span style="width:auto; padding:5px;">🧰customPrompt:</span>
+          <textarea title="write your own prompts here" class="customPromptInput" v-model="customPrompt" placeholder="custom prompts" :disabled="isSending" />
+        </div>
       </div>
     </Transition>
     
@@ -136,6 +140,8 @@ export default {
       gainNode: null,
       showControlPanel: false,
       playAudio: false,
+
+      customPrompt: "",
 
 
       user_id: "", 
@@ -424,6 +430,10 @@ export default {
       };
     },
     get_payload(){
+      let promptsArray = this.system_prompts[this.prompts_id];
+      if(this.customPrompts != ""){
+        promptsArray = promptsArray.concat("----------\nADDITIONAL_INSTRUCTIONS\n-----------\n" + this.customPrompt + "\n----------------\n\n")
+      }
       let payload = {
                 "ids": {
                     "timestamp": Date.now(),
@@ -434,7 +444,7 @@ export default {
                   "model_name": this.model,
                   "temperature": this.temperature,
                 },
-                "system_prompts": this.system_prompts[this.prompts_id],
+                "system_prompts": promptsArray,
                 "conversation_history": this.conversation_histories[this.conversation_index],
                 "new_user_input": this.userMessage.trim(),
             }
@@ -762,7 +772,7 @@ export default {
   align-items: stretch;
   justify-content: center;
   width: 100%;
-  max-width: 700px;
+  max-width: 1400px;
   margin: 0 auto;
   height: 100%;
   overflow: hidden;
