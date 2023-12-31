@@ -40,7 +40,7 @@
 
     <Transition name="slide-down" :style="{ zIndex: 9}">
     <div>
-      <div class="top-slide-panel" v-show="showControlPanel">
+      <div class="top-slide-panel" v-show="showControlPanel" :style="{ zIndex: 10 }">
         <div class="top-panel-left" v-show="isDevID || isFriendID">
           <span style="width:auto; padding:5px;">🔮model:</span>
           <select class="modelInput" title="select a model" v-model="model" >
@@ -83,13 +83,15 @@
             
           <button title="reset temperature" @click="temperature = 0.7" class="clear-button">🌡️</button>
         </div>
+        <div class="top-panel-left" style="width:100%;" v-show="validID">
+          <span style="width:100%;">🧰custom prompts: 
+            <input type="checkbox" id="customPromptsEnabled" v-model="customPromptsEnabled" />
+          </span>      
+        </div>
       </div>
 
       <Transition name="slide-down" :style="{ zIndex: 9}">
       <div class="top-slide-panel" v-show="showControlPanel && validID && customPromptsEnabled">
-          <span style="width:100%;">🧰custom prompts: 
-            <input type="checkbox" id="customPromptsEnabled" v-model="customPromptsEnabled" />
-          </span>
           <textarea type="text" style="background-color: var(--base-color); height: 10vh; margin: 5px;" title="write your own prompts here" class="input" v-model="customPrompt" placeholder="✨🧠write custom instructions here🔮✨" :disabled="!customPromptsEnabled" />
       </div>
       </Transition>
@@ -827,6 +829,7 @@ height: calc(100% - 60px); /* adjust this value as needed */
   font-family: monospace;
   background-color: var(--foreground-color);
   flex-wrap: wrap;
+  position: relative;
 }
 
 .top-panel input, .top-panel select, .top-slide-panel input, .top-slide-panel select{
