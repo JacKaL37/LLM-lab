@@ -22,7 +22,7 @@ export default {
   flex-direction: column;
   align-self: center;
   justify-self: center;
-  height: 99vh;
+  height: 100vh;
   width: 100vw;
   margin: 0;
 }
