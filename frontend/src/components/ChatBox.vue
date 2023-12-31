@@ -85,8 +85,10 @@
         </div>
       </div>
       <div class="top-slide-panel" v-show="showControlPanel && validID">
-          <span style="width:100%;">🧰custom prompts:</span>
-          <textarea type="text" style="background-color: var(--base-color); height: 10vh; margin: 5px;" title="write your own prompts here" class="input" v-model="customPrompt" placeholder="✨🧠write custom instructions here🔮✨" :disabled="isSending" />
+          <span style="width:100%;">🧰custom prompts: 
+            <input type="checkbox" id="customPromptsEnabled" v-model="customPromptsEnabled" :disabled="isSending" />
+          </span>
+          <textarea type="text" style="background-color: var(--base-color); height: 10vh; margin: 5px;" title="write your own prompts here" class="input" v-model="customPrompt" placeholder="✨🧠write custom instructions here🔮✨" :disabled="isSending || !customPromptsEnabled" />
       </div>
     </div>
     </Transition>
@@ -144,7 +146,7 @@ export default {
       playAudio: false,
 
       customPrompt: "",
-
+      customPromptsEnabled: false,
 
       user_id: "", 
       conversation_index: 0,
@@ -437,7 +439,7 @@ export default {
     },
     get_payload(){
       let promptsArray = this.system_prompts[this.prompts_id];
-      if(this.customPrompt != ""){
+      if(this.customPrompt != "" && this.customPromptsEnabled){
         promptsArray = promptsArray.concat("----------\nADDITIONAL_INSTRUCTIONS\n-----------\n" + this.customPrompt + "\n----------------\n\n")
       }
       let payload = {
