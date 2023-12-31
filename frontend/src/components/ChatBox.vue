@@ -92,7 +92,7 @@
 
       <Transition name="slide-down" :style="{ zIndex: 9}">
       <div class="top-slide-panel" v-show="showControlPanel && validID && customPromptsEnabled">
-          <textarea type="text" style="background-color: var(--base-color); height: 10vh; margin: 5px;" title="write your own prompts here" class="input" v-model="customPrompt" placeholder="✨🧠write custom instructions here🔮✨" :disabled="!customPromptsEnabled" />
+          <textarea type="text" style="background-color: var(--base-color); height: 10vh; margin: 5px; resize:vertical;" title="write your own prompts here" class="input" v-model="customPrompt" placeholder="✨🧠write custom instructions here🔮✨" :disabled="!customPromptsEnabled" />
       </div>
       </Transition>
     </div>
