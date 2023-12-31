@@ -86,7 +86,7 @@
       </div>
       <div class="top-slide-panel" v-show="showControlPanel && validID">
           <span style="width:100%;">🧰custom prompts:</span>
-          <textarea style="background-color: var(--base-color); height: 10vh; margin: 5px;" title="write your own prompts here" class="input" v-model="customPrompt" placeholder="✨🧠write custom instructions here🔮✨" :disabled="isSending" />
+          <textarea type="text" style="background-color: var(--base-color); height: 10vh; margin: 5px;" title="write your own prompts here" class="input" v-model="customPrompt" placeholder="✨🧠write custom instructions here🔮✨" :disabled="isSending" />
       </div>
     </div>
     </Transition>
@@ -98,7 +98,7 @@
 
     <Transition name="slide-up">
       <div class="input-area" @input="userHasInteracted = true;" v-show="validID">
-        <textarea title="type a message to interact with the ai"
+        <textarea type="text" title="type a message to interact with the ai"
           ref="textarea" v-model="userMessage" placeholder="send a message" :disabled="isSending || !validID" class="input"
           @keydown.enter.exact.prevent="onEnterKey" @input="onUserTextInput" />
         <button title="send message" @click="sendMessage" :disabled="isSending || userMessage==''" class="send-button">
@@ -773,13 +773,14 @@ export default {
   flex-direction: column;
   align-items: stretch;
   justify-content: center;
-  width: 100%;
+  width: 100vw;
   max-width: 1400px;
   margin: 0 auto;
-  height: 100%;
+  height: 100vh;
+  max-height: 100vh;
   overflow: hidden;
   padding: 0px;
-  border-radius: 10px;
+  border-radius: 7px;
   background-color: var(--base-color); /*#202020;*/
   font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
