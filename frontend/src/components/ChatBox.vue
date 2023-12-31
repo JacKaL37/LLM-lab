@@ -304,6 +304,7 @@ export default {
     this.conversation_index = JSON.parse(localStorage.getItem('conversation_index')) || 0;
     this.user_id = JSON.parse(localStorage.getItem('user_id')) || '';
     this.playAudio = JSON.parse(localStorage.getItem('playAudio')) || false;
+    this.customPrompt = JSON.parse(localStorage.getItem('customPrompt')) || '';
 
     // sanity checks using min and max
     this.conversation_index = Math.max(0, Math.min(this.conversation_index, this.conversation_histories.length - 1));
@@ -333,6 +334,9 @@ export default {
       } else {
         this.prompts_id = newPromptOptions[0]
       }
+    },
+    customPrompt: function (newCustomPrompt) {
+      localStorage.setItem('customPrompt', JSON.stringify(newCustomPrompt));
     },
   },
   methods: {
