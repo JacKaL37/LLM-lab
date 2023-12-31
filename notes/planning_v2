@@ -1,0 +1,16 @@
+
+Switch to a pre-canned chat interface. This may come with drawbacks, but we need to enter from that end first. 
+
+Primary goals:
+- get all modalities available from openAI integrated
+  - text2text - gpt4
+  - img(+text)2text - gpt4 vision preview
+  - speech2text - whisper
+  - text2speech - openAI's tts
+  - text2img - Dall-E 3
+- get the usability up to everyday-use standards
+  - navigating conversations by name, date, and even visualizing them in semantic space
+  - accounts and proper server-side security
+  - save and load conversation transcripts
+  - custom prompting right in the app
+  - token counts (and cost estimations from model)

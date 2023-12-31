@@ -175,20 +175,21 @@ export default {
         "ezwuh","maikam","gonotquietly","ROSIEonFIRE",
         "disobedientlib","titotequila","ninjateq","maveeah",
         "DustyJBoludos","brandon.ck","aehsoitgoes","amethystia",
-        "snoelle",
+        "snoelle","TinkaMaru"
       ],
 
       friendPrompts:[
-        "cogmate","onramp","collab","grug","raw","translate","pirate"
+        "cogmate","onramp","collab","grug","raw","emojis","translate","pirate"
       ],
 
       guestIDs:[
-        "COG411-A", "COG411-B", "COG411-C", "COG411-D", "COG411-E",
-        "COG411-F", "COG411-G", "COG411-H", "COG411-I", "COG411-J",
-        "COG411-K", "COG411-L", "COG411-M", "COG411-N", "COG411-O",
-        "COG411-P", "COG411-Q", "COG411-R", "COG411-S", "COG411-T",
-        "COG411-U", "COG411-V", "COG411-W", "COG411-X", "COG411-Y",
-        "COG411-Z"
+        //"COG411-A", "COG411-B", "COG411-C", "COG411-D", "COG411-E",
+        //"COG411-F", "COG411-G", "COG411-H", "COG411-I", "COG411-J",
+        //"COG411-K", "COG411-L", "COG411-M", "COG411-N", "COG411-O",
+        //"COG411-P", "COG411-Q", "COG411-R", "COG411-S", "COG411-T",
+        //"COG411-U", "COG411-V", "COG411-W", "COG411-X", "COG411-Y",
+        //"COG411-Z", 
+        "agreenbe"
       ],
 
       guestPrompts: [
