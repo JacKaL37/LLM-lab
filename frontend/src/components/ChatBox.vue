@@ -84,12 +84,15 @@
           <button title="reset temperature" @click="temperature = 0.7" class="clear-button">🌡️</button>
         </div>
       </div>
-      <div class="top-slide-panel" v-show="showControlPanel && validID">
+
+      <Transition name="slide-down" :style="{ zIndex: 9}">
+      <div class="top-slide-panel" v-show="showControlPanel && validID && customPromptsEnabled">
           <span style="width:100%;">🧰custom prompts: 
             <input type="checkbox" id="customPromptsEnabled" v-model="customPromptsEnabled" />
           </span>
           <textarea type="text" style="background-color: var(--base-color); height: 10vh; margin: 5px;" title="write your own prompts here" class="input" v-model="customPrompt" placeholder="✨🧠write custom instructions here🔮✨" :disabled="!customPromptsEnabled" />
       </div>
+      </Transition>
     </div>
     </Transition>
     
@@ -307,6 +310,7 @@ export default {
     this.user_id = JSON.parse(localStorage.getItem('user_id')) || '';
     this.playAudio = JSON.parse(localStorage.getItem('playAudio')) || false;
     this.customPrompt = JSON.parse(localStorage.getItem('customPrompt')) || '';
+    this.model = JSON.parse(localStorage.getItem('model')) || 'gpt-4-1106-preview';
 
     // sanity checks using min and max
     this.conversation_index = Math.max(0, Math.min(this.conversation_index, this.conversation_histories.length - 1));
@@ -339,6 +343,9 @@ export default {
     },
     customPrompt: function (newCustomPrompt) {
       localStorage.setItem('customPrompt', JSON.stringify(newCustomPrompt));
+    },
+    model: function (newModel) {
+      localStorage.setItem('model', JSON.stringify(newModel));
     },
   },
   methods: {
