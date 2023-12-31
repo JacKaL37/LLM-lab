@@ -179,7 +179,7 @@ export default {
       ],
 
       friendPrompts:[
-        "cogmate","raw","onramp","collab","promptwrangler","grug","botermelon","emojioid","translate","pirate"
+        "cogmate","raw","onramp","collab","promptwrangler","grug","botermelon","🧠🤖👉🌐✨🔮","translate","pirate"
       ],
 
       guestIDs:[
