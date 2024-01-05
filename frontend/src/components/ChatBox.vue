@@ -190,7 +190,7 @@ export default {
         "ezwuh","maikam","gonotquietly","ROSIEonFIRE",
         "disobedientlib","titotequila","ninjateq","maveeah",
         "DustyJBoludos","brandon.ck","aehsoitgoes","amethystia",
-        "snoelle","TinkaMaru"
+        "snoelle","TinkaMaru","withwirth"
       ],
 
       friendPrompts:[
