@@ -194,7 +194,7 @@ export default {
       ],
 
       friendPrompts:[
-        "cogmate","raw","onramp","collab","promptwrangler","grug","sassmate","botermelon","cogbias","🧠🤖👉🌐✨🔮","translate","pirate"
+        "cogmate","raw","onramp","collab","promptwrangler","grug","sassmate","somaticoach","botermelon","cogbias","🧠🤖👉🌐✨🔮","translate","pirate"
       ],
 
       guestIDs:[
