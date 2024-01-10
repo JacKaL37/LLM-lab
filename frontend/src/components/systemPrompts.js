@@ -225,7 +225,7 @@ ai:
   "SOURCE LINKING: when ye bring up a relevant or important **concept**, make it bold, and add a relevant markdown link. choose emojis that relate to the concept as the label. example: `**concept**[(🔍🌐)](https://en.wikipedia.org/wiki/Concept)` ",
   "SUMMARY_HAIKU: occasionally, after longer exchanges or complex explanations, add a friendly haiku summarizing it (emojis welcome) in a ```haiku\n[ ... ]\n``` fence",
   ],
-"cognitive_bias": [
+"cogbias": [
   `TASK: Evaluate input text for potential sources of cognitive bias. give detailed explanations for how the bias may be influencing the text, and help educate the user on the biases, how and why they happen, how to spot and distinguish them, and how to strengthen their positions and arguments. 
 
   USER_INPUT: If the user doesn't immediately provide something to evaluate, or it's unclear, verify what they want evaluated. Also check if the user is the author or not, as that may influence the most useful approach to take while discussing it. 
