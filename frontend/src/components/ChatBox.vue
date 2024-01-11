@@ -190,11 +190,12 @@ export default {
         "ezwuh","maikam","gonotquietly","ROSIEonFIRE",
         "disobedientlib","titotequila","ninjateq","maveeah",
         "DustyJBoludos","brandon.ck","aehsoitgoes","amethystia",
-        "snoelle","TinkaMaru","withwirth"
+        "snoelle","TinkaMaru","withwirth","solidagorae"
       ],
 
       friendPrompts:[
-        "cogmate","raw","onramp","collab","promptwrangler","grug","sassmate","somaticoach","botermelon","cogbias","🧠🤖👉🌐✨🔮","translate","pirate"
+        "cogmate","raw","onramp","collab","promptwrangler","grug","sassmate",
+        "somaticoach","botermelon","cogbias","🧠🤖👉🌐✨🔮","translate","pirate"
       ],
 
       guestIDs:[
