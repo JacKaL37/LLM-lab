@@ -83,10 +83,16 @@
             
           <button title="reset temperature" @click="temperature = 0.7" class="clear-button">🌡️</button>
         </div>
+        <div class="top-panel-right" v-show="validID">
+          <span style="width:auto; padding:5px;">🫙tipjar:</span>
+          <a href="https://venmo.com/u/John-K-Lindstedt" target="_blank" style="text-decoration:none; padding-left: 5px; padding-right: 5px;">
+            <button title="if you ever wanna kick me a fiver to help cover costs" class="clear-button" style="text-decoration:none">💸</button>
+          </a>
+        </div>
         <div class="top-panel-left" style="width:100%;" v-show="validID">
           <span style="width:100%;">🧰custom prompts: 
             <input type="checkbox" id="customPromptsEnabled" v-model="customPromptsEnabled" />
-          </span>      
+          </span>
         </div>
       </div>
 
@@ -313,7 +319,7 @@ export default {
     this.user_id = JSON.parse(localStorage.getItem('user_id')) || '';
     this.playAudio = JSON.parse(localStorage.getItem('playAudio')) || false;
     this.customPrompt = JSON.parse(localStorage.getItem('customPrompt')) || '';
-    this.model = JSON.parse(localStorage.getItem('model')) || 'gpt-4-1106-preview';
+    //this.model = JSON.parse(localStorage.getItem('model')) || 'gpt-4-1106-preview';
 
     // sanity checks using min and max
     this.conversation_index = Math.max(0, Math.min(this.conversation_index, this.conversation_histories.length - 1));
