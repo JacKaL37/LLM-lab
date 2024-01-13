@@ -86,9 +86,9 @@
         <div class="top-panel-right" v-show="validID">
           <span style="width:auto; padding:5px;">🫙tipjar:</span>
           <a 
-            href="https://venmo.com/?txn=pay&audience=friends&recipients=John-K-Lindstedt&amount=5.00&note=%F0%9F%A7%A0cogmate%F0%9F%94%AE%20sustainability%20donation%20%F0%9F%92%B8%F0%9F%99%8F" 
+            href="https://account.venmo.com/payment-link?audience=friends&amount=5.00&note=🧠cogmate🔮sustainability🙏donation💸&recipients=%2CJohn-K-Lindstedt&txn=pay" 
             target="_blank" style="text-decoration:none; padding-left: 5px; padding-right: 5px;">
-            <button title="if you ever wanna kick me a fiver to help cover costs" class="clear-button" style="text-decoration:none">💸</button>
+            <button title="if you ever wanna kick me a fiver to help cover token costs" class="clear-button" style="text-decoration:none">💸</button>
           </a>
         </div>
         <div class="top-panel-left" style="width:100%;" v-show="validID">
