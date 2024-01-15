@@ -92,16 +92,25 @@
           </a>
         </div>
         <div class="top-panel-left" style="width:100%;" v-show="validID">
-          <span style="width:100%;">🧰custom prompts: 
+          <span style="width:100%; padding: 5px">🔬show prompt: 
+            <input type="checkbox" id="showPrompt" v-model="showPrompt" />
+          </span>
+
+          <span style="width:100%; padding: 5px;">🧰custom prompts: 
             <input type="checkbox" id="customPromptsEnabled" v-model="customPromptsEnabled" />
           </span>
         </div>
       </div>
 
       <Transition name="slide-down" :style="{ zIndex: 9}">
-      <div class="top-slide-panel" v-show="showControlPanel && validID && customPromptsEnabled">
-          <textarea type="text" style="background-color: var(--base-color); height: 10vh; margin: 5px; resize:vertical;" title="write your own prompts here" class="input" v-model="customPrompt" placeholder="✨🧠write custom instructions here🔮✨" :disabled="!customPromptsEnabled" />
-      </div>
+        <div>
+          <div class="top-slide-panel" v-show="showControlPanel && validID && showPrompt">
+            <textarea type="text" style="background-color: var(--base-color); height: 12vh; margin: 5px; resize:vertical;" title="current system prompt" class="input" v-model="currentPrompt" placeholder="✨🧠system prompt here🔮✨" :disabled="true" />
+          </div>
+          <div class="top-slide-panel" v-show="showControlPanel && validID && customPromptsEnabled">
+            <textarea type="text" style="background-color: var(--base-color); height: 12vh; margin: 5px; resize:vertical;" title="write your own prompts here" class="input" v-model="customPrompt" placeholder="✨🧠write custom instructions here🔮✨" :disabled="!customPromptsEnabled" />
+          </div>
+        </div>
       </Transition>
     </div>
     </Transition>
@@ -160,6 +169,7 @@ export default {
 
       customPrompt: "",
       customPromptsEnabled: false,
+      showPrompt: false,
 
       user_id: "", 
       conversation_index: 0,
@@ -220,7 +230,7 @@ export default {
         "cogmate", "raw", "onramp", "collab", "grug"
       ],
 
-      prompts_id: "explore_CogModels",
+      prompts_id: "cogmate",
       system_prompts: systemPrompts,
       
       audioStarted: false,
@@ -300,7 +310,10 @@ export default {
       } else {
         return []
       }
-    }
+    },
+    currentPrompt(){
+      return this.system_prompts[this.prompts_id].join("\n\n")
+    },
   },
   mounted() {
     console.log("app mounted");
@@ -994,6 +1007,7 @@ select option {
   font-size: 12pt;
   font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   color: white;
+  min-height: 8vh;
   max-height: 300px;
   width: 50px;
   padding: 16px;
