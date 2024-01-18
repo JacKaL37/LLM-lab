@@ -10,13 +10,11 @@
           @click="showControlPanel = !showControlPanel; this.scrollCheck()" class="clear-button">
           ⚙️
         </button>
-        <div class="top-panel-right">
-          <span style="width:auto; padding:5px;">🧠userID:</span>
-          <input title="input valid user id" class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id" style="width:120px;"
-              :style="{ color: validID ? '#FF00FF' : '#FFFFFF'}" />
-        </div>
+        <span style="width:auto; padding:5px;">🧠userID:</span>
+        <input title="input valid user id" class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id" style="width:120px;"
+            :style="{ color: validID ? '#FF00FF' : '#FFFFFF'}" />
       </div>
-      <div class="top-panel-mid" style="width:150px;">
+      <div class="top-panel-left" style="width:150px;">
         <button title="previous chat" @click="prev_chat" class="clear-button" :disabled="prevDisabled">⬅️</button>
         <span style="width:4px"></span>
         <span title="current chat id" style="width:100px; background-color: var(--base-color)">{{conversation_index + 1}}/{{conversation_histories.length}}</span>
@@ -63,14 +61,14 @@
         <div class="top-panel-left">
           <span style="width:auto; padding:5px;">📃chat data:</span>
           <button title="download current conversation to text file" @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
+          <span style="width:5px;"></span>
           <button title="delete current conversation" @click="clearCurrentHistory" class="clear-button" :disabled="isSending || !validID || emptyConversation">❌</button>
           <button title="delete ALL conversation histories" @click="clearHistories" class="clear-button" :disabled="isSending || !validID">💥</button>
 
         </div>
         <div class="top-panel-left" v-show="validID">
           <span style="width:auto; padding:5px;">🌡️temp:</span>
-          <button title="reset temperature" @click="temperature = 0.7" class="clear-button">🌡️</button>
-          <span title="current temperature (0 = consistency, 1 = creativity)" style="width:auto; padding:5px;">{{parseFloat(temperature).toFixed(2)}}</span>
+          <button title="reset temperature" @click="temperature = 0.7" class="clear-button" style="width:auto; padding-inline: 8px; font-size: 12px; font-family: monospace;">{{parseFloat(temperature).toFixed(2)}}</button>
           <input title="adjust temperature (0 = consistency, 1 = creativity)"
             style="width:70px;" type="range" class="tempInput" v-model.number="temperature" 
             min="0.0" max="1.0" step="0.05" placeholder="temperature" :disabled="isSending" />
@@ -91,7 +89,7 @@
           </select>
         </div>
 
-        <div class="top-panel-right" v-show="validID">
+        <div class="top-panel-left" v-show="validID">
           <span style="width:auto; padding:5px;">🫙tipjar:</span>
           <a 
             href="https://account.venmo.com/payment-link?audience=friends&amount=5.00&note=🧠cogmate🔮sustainability🙏donation💸&recipients=%2CJohn-K-Lindstedt&txn=pay" 
@@ -859,6 +857,7 @@ height: calc(100% - 60px); /* adjust this value as needed */
   color: white;
   font-family: monospace;
   background-color: var(--foreground-color);
+  padding-inline: 10px;
 }
 
 .top-slide-panel{
