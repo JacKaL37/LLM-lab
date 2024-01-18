@@ -16,19 +16,15 @@
               :style="{ color: validID ? '#FF00FF' : '#FFFFFF'}" />
         </div>
       </div>
-      <div class="top-panel-mid">
+      <div class="top-panel-mid" style="width:150px;">
         <button title="previous chat" @click="prev_chat" class="clear-button" :disabled="prevDisabled">⬅️</button>
         <span style="width:4px"></span>
-        <span title="current chat id">{{conversation_index + 1}}/{{conversation_histories.length}}</span>
+        <span title="current chat id" style="width:100px; background-color: var(--base-color)">{{conversation_index + 1}}/{{conversation_histories.length}}</span>
+        <span style="width:4px"></span>
         <button :title="conversation_index<conversation_histories.length-1 ? 'next chat' : 'new chat'" 
           @click="next_chat" class="clear-button"  :disabled="nextDisabled">
           {{conversation_index<conversation_histories.length-1 ? "➡️" : "🆕"}}
         </button>
-        <span style="width:4px"></span>
-        <button title="download current conversation to text file" @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
-        <span style="width:4px"></span>
-        <button title="delete current conversation" @click="clearCurrentHistory" class="clear-button" :disabled="isSending || !validID || emptyConversation">❌</button>
-
       </div>
       
     </div>
@@ -66,7 +62,10 @@
         </div>
         <div class="top-panel-left">
           <span style="width:auto; padding:5px;">📃chat data:</span>
+          <button title="download current conversation to text file" @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
+          <button title="delete current conversation" @click="clearCurrentHistory" class="clear-button" :disabled="isSending || !validID || emptyConversation">❌</button>
           <button title="delete ALL conversation histories" @click="clearHistories" class="clear-button" :disabled="isSending || !validID">💥</button>
+
         </div>
         <div class="top-panel-left" v-show="validID">
           <span style="width:auto; padding:5px;">🌡️temp:</span>
