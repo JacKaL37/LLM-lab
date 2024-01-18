@@ -9,6 +9,7 @@
                 <code v-show="temp!=''">, 🌡️{{parseFloat(temp).toFixed(2)}}</code>
                 )
             </small>
+            <button class="copy-button" title="copy raw text of full message" @click="copyToClipboard($event,true,false)">📋</button>
         </div>
         <span v-html="renderMarkdown(message.content)"></span>
     </div>
@@ -48,7 +49,7 @@ md.renderer.rules.fence = (tokens, idx) => {
         content = md.utils.escapeHtml(content);
     }
 
-    const button = '<button class="copy-button" @click="copyToClipboard">📋 copy</button>';
+    const button = '<button class="copy-button" title="copy text" @click="copyToClipboard">📋</button><button class="copy-button" title = "copy text in code fence" @click="copyToClipboard($event,false,true)">`…`</button>';
 
     return `<div class="codeblock"> \
                 
@@ -105,12 +106,23 @@ export default {
         renderMarkdown(markdownString) {
             return md.render(markdownString);
         },
-        async copyToClipboard(event) {
-            const codeBlock = event.target.closest('.codeblock');
-            const code = codeBlock.querySelector('code').textContent;
+        async copyToClipboard(event, fullMessage = false, addCodeFences = false) {
+            let textToCopy; // Define textToCopy in the scope of the function.
+
+            if (fullMessage) {
+                textToCopy = this.message.content; // Assign value to textToCopy.
+            }
+            else {
+                const codeBlock = event.target.closest('.codeblock');
+                textToCopy = codeBlock.querySelector('code').textContent; // Assign value to textToCopy.
+            }
+
+            if (addCodeFences){
+                textToCopy = "```\n" + textToCopy + "\n```"; // Reassign textToCopy with code fences.
+            }
 
             try {
-                await navigator.clipboard.writeText(code);
+                await navigator.clipboard.writeText(textToCopy);
                 console.log('Copying to clipboard was successful!');
             } catch (err) {
                 console.error('Could not copy text: ', err);
@@ -207,7 +219,7 @@ export default {
     border-radius: 10px;
     border-color: #00000088;
     color: white;
-    cursor: copy;
+    cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'  width='40' height='48' viewport='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%'>📋</text></svg>") 16 0,auto; /*!emojicursor.app*/
     font-family: roboto mono, monospace;
     font-size: 10pt;
     text-align: center;
