@@ -20,11 +20,15 @@
         <button title="previous chat" @click="prev_chat" class="clear-button" :disabled="prevDisabled">⬅️</button>
         <span style="width:4px"></span>
         <span title="current chat id">{{conversation_index + 1}}/{{conversation_histories.length}}</span>
-        <span style="width:4px"></span>
         <button :title="conversation_index<conversation_histories.length-1 ? 'next chat' : 'new chat'" 
           @click="next_chat" class="clear-button"  :disabled="nextDisabled">
           {{conversation_index<conversation_histories.length-1 ? "➡️" : "🆕"}}
         </button>
+        <span style="width:4px"></span>
+        <button title="download current conversation to text file" @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
+        <span style="width:4px"></span>
+        <button title="delete current conversation" @click="clearCurrentHistory" class="clear-button" :disabled="isSending || !validID || emptyConversation">❌</button>
+
       </div>
       
     </div>
@@ -61,12 +65,8 @@
         </select>
         </div>
         <div class="top-panel-left">
-          <span style="width:auto; padding:5px;">📃conversations:</span>
-          <button title="download current conversation to text file" @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
-          <span style="width:4px"></span>
+          <span style="width:auto; padding:5px;">📃chat data:</span>
           <button title="delete ALL conversation histories" @click="clearHistories" class="clear-button" :disabled="isSending || !validID">💥</button>
-          <span style="width:4px"></span>
-          <button title="delete current conversation" @click="clearCurrentHistory" class="clear-button" :disabled="isSending || !validID || emptyConversation">❌</button>
         </div>
         <div class="top-panel-left" v-show="validID">
           <span style="width:auto; padding:5px;">🌡️temp:</span>
@@ -80,7 +80,7 @@
 
         <div class="top-panel-left" v-show="validID">
           
-          <span style="width:auto; padding:5px;">🎵Musicality:</span>
+          <span style="width:auto; padding:5px;">🎵musicality:</span>
           <button :title="playAudio ? 'mute sound' : 'unmute sound'"
             @click="toggleMute" class="clear-button">
             {{playAudio ? "🔊" : "🔇"}}
