@@ -1,15 +1,17 @@
 <template>
     <div class="message" :class="message.role">
         <div class="message-header">
-            <strong class="role">{{ message.role=="human"?"🧠":"🔮"}}</strong>
-            <small>
-                (
-                <code v-show="name!=''">{{ name }}</code>
-                <code v-show="prompt!=''">, 📑{{ prompt }}</code>
-                <code v-show="temp!=''">, 🌡️{{parseFloat(temp).toFixed(2)}}</code>
-                )
-            </small>
-            <button class="copy-button" title="copy raw text of full message" @click="copyToClipboard($event,true,false)">📋</button>
+            <div>
+                <strong class="role">{{ message.role=="human"?"🧠":"🔮"}}</strong>
+                <small>
+                    (
+                    <code v-show="name!=''">{{ name }}</code>
+                    <code v-show="prompt!=''">, 📑{{ prompt }}</code>
+                    <code v-show="temp!=''">, 🌡️{{parseFloat(temp).toFixed(2)}}</code>
+                    )
+                </small>
+            </div>
+            <button class="copy-button" style="float:right" title="copy raw text of full message" @click="copyToClipboard($event,true)">📋</button>
         </div>
         <span v-html="renderMarkdown(message.content)"></span>
     </div>
@@ -49,10 +51,7 @@ md.renderer.rules.fence = (tokens, idx) => {
         content = md.utils.escapeHtml(content);
     }
 
-    const button = `<div>
-        <button class="copy-button" title="copy text" @click="copyToClipboard">📋</button>
-        <button class="copy-button" title = "copy text in code fence" @click="(event) => copyToClipboard($event,false,true)">\`…\`</button>
-        </div>`;
+    const button = `<button class="copy-button" title="copy codeblock contents">📋</button>`;
 
     return `<div class="codeblock"> \
                 
@@ -76,17 +75,10 @@ md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
 
 export default {
     mounted() {
-        this.$el.querySelectorAll('.copy-button').forEach((button) => {
-            button.addEventListener('click', (event) => {
-                const codeBlock = event.target.closest('.codeblock');
-                const code = codeBlock.querySelector('code').textContent;
-                try {
-                    navigator.clipboard.writeText(code);
-                } catch (err) {
-                    this.unsecuredCopyToClipboard(code);
-                }
-            });
-        });
+        this.attachCopyEventListeners();
+    },
+    beforeUnmount() {
+        this.removeCopyEventListeners
     },
     props: {
         message: {
@@ -109,8 +101,20 @@ export default {
         renderMarkdown(markdownString) {
             return md.render(markdownString);
         },
-        async copyToClipboard(event, fullMessage = false, addCodeFences = false) {
-            console.log(event, fullMessage, addCodeFences)
+        attachCopyEventListeners() {
+            const codeBlockCopyButtons = this.$el.querySelectorAll('.codeblock .copy-button');
+            codeBlockCopyButtons.forEach(button => {
+                button.addEventListener('click', this.copyToClipboard);
+            });
+        },
+        removeCopyEventListeners() {
+            const codeBlockCopyButtons = this.$el.querySelectorAll('.codeblock .copy-button');
+            codeBlockCopyButtons.forEach(button => {
+                button.removeEventListener('click', this.copyToClipboard);
+            });
+        },
+        async copyToClipboard(event, fullMessage = false) {
+            //console.log(event, fullMessage)
             let textToCopy; // Define textToCopy in the scope of the function.
 
             if (fullMessage) {
@@ -121,11 +125,6 @@ export default {
                 let codeBlock = event.target.closest('.codeblock');
                 textToCopy = codeBlock.querySelector('code').textContent; // Assign value to textToCopy.
                 console.log("copying code block")
-            }
-
-            if (addCodeFences){
-                textToCopy = "```\n" + textToCopy + "\n```"; // Reassign textToCopy with code fences.
-                console.log("adding code fences")
             }
 
             try {
@@ -204,8 +203,10 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     background-color: #181818;
     border-radius: 10px 10px 0 0;
+    padding-bottom: 3px;
 }
 
 :deep(.codelabel) {
@@ -231,12 +232,16 @@ export default {
     font-size: 10pt;
     text-align: center;
     padding: 5px;
+    align-self: flex-end;
 }
 
-message-header {
+.message-header {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    height: 30px;
+    padding: 5px;
+    margin-bottom: 10px;
 }
 
 :deep(.codebody) {
