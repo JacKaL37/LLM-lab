@@ -105,28 +105,16 @@ export default {
         renderMarkdown(markdownString) {
             return md.render(markdownString);
         },
-        copyToClipboard(event) {
+        async copyToClipboard(event) {
             const codeBlock = event.target.closest('.codeblock');
             const code = codeBlock.querySelector('code').textContent;
+
             try {
-                navigator.clipboard.writeText(code);
+                await navigator.clipboard.writeText(code);
+                console.log('Copying to clipboard was successful!');
             } catch (err) {
-                this.unsecuredCopyToClipboard(code);
+                console.error('Could not copy text: ', err);
             }
-        },
-        //PROMISE: this is temporary until SSL certificates become viable for the project
-        unsecuredCopyToClipboard(text) {
-            const falseClipboard = document.createElement("textarea");
-            falseClipboard.value = text;
-            document.body.appendChild(falseClipboard);
-            falseClipboard.focus({ preventScroll: true });
-            falseClipboard.select();
-            try {
-                document.execCommand('copy');
-            } catch (err) {
-                console.error('Unable to copy to clipboard', err);
-            }
-            document.body.removeChild(falseClipboard);
         }
     }
 };
