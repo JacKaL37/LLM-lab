@@ -49,7 +49,7 @@ md.renderer.rules.fence = (tokens, idx) => {
         content = md.utils.escapeHtml(content);
     }
 
-    const button = '<button class="copy-button" title="copy text" @click="copyToClipboard">📋</button><button class="copy-button" title = "copy text in code fence" @click="copyToClipboard($event,false,true)">`…`</button>';
+    const button = '<div><button class="copy-button" title="copy text" @click="copyToClipboard">📋</button><button class="copy-button" title = "copy text in code fence" @click="(event) => copyToClipboard(event,false,true)">`…`</button></div>';
 
     return `<div class="codeblock"> \
                 
