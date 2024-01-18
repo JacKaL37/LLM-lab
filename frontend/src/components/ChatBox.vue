@@ -345,7 +345,7 @@ export default {
     });
     // Setup Musicality
 
-    this.setupMusicality("Blues Scale");
+    this.setupMusicality("Pentatonic");
     console.log("musicality established")
 
     // Setup Audio
