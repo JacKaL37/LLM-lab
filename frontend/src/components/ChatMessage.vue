@@ -49,7 +49,10 @@ md.renderer.rules.fence = (tokens, idx) => {
         content = md.utils.escapeHtml(content);
     }
 
-    const button = '<div><button class="copy-button" title="copy text" @click="copyToClipboard">📋</button><button class="copy-button" title = "copy text in code fence" @click="(event) => copyToClipboard(event,false,true)">`…`</button></div>';
+    const button = `<div>
+        <button class="copy-button" title="copy text" @click="copyToClipboard">📋</button>
+        <button class="copy-button" title = "copy text in code fence" @click="(event) => copyToClipboard($event,false,true)">\`…\`</button>
+        </div>`;
 
     return `<div class="codeblock"> \
                 
@@ -107,18 +110,22 @@ export default {
             return md.render(markdownString);
         },
         async copyToClipboard(event, fullMessage = false, addCodeFences = false) {
+            console.log(event, fullMessage, addCodeFences)
             let textToCopy; // Define textToCopy in the scope of the function.
 
             if (fullMessage) {
                 textToCopy = this.message.content; // Assign value to textToCopy.
+                console.log("copying full message")
             }
             else {
-                const codeBlock = event.target.closest('.codeblock');
+                let codeBlock = event.target.closest('.codeblock');
                 textToCopy = codeBlock.querySelector('code').textContent; // Assign value to textToCopy.
+                console.log("copying code block")
             }
 
             if (addCodeFences){
                 textToCopy = "```\n" + textToCopy + "\n```"; // Reassign textToCopy with code fences.
+                console.log("adding code fences")
             }
 
             try {
