@@ -8,12 +8,13 @@
       <div class="top-panel-left">
         <button :title="showControlPanel ? 'hide panel':'show panel'" 
           @click="showControlPanel = !showControlPanel; this.scrollCheck()" class="clear-button">
-          {{showControlPanel ? "🔼" : "🔽"}}
+          ⚙️
         </button>
-        <button :title="playAudio ? 'mute sound' : 'unmute sound'"
-            @click="toggleMute" class="clear-button">
-            {{playAudio ? "🔊" : "🔇"}}
-          </button>
+        <div class="top-panel-right">
+          <span style="width:auto; padding:5px;">🧠userID:</span>
+          <input title="input valid user id" class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id" style="width:120px;"
+              :style="{ color: validID ? '#FF00FF' : '#FFFFFF'}" />
+        </div>
       </div>
       <div class="top-panel-mid">
         <button title="previous chat" @click="prev_chat" class="clear-button" :disabled="prevDisabled">⬅️</button>
@@ -24,18 +25,8 @@
           @click="next_chat" class="clear-button"  :disabled="nextDisabled">
           {{conversation_index<conversation_histories.length-1 ? "➡️" : "🆕"}}
         </button>
-        
-
-          
-          
       </div>
-      <div class="top-panel-right">
-          <button title="download current conversation to text file" @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
-          <span style="width:4px"></span>
-          <button title="delete ALL conversation histories" @click="clearHistories" class="clear-button" :disabled="isSending || !validID">💥</button>
-          <span style="width:4px"></span>
-          <button title="delete current conversation" @click="clearCurrentHistory" class="clear-button" :disabled="isSending || !validID || emptyConversation">❌</button>
-        </div>
+      
     </div>
 
     <Transition name="slide-down" :style="{ zIndex: 9}">
@@ -43,7 +34,7 @@
       <div class="top-slide-panel" v-show="showControlPanel" :style="{ zIndex: 10 }">
         <div class="top-panel-left" v-show="isDevID || isFriendID">
           <span style="width:auto; padding:5px;">🔮model:</span>
-          <select class="modelInput" title="select a model" v-model="model" >
+          <select class="modelInput" title="select a model" v-model="model" style="width:120px;">
           <optgroup label="GPT-4">
             <option v-for="key in modelOptions4" :key="key" :value="key">
               {{ key }}
@@ -63,26 +54,44 @@
         </div>
         <div class="top-panel-left" v-show="validID">
           <span style="width:auto; padding:5px;">📑prompts:</span>
-          <select class="promptInput" title="select a conversation prompt set" v-model="prompts_id" v-if="validID">
+          <select class="promptInput" title="select a conversation prompt set" v-model="prompts_id" v-if="validID" style="width:150px;">
           <option class="promptInput" v-for="key in promptOptions" :key="key" :value="key">
             {{ key }}
           </option>
         </select>
         </div>
         <div class="top-panel-left">
-          <span style="width:auto; padding:5px;">🧠userID:</span>
-          <input title="input valid user id" class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id"
-              :style="{ color: validID ? '#FF00FF' : '#FFFFFF'}" />
+          <span style="width:auto; padding:5px;">📃conversations:</span>
+          <button title="download current conversation to text file" @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
+          <span style="width:4px"></span>
+          <button title="delete ALL conversation histories" @click="clearHistories" class="clear-button" :disabled="isSending || !validID">💥</button>
+          <span style="width:4px"></span>
+          <button title="delete current conversation" @click="clearCurrentHistory" class="clear-button" :disabled="isSending || !validID || emptyConversation">❌</button>
         </div>
         <div class="top-panel-left" v-show="validID">
           <span style="width:auto; padding:5px;">🌡️temp:</span>
+          <button title="reset temperature" @click="temperature = 0.7" class="clear-button">🌡️</button>
           <span title="current temperature (0 = consistency, 1 = creativity)" style="width:auto; padding:5px;">{{parseFloat(temperature).toFixed(2)}}</span>
           <input title="adjust temperature (0 = consistency, 1 = creativity)"
             style="width:70px;" type="range" class="tempInput" v-model.number="temperature" 
             min="0.0" max="1.0" step="0.05" placeholder="temperature" :disabled="isSending" />
             
-          <button title="reset temperature" @click="temperature = 0.7" class="clear-button">🌡️</button>
         </div>
+
+        <div class="top-panel-left" v-show="validID">
+          
+          <span style="width:auto; padding:5px;">🎵Musicality:</span>
+          <button :title="playAudio ? 'mute sound' : 'unmute sound'"
+            @click="toggleMute" class="clear-button">
+            {{playAudio ? "🔊" : "🔇"}}
+          </button>
+          <select title="Select Musicality" v-model="musicality" style="color:white; width:140px;">
+            <option v-for="option in Object.keys(scalePatterns)" :key="option" :value="option">
+              {{ option }}
+            </option>
+          </select>
+        </div>
+
         <div class="top-panel-right" v-show="validID">
           <span style="width:auto; padding:5px;">🫙tipjar:</span>
           <a 
@@ -91,6 +100,9 @@
             <button title="if you ever wanna kick me a fiver to help cover token costs" class="clear-button" style="text-decoration:none">💸</button>
           </a>
         </div>
+
+        
+
         <div class="top-panel-left" style="width:100%;" v-show="validID">
           <span style="width:100%; padding: 5px">🔬show prompt: 
             <input type="checkbox" id="showPrompt" v-model="showPrompt" />
@@ -174,6 +186,32 @@ export default {
       user_id: "", 
       conversation_index: 0,
       use_case: ["COG366", "M01"],
+
+      musicality: "Blues Scale",
+      scalePatterns: {
+        "Flat Tone": [1, 1, 1, 1, 1],
+        "Pentatonic": [1, 9 / 8, 5 / 4, 3 / 2, 5 / 3],
+        "Blues Scale": [1, 6 / 5, 4 / 3, 7 / 5, 3 / 2, 8 / 5],
+        "Minor Pentatonic": [1, 6 / 5, 4 / 3, 3 / 2, 8 / 5],
+        "Major Scale": [1, 9 / 8, 5 / 4, 4 / 3, 3 / 2, 5 / 3, 15 / 8],
+        "Minor Scale": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5],
+        "Whole Tone": [1, 9 / 8, 5 / 4, 45 / 32, 3 / 2, 8 / 5],
+
+        "Dorian Mode": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5],
+        "Mixolydian Mode": [1, 9 / 8, 5 / 4, 4 / 3, 3 / 2, 5 / 3, 16 / 9],
+        "Lydian Mode": [1, 9 / 8, 5 / 4, 45 / 32, 3 / 2, 5 / 3, 15 / 8],
+        "Phrygian Mode": [1, 16 / 15, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5],
+
+        "Locrian Mode": [1, 16 / 15, 6 / 5, 64 / 45, 8 / 5, 16 / 9, 32 / 15],
+        "Maqam Bayati": [1, 3 / 4, 3 / 2, 2, 3, 4],
+        "Maqam Hijaz": [1, 5 / 4, 3 / 2, 7 / 4, 2],
+        "Maqam Rast": [1, 9 / 8, 5 / 4, 4 / 3, 3 / 2, 5 / 3, 7 / 2, 2],
+        "Maqam Sikah": [1, 3 / 2, 2, 3, 4],
+        "Octotonic Scale": [1, 9 / 8, 6 / 5, 3 / 2, 8 / 5, 5 / 3, 7 / 4, 15 / 8],
+        "Harmonic Minor Scale": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 15 / 8],
+        "Melodic Minor Scale (Asc)": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 5 / 3, 15 / 8],
+        "Melodic Minor Scale (Desc)": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5]
+      },
       
       studentIDs:[
         //"805892463","805732331","806026611","805506406",
@@ -345,7 +383,8 @@ export default {
     });
     // Setup Musicality
 
-    this.setupMusicality("Pentatonic");
+    this.musicality = JSON.parse(localStorage.getItem('musicality')) || "Blues Scale";
+    this.setupMusicality(this.musicality);
     console.log("musicality established")
 
     // Setup Audio
@@ -370,6 +409,10 @@ export default {
     },
     model: function (newModel) {
       localStorage.setItem('model', JSON.stringify(newModel));
+    },
+    musicality: function (newMusicality) {
+      localStorage.setItem('musicality', JSON.stringify(newMusicality));
+      this.setupMusicality(newMusicality);
     },
   },
   methods: {
@@ -655,37 +698,13 @@ export default {
       ///  this.playTickSound();
       ///} 
     },
-    setupMusicality(patternName) {
-      this.scalePatterns = {
-        "Constant": [1],
-        "Pentatonic": [1, 9 / 8, 5 / 4, 3 / 2, 5 / 3],
-        "Blues Scale": [1, 6 / 5, 4 / 3, 7 / 5, 3 / 2, 8 / 5],
-        "Minor Pentatonic": [1, 6 / 5, 4 / 3, 3 / 2, 8 / 5],
-        "Major Scale": [1, 9 / 8, 5 / 4, 4 / 3, 3 / 2, 5 / 3, 15 / 8],
-        "Minor Scale": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5],
-        "Whole Tone": [1, 9 / 8, 5 / 4, 45 / 32, 3 / 2, 8 / 5],
-
-        "Dorian Mode": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5],
-        "Mixolydian Mode": [1, 9 / 8, 5 / 4, 4 / 3, 3 / 2, 5 / 3, 16 / 9],
-        "Lydian Mode": [1, 9 / 8, 5 / 4, 45 / 32, 3 / 2, 5 / 3, 15 / 8],
-        "Phrygian Mode": [1, 16 / 15, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5],
-
-        "Locrian Mode": [1, 16 / 15, 6 / 5, 64 / 45, 8 / 5, 16 / 9, 32 / 15],
-        "Maqam Bayati": [1, 3 / 4, 3 / 2, 2, 3, 4],
-        "Maqam Hijaz": [1, 5 / 4, 3 / 2, 7 / 4, 2],
-        "Maqam Rast": [1, 9 / 8, 5 / 4, 4 / 3, 3 / 2, 5 / 3, 7 / 2, 2],
-        "Maqam Sikah": [1, 3 / 2, 2, 3, 4],
-        "Octotonic Scale": [1, 9 / 8, 6 / 5, 3 / 2, 8 / 5, 5 / 3, 7 / 4, 15 / 8],
-        "Harmonic Minor Scale": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 15 / 8],
-        "Melodic Minor Scale (Asc)": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 5 / 3, 15 / 8],
-        "Melodic Minor Scale (Desc)": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5]
-      }
+    setupMusicality() {
 
       this.baseNote = 440 //A4
 
       this.notesInScale = 6
 
-      this.scaleNotes = this.generateScale(this.notesInScale, this.baseNote, this.scalePatterns[patternName]);
+      this.scaleNotes = this.generateScale(this.notesInScale, this.baseNote, this.scalePatterns[this.musicality]);
       //console.log(this.scaleNotes)
 
       this.currentNotePointer = 0;
