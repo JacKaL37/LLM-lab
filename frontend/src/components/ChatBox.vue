@@ -243,7 +243,7 @@ export default {
         "ezwuh","maikam","gonotquietly","ROSIEonFIRE",
         "disobedientlib","titotequila","ninjateq","maveeah",
         "DustyJBoludos","brandon.ck","aehsoitgoes","amethystia",
-        "snoelle","TinkaMaru","withwirth","solidagorae"
+        "snoelle","TinkaMaru","withwirth","solidagorae","tfisch"
       ],
 
       friendPrompts:[
