@@ -1,5 +1,5 @@
 <template>
-    <div class="message" :class="message.role">
+    <div ref="message" class="message" :class="message.role" @click="handleClick">
         <div class="message-header">
             <div>
                 <strong class="role">{{ message.role=="human"?"🧠":"🔮"}}</strong>
@@ -11,7 +11,7 @@
                     )
                 </small>
             </div>
-            <button class="copy-button" style="float:right" title="copy raw text of full message" @click="copyToClipboard($event,true)">📋</button>
+            <button class="copy-button-full" style="float:right" title="copy raw text of full message">📋</button>
         </div>
         <span v-html="renderMarkdown(message.content)"></span>
     </div>
@@ -19,6 +19,7 @@
   
 <script>
 import MarkdownIt from 'markdown-it';
+
 import hljs from 'highlight.js';
 
 const md = new MarkdownIt({
@@ -75,10 +76,10 @@ md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
 
 export default {
     mounted() {
-        this.attachCopyEventListeners();
+        //this.attachCopyEventListeners();
     },
     beforeUnmount() {
-        this.removeCopyEventListeners
+        //this.removeCopyEventListeners
     },
     props: {
         message: {
@@ -101,35 +102,50 @@ export default {
         renderMarkdown(markdownString) {
             return md.render(markdownString);
         },
-        attachCopyEventListeners() {
-            const codeBlockCopyButtons = this.$el.querySelectorAll('.codeblock .copy-button');
-            codeBlockCopyButtons.forEach(button => {
-                button.addEventListener('click', this.copyToClipboard);
-            });
-        },
-        removeCopyEventListeners() {
-            const codeBlockCopyButtons = this.$el.querySelectorAll('.codeblock .copy-button');
-            codeBlockCopyButtons.forEach(button => {
-                button.removeEventListener('click', this.copyToClipboard);
-            });
+        //attachCopyEventListeners() {
+        //    const codeBlockCopyButtons = this.$el.querySelectorAll('.codeblock .copy-button');
+        //    codeBlockCopyButtons.forEach(button => {
+        //        button.addEventListener('click', this.copyToClipboard);
+        //    });
+        //},
+        // removeCopyEventListeners() {
+        //     const codeBlockCopyButtons = this.$el.querySelectorAll('.codeblock .copy-button');
+        //     codeBlockCopyButtons.forEach(button => {
+        //         button.removeEventListener('click', this.copyToClipboard);
+        //     });
+        // },
+        handleClick(event) {
+            if(event.target.matches('.copy-button-full')) {
+                this.copyToClipboard(event, true);
+            } else if(event.target.matches('.copy-button')) {
+                this.copyToClipboard(event, false);
+            }
         },
         async copyToClipboard(event, fullMessage = false) {
             //console.log(event, fullMessage)
             let textToCopy; // Define textToCopy in the scope of the function.
+            let button = event.target;
+            let originalInnerHTML = button.innerHTML;
 
             if (fullMessage) {
                 textToCopy = this.message.content; // Assign value to textToCopy.
-                console.log("copying full message")
+                //console.log("copying full message")
             }
             else {
                 let codeBlock = event.target.closest('.codeblock');
                 textToCopy = codeBlock.querySelector('code').textContent; // Assign value to textToCopy.
-                console.log("copying code block")
+                //console.log("copying code block")
             }
 
             try {
                 await navigator.clipboard.writeText(textToCopy);
-                console.log('Copying to clipboard was successful!');
+                //console.log('Copying to clipboard was successful!');
+
+                button.innerHTML = "☑️";
+                setTimeout(() => {
+                    button.innerHTML = originalInnerHTML;
+                }, 1000);
+                
             } catch (err) {
                 console.error('Could not copy text: ', err);
             }
@@ -223,13 +239,29 @@ export default {
     display: flex;
     padding: 5px;
     background: none;
-    border-width: 1px;
+    border-width: 2px;
     border-radius: 10px;
-    border-color: #00000088;
+    border-color: #6d2fff;
     color: white;
     cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'  width='40' height='48' viewport='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%'>📋</text></svg>") 16 0,auto; /*!emojicursor.app*/
     font-family: roboto mono, monospace;
     font-size: 10pt;
+    text-align: center;
+    padding: 5px;
+    align-self: flex-end;
+}
+
+:deep(.copy-button-full) {
+    display: flex;
+    padding: 5px;
+    background: none;
+    border-width: 2px;
+    border-radius: 10px;
+    border-color: #6d2fff;
+    color: white;
+    cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'  width='40' height='48' viewport='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%'>📋</text></svg>") 16 0,auto; /*!emojicursor.app*/
+    font-family: roboto mono, monospace;
+    font-size: 16pt;
     text-align: center;
     padding: 5px;
     align-self: flex-end;

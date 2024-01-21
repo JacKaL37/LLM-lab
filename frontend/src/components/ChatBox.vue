@@ -369,11 +369,12 @@ export default {
     this.user_id = JSON.parse(localStorage.getItem('user_id')) || '';
     this.playAudio = JSON.parse(localStorage.getItem('playAudio')) || false;
     this.customPrompt = JSON.parse(localStorage.getItem('customPrompt')) || '';
+    this.showControlPanel = JSON.parse(localStorage.getItem('showControlPanel')) || false;
     //this.model = JSON.parse(localStorage.getItem('model')) || 'gpt-4-1106-preview';
 
     // sanity checks using min and max
     this.conversation_index = Math.max(0, Math.min(this.conversation_index, this.conversation_histories.length - 1));
-
+ 
     this.$nextTick(() => {
       const chatHistory = this.$refs.chathistory;
       chatHistory.scrollTop = chatHistory.scrollHeight;
@@ -410,6 +411,9 @@ export default {
     musicality: function (newMusicality) {
       localStorage.setItem('musicality', JSON.stringify(newMusicality));
       this.setupMusicality(newMusicality);
+    },
+    showControlPanel: function(newShowControlPanel){
+      localStorage.setItem('showControlPanel', JSON.stringify(newShowControlPanel));
     },
   },
   methods: {
@@ -871,10 +875,11 @@ height: calc(100% - 60px); /* adjust this value as needed */
   position: relative;
 }
 
-.top-panel input, .top-panel select, .top-slide-panel input, .top-slide-panel select{
+.top-panel input, .top-panel select, .top-slide-panel input, .top-slide-panel select, .top-panel-left input, .top-panel-left seleect{
   background-color: var(--base-color);
-  border: none;
-  border-radius: 20px;
+  border-width: 2px;
+  border-color: #6d2fff;
+  border-radius: 10px;
   text-align: center;
   height: 80%;
   font-size: 16px;
@@ -885,8 +890,7 @@ height: calc(100% - 60px); /* adjust this value as needed */
   font-size: 16px;
   font-family: monospace;
   font-weight: bold;
-  border: none;
-  border-radius: 20px;
+  border-radius: 10px;
   text-align: center;
   height: 80%;
 }
@@ -933,7 +937,7 @@ select option {
 .top-panel button, .top-panel span, .top-slide-panel button, .top-slide-panel span{
   width: 32px; /* adjust as needed */
   height: 32px; /* adjust as needed */
-  border-radius: 20%; /* this makes it round */
+  border-radius: 10px; /* this makes it round */
   padding: 0; /* removes extra padding */
   display: flex; /* centers the emoji */
   align-items: center; /* centers the emoji */
@@ -946,8 +950,11 @@ select option {
 }
 
 .top-panel button, .top-slide-panel button, .send-button{
-  background: var(--button-color);
+  /* background: var(--button-color); */
+  background: none;
+  border-color: #6d2fff;
   border-radius: 10px;
+  border-width: 2px;
 }
 
 .top-panel button:active, .top-slide-panel button:active, .send-button:active{
@@ -1021,6 +1028,8 @@ select option {
   overflow: auto;
   background-color: var(--foreground-color);
   border-radius: 20px;
+  /* border-width: 2px;
+  border-color: #6d2fff; */
   font-size: 12pt;
   font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   color: white;
@@ -1032,7 +1041,7 @@ select option {
 
 
 .clear-button{
-  border: none;
+  /* border: none; */
   color: white;
   background-color: var(--foreground-color);
 }
@@ -1042,8 +1051,9 @@ select option {
   justify-content: center;
   align-items: center;
   align-self: stretch;
-  width: 70px;
-  border: none;
+  width: 100px;
+  border-width: 2px;
+  border-color: #6d2fff;
   color: white;
   cursor: pointer;
   font-size: 30px;
