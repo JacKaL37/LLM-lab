@@ -10,15 +10,13 @@
           @click="showControlPanel = !showControlPanel; this.scrollCheck()" class="clear-button">
           ⚙️
         </button>
-        <span style="width:auto; padding:5px;">🧠userID:</span>
-        <input title="input valid user id" class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id" style="width:120px;"
+        <span style="width:auto;">🧠userID:</span>
+        <input title="input valid user id" class="idInput" v-model="user_id" placeholder="user id" @input="storeID" :disabled="isSending" label="id" style="max-width:120px; min-width: 50px;"
             :style="{ color: validID ? '#FF00FF' : '#FFFFFF'}" />
       </div>
-      <div class="top-panel-left" style="width:150px;">
+      <div class="top-panel-left" style="max-width:150px;">
         <button title="previous chat" @click="prev_chat" class="clear-button" :disabled="prevDisabled">⬅️</button>
-        <span style="width:4px"></span>
-        <span title="current chat id" style="width:100px; background-color: var(--base-color)">{{conversation_index + 1}}/{{conversation_histories.length}}</span>
-        <span style="width:4px"></span>
+        <span title="current chat id" style="max-width:100px; min-width:40px; background-color: var(--base-color)">{{conversation_index + 1}}/{{conversation_histories.length}}</span>
         <button :title="conversation_index<conversation_histories.length-1 ? 'next chat' : 'new chat'" 
           @click="next_chat" class="clear-button"  :disabled="nextDisabled">
           {{conversation_index<conversation_histories.length-1 ? "➡️" : "🆕"}}
@@ -861,7 +859,7 @@ height: calc(100% - 60px); /* adjust this value as needed */
   color: white;
   font-family: monospace;
   background-color: var(--foreground-color);
-  padding-inline: 10px;
+  padding-inline: 5px;
 }
 
 .top-slide-panel{
