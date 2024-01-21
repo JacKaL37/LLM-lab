@@ -100,11 +100,11 @@
 
         <div class="top-panel-left" style="width:100%;" v-show="validID">
           <span style="width:100%; padding: 5px">🔬show prompt: 
-            <input type="checkbox" id="showPrompt" v-model="showPrompt" />
+            <input type="checkbox" id="showPrompt" v-model="showPrompt" @click="this.scrollCheck()"/>
           </span>
 
           <span style="width:100%; padding: 5px;">🧰custom prompts: 
-            <input type="checkbox" id="customPromptsEnabled" v-model="customPromptsEnabled" />
+            <input type="checkbox" id="customPromptsEnabled" v-model="customPromptsEnabled"  @click="this.scrollCheck()"/>
           </span>
         </div>
       </div>
@@ -831,7 +831,7 @@ export default {
   align-items: stretch;
   justify-content: center;
   width: 100vw;
-  max-width: 1400px;
+  max-width: 960px;
   margin: 0 auto;
   height: 100vh;
   max-height: 100vh;

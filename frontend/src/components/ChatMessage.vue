@@ -159,6 +159,7 @@ export default {
     display: flex;
     flex-direction: column;
     width: 85%;
+    max-width: 600px;
     padding: 10px;
     margin-bottom: 10px;
     border: 2px solid;
