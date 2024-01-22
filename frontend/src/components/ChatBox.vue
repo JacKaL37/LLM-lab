@@ -241,7 +241,8 @@ export default {
         "ezwuh","maikam","gonotquietly","ROSIEonFIRE",
         "disobedientlib","titotequila","ninjateq","maveeah",
         "DustyJBoludos","brandon.ck","aehsoitgoes","amethystia",
-        "snoelle","TinkaMaru","withwirth","solidagorae","colonelpanic"
+        "snoelle","TinkaMaru","withwirth","solidagorae","colonelpanic",
+        "versine",
       ],
 
       friendPrompts:[
@@ -256,7 +257,7 @@ export default {
         //"COG411-P", "COG411-Q", "COG411-R", "COG411-S", "COG411-T",
         //"COG411-U", "COG411-V", "COG411-W", "COG411-X", "COG411-Y",
         //"COG411-Z", 
-        "agreenbe"
+        "guest999999"
       ],
 
       guestPrompts: [
