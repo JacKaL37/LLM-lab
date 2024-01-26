@@ -160,10 +160,10 @@ export default {
       isSending: false,
       conversation_histories: [[]],
       
-      modelOptionsPre: ["gpt-4-1106-preview","gpt-3.5-turbo-1106",],
+      modelOptionsPre: ["gpt-4-0125-preview","gpt-4-1106-preview","gpt-3.5-turbo-1106",],
       modelOptions3: ["gpt-3.5-turbo","gpt-3.5-turbo-16k","gpt-3.5-turbo-instruct"],
-      modelOptions4: ["gpt-4","gpt-4-32k"],
-      model: "gpt-4-1106-preview",
+      modelOptions4: ["gpt-4-turbo-preview","gpt-4","gpt-4-32k"],
+      model: "gpt-4-turbo-preview",
       temperature: 0.7,
 
       currentAIresponse: { role: "ai", content: "", name: this.model, temp: this.temperature, prompt: this.prompts_id},
