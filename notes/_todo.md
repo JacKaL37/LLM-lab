@@ -7,6 +7,12 @@ PROMPTING:
 MVPrompt:
 - base prompt in the file
   - https://rollforshoes.com/ 
+  - 1. Say what you do and roll a number of D6s, determined by the level of relevant skill you have.
+  - 2. If the sum of your roll is higher than the opposing roll, the thing you wanted to happen, happens.
+  - 3. At start, you have only one skill: `Do Anything 1`.
+  - 4. If you roll all sixes, you get a new skill specific to the action, one level higher than the one you used.
+  - 5. For every roll you fail, you get 1 XP.
+  - 6. XP can be used to change a die into a 6 for advancement purposes only.
 - state fence/table:
   - current xp
   - current skill list
@@ -16,21 +22,26 @@ MVPrompt:
   - can push back on users, but give sound reasoning, and aim for a "no, but"
   - when doing the opposing roll, justify the LEVEL of the opposing roll, and sum the appropriate number of the rolls sent.
     - https://rpg.stackexchange.com/questions/61949/how-many-dice-does-the-gm-roll-when-challenging-the-players 
+    - no roll: trivial tasks
+    - 1d6: ordinary tasks
+    - 2d6: challenging tasks
+    - 3d6: heroic tasks
+    - 4d6: nearly impossible tasks
 - values: 
   - fun, funny, absurdism, rule of cool
   - surrealism and existentialism (when earned)
 - formatting: once the roleplay begins, bot should denote types of text using markdown: 
   - out of character (ooc): *italics*, always in separate paragraphs
   - narration: plaintext
+    - skills in narration: `skill name #`
   - dialogue, including speaker name and a face emoji to denote their mood for each spoken line: 
     - > `Name` 
     - > `😵"thing they said"`
     - > `😡"more of what they said, if the mood changed before they were done"`
-
-  - sensory descriptions, with non-face emoji if they contribute:
+  - sensory descriptions, line by line, short and poetic, with non-face emoji if they contribute:
     - > `🪨the description of the sensory experience of the scene`
   - the user may deviate from these conventions, or approximate them, be cool. 
-- user may send a table of 6 player and 6 opposed rolls, use them or ignore them as necessary. 
+- user may send a table of 6 player and 6 opposed rolls, use them or ignore them as appropriate. 
 
 - add to cogmate: simple button to tack on a table of d6 rolls to the prompt before sending
   - 6d6 player rolls (left to right priority)
@@ -47,6 +58,7 @@ MVPrompt:
   - scenario table names: npc nouns, npc forms, narrative twists, dangers, etc., and denote the results 
 - fudged opposing rolls: report the number to beat with a quick reason along with the description of the outcome, like "because the dance you're trying to pull off is incredible, you had to beat a 19". 
   - alternatively, it can just justify the LEVEL CATEGORY of the opposing roll, and use the rolls sent. 
+- idea of "world" as an npc with its own skills to track that can be applied anywhere.
 
 --
 

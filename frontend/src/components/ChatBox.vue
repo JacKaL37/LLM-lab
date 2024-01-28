@@ -242,7 +242,7 @@ export default {
         "disobedientlib","titotequila","ninjateq","maveeah",
         "DustyJBoludos","brandon.ck","aehsoitgoes","amethystia",
         "snoelle","TinkaMaru","withwirth","solidagorae","colonelpanic",
-        "versine",
+        "versine","catiedn"
       ],
 
       friendPrompts:[
