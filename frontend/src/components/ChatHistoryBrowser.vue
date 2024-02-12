@@ -2,12 +2,14 @@
     <div class="chat-history-browser">
         <div class="exit-button" @click="$emit('closeChatBrowser')">❎</div>
         <div style="height:20px;"></div>
-        <div class="conv-button" v-for="(conversation, index) in conversations" :key="index" @click="selectConversation(index)">
-            <span class="preview-message" style="font-size: 12pt;">#{{ index }}</span>
-            <br/>
-            <span class="preview-message" v-if="conversation.length > 0">🧠:{{ conversation[0].content.slice(0, 50)|| "" }}</span>
-            <br/>
-            <span class="preview-message" v-if="conversation.length > 1">🔮:{{ conversation[1].content.slice(0, 50)|| "" }}</span>
+        <div class="reversed-list">
+            <div class="conv-button" v-for="(conversation, index) in conversations" :key="index" @click="selectConversation(index)">
+                <span class="preview-message" style="font-size: 12pt;">#{{ index }}</span>
+                <br/>
+                <span class="preview-message" v-if="conversation.length > 0">🧠:{{ conversation[0].content.slice(0, 50)|| "" }}</span>
+                <br/>
+                <span class="preview-message" v-if="conversation.length > 1">🔮:{{ conversation[1].content.slice(0, 50)|| "" }}</span>
+            </div>
         </div>
     </div>
 </template>
@@ -46,6 +48,7 @@ export default {
 }
 
 .conv-button {
+  display: flex;
   cursor: pointer;
   margin-bottom: 1rem;
   background-color: black;
@@ -62,6 +65,11 @@ export default {
   font-family: monospace;
 }
 
+.reversed-list {
+  display: flex;
+  flex-direction: column-reverse; /* Magic happens here */
+  /* Additional styling as needed */
+}
 
 .exit-button {
     display: flex; 
