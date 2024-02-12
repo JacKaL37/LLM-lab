@@ -5,14 +5,13 @@
         <div class="reversed-list">
             <div class="conv-button" v-for="(conversation, index) in conversations" :key="index" @click="selectConversation(index)">
                 <span class="preview-message" style="font-size: 12pt;">#{{ index + 1 }}</span>
-                <br/>
-                <span class="preview-message" v-if="conversation.length > 0">🧠:{{ conversation[0].content.slice(0, 50)|| "" }}</span>
-                <br/>
-                <span class="preview-message" v-if="conversation.length > 1">🔮:{{ conversation[1].content.slice(0, 50)|| "" }}</span>
-                <br/>
-                <span class="preview-message" v-if="conversation.length > 2">🧠:{{ conversation[2].content.slice(0, 50)|| "" }}</span>
-                <br/>
-                <span class="preview-message" v-if="conversation.length > 3">🔮:{{ conversation[3].content.slice(0, 50)|| "" }}</span>
+                <span class="preview-message" v-if="conversation.length > 0"> {{conversation[0].role=="human"?"🧠":"🔮" }}:{{ conversation[0].content || "" }}</span>
+                <span class="preview-message" v-if="conversation.length > 1"> {{conversation[1].role=="human"?"🧠":"🔮" }}:{{ conversation[1].content || "" }}</span>
+                <span class="preview-message" v-if="conversation.length > 2 && conversation.length < 5"> {{conversation[2].role=="human"?"🧠":"🔮" }}:{{ conversation[2].content || "" }}</span>
+                <span class="preview-message" v-if="conversation.length > 3 && conversation.length < 5"> {{conversation[3].role=="human"?"🧠":"🔮" }}:{{ conversation[3].content || "" }}</span>
+                <span class="preview-message" v-if="conversation.length > 4"> … </span>
+                <span class="preview-message" v-if="conversation.length > 4"> {{conversation[conversation.length-2].role=="human"?"🧠":"🔮" }}:{{ conversation[conversation.length-2].content || "" }}</span>
+                <span class="preview-message" v-if="conversation.length > 4"> {{conversation[conversation.length-1].role=="human"?"🧠":"🔮" }}:{{ conversation[conversation.length-1].content || "" }}</span>
             </div>
         </div>
     </div>
