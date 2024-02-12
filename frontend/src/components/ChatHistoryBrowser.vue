@@ -9,6 +9,10 @@
                 <span class="preview-message" v-if="conversation.length > 0">🧠:{{ conversation[0].content.slice(0, 50)|| "" }}</span>
                 <br/>
                 <span class="preview-message" v-if="conversation.length > 1">🔮:{{ conversation[1].content.slice(0, 50)|| "" }}</span>
+                <br/>
+                <span class="preview-message" v-if="conversation.length > 2">🧠:{{ conversation[2].content.slice(0, 50)|| "" }}</span>
+                <br/>
+                <span class="preview-message" v-if="conversation.length > 3">🔮:{{ conversation[3].content.slice(0, 50)|| "" }}</span>
             </div>
         </div>
     </div>
@@ -38,7 +42,7 @@ export default {
   z-index: 1000;
   left: 0;
   top: 0;
-  width: 300px; /* Adjust width as needed */
+  width: 400px; /* Adjust width as needed */
   height: 100%; /* Full height */
   background-color: #7631b6d4;
   border-radius: 10px;
@@ -49,20 +53,24 @@ export default {
 
 .conv-button {
   display: flex;
+  flex-direction: column;
   cursor: pointer;
-  margin-bottom: 1rem;
+  margin-bottom: 5px;
   background-color: black;
   border-width: 2px;
   border-color: #6d2fff;
   border-radius: 10px;
-  padding: 1rem;
+  padding: 10px;
 }
 
 .preview-message {
   color: white; /* Dark text for readability */
-  margin-bottom: 0.5rem;
   font-size: 10pt;
   font-family: monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90%;
 }
 
 .reversed-list {
