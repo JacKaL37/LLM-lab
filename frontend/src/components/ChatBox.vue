@@ -3,6 +3,10 @@
 <template>
 
   <div class="chatbox" @input="userHasInteracted = true;">
+    <ChatHistoryBrowser :conversations="conversation_histories" v-show="showConversationBrowser" 
+      @changeConversation="goToChatID($event)"
+      @closeChatBrowser="showConversationBrowser = false">
+    </ChatHistoryBrowser>
 
     <div class="top-panel" :disabled="isSending" :style="{ zIndex: 10 }"> 
       <div class="top-panel-left">
@@ -16,7 +20,9 @@
       </div>
       <div class="top-panel-left" style="max-width:150px;">
         <button title="previous chat" @click="prev_chat" class="clear-button" :disabled="prevDisabled">⬅️</button>
-        <span title="current chat id" style="max-width:100px; min-width:40px; background-color: var(--base-color)">{{conversation_index + 1}}/{{conversation_histories.length}}</span>
+        <button title="current chat id" style="width:fit-content; font-family:monospace; font-size: 12px; padding-inline: 2px; background-color: var(--base-color)" 
+          @click="showConversationBrowser = !showConversationBrowser">
+          {{conversation_index + 1}}/{{conversation_histories.length}}</button>
         <button :title="conversation_index<conversation_histories.length-1 ? 'next chat' : 'new chat'" 
           @click="next_chat" class="clear-button"  :disabled="nextDisabled">
           {{conversation_index<conversation_histories.length-1 ? "➡️" : "🆕"}}
@@ -148,17 +154,19 @@
 
 <script>
 import ChatMessage from './ChatMessage.vue';
+import ChatHistoryBrowser from './ChatHistoryBrowser.vue';
 import systemPrompts from './systemPrompts.js'
 
 export default {
   components: {
     ChatMessage,
+    ChatHistoryBrowser,
   },
   data() {
     return {
       userMessage: '',
       isSending: false,
-      conversation_histories: [[]],
+      conversation_histories: [[{ role: "human", content: "sup"},{ role: "ai", content: "sup"}]],
       
       modelOptionsPre: ["gpt-4-0125-preview","gpt-4-1106-preview","gpt-3.5-turbo-1106",],
       modelOptions3: ["gpt-3.5-turbo","gpt-3.5-turbo-16k","gpt-3.5-turbo-instruct"],
@@ -181,6 +189,7 @@ export default {
       user_id: "", 
       conversation_index: 0,
       use_case: ["COG366", "M01"],
+      showConversationBrowser: false,
 
       musicality: "Blues Scale",
       scalePatterns: {
@@ -538,7 +547,7 @@ export default {
       return  this.use_case.join("-") + "-" + this.user_id
     },
     next_chat(){
-      console.log(this.conversation_histories[this.conversation_index])
+      //console.log(this.conversation_histories[this.conversation_index])
       if(this.conversation_histories[this.conversation_index].length != 0){
         if(this.conversation_index < this.conversation_histories.length - 1){
           this.conversation_index += 1
@@ -556,6 +565,11 @@ export default {
         this.conversation_index -= 1
         localStorage.setItem('conversation_index', JSON.stringify(this.conversation_index));
       }
+    },
+    goToChatID(id){
+      console.log(id);
+      this.conversation_index = id;
+      localStorage.setItem('conversation_index', JSON.stringify(this.conversation_index));
     },
     clearHistories() {
       if(confirm("Are you sure you want to clear your histories?")){
@@ -1081,6 +1095,7 @@ select option {
 .slide-up-leave-to {
   transform: translateY(100%);
 }
+
 
 
 
