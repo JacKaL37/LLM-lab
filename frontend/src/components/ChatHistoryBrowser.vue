@@ -9,7 +9,7 @@
                 <span class="preview-message" v-if="conversation.length > 1"> {{conversation[1].role=="human"?"🧠":"🔮" }}:{{ conversation[1].content || "" }}</span>
                 <span class="preview-message" v-if="conversation.length > 2 && conversation.length < 5"> {{conversation[2].role=="human"?"🧠":"🔮" }}:{{ conversation[2].content || "" }}</span>
                 <span class="preview-message" v-if="conversation.length > 3 && conversation.length < 5"> {{conversation[3].role=="human"?"🧠":"🔮" }}:{{ conversation[3].content || "" }}</span>
-                <span class="preview-message" v-if="conversation.length > 4"> … </span>
+                <span class="preview-message" v-if="conversation.length > 4"> … ⏳ … ⌛ … </span>
                 <span class="preview-message" v-if="conversation.length > 4"> {{conversation[conversation.length-2].role=="human"?"🧠":"🔮" }}:{{ conversation[conversation.length-2].content || "" }}</span>
                 <span class="preview-message" v-if="conversation.length > 4"> {{conversation[conversation.length-1].role=="human"?"🧠":"🔮" }}:{{ conversation[conversation.length-1].content || "" }}</span>
             </div>
