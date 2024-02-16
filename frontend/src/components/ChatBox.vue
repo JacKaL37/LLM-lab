@@ -119,6 +119,9 @@
         <div>
           <div class="top-slide-panel" v-show="showControlPanel && validID && showPrompt">
             <textarea type="text" style="background-color: var(--base-color); height: 12vh; margin: 5px; resize:vertical;" title="current system prompt" class="input" v-model="currentPrompt" placeholder="✨🧠system prompt here🔮✨" :disabled="true" />
+            <div style="display:flex;align-items:center;justify-content:center;width:100%;">
+              <button class="clear-button" style="width:fit-content; font-family: monospace; font-size:10pt;" @click="movePromptToCustom">📝edit as custom prompt</button>
+            </div>
           </div>
           <div class="top-slide-panel" v-show="showControlPanel && validID && customPromptsEnabled">
             <textarea type="text" style="background-color: var(--base-color); height: 12vh; margin: 5px; resize:vertical;" title="write your own prompts here" class="input" v-model="customPrompt" placeholder="✨🧠write custom instructions here🔮✨" :disabled="!customPromptsEnabled" />
@@ -251,7 +254,7 @@ export default {
         "disobedientlib","titotequila","ninjateq","maveeah",
         "DustyJBoludos","brandon.ck","aehsoitgoes","amethystia",
         "snoelle","TinkaMaru","withwirth","solidagorae","colonelpanic",
-        "versine","catiedn"
+        "versine","catiedn","yotam",
       ],
 
       friendPrompts:[
@@ -522,6 +525,12 @@ export default {
         //console.log(this.socket.bufferedAmount);
       };
     },
+    movePromptToCustom(){
+      this.customPrompt = this.system_prompts[this.prompts_id].join("\n\n");
+      this.customPromptsEnabled = true;
+      this.showPrompt = false;
+      this.prompts_id = "raw";
+    },
     get_payload(){
       let promptsArray = this.system_prompts[this.prompts_id];
       if(this.customPrompt != "" && this.customPromptsEnabled){
@@ -567,7 +576,7 @@ export default {
       }
     },
     goToChatID(id){
-      console.log(id);
+      //console.log(id);
       this.conversation_index = id;
       localStorage.setItem('conversation_index', JSON.stringify(this.conversation_index));
     },

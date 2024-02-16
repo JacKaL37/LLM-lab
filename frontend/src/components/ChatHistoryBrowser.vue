@@ -41,7 +41,8 @@ export default {
   z-index: 1000;
   left: 0;
   top: 0;
-  width: 400px; /* Adjust width as needed */
+  max-width: 350px; /* Adjust width as needed */
+  width: 90%;
   height: 100%; /* Full height */
   background-color: #7631b6d4;
   border-radius: 10px;
