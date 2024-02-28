@@ -259,7 +259,7 @@ export default {
 
       friendPrompts:[
         "cogmate","raw","onramp","collab","promptwrangler","grug","sassmate",
-        "somaticoach","botermelon","cogbias","🧠🤖👉🌐✨🔮","translate","pirate"
+        "somaticoach","botermelon","cogbias","🧠🤖👉🌐✨🔮","translate","KFCPT","pirate"
       ],
 
       guestIDs:[
