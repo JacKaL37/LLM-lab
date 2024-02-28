@@ -276,6 +276,14 @@ export default {
         "cogmate", "raw", "onramp", "collab", "grug"
       ],
 
+      kfcIDs:[
+        "HCI530"
+      ],
+
+      kfcPrompts: [
+        "KFCPT"
+      ],
+
       prompts_id: "cogmate",
       system_prompts: systemPrompts,
       
@@ -336,7 +344,7 @@ export default {
       return this.conversation_histories[this.conversation_index].length == 0
     },
     validID(){
-      return this.studentIDs.includes(this.user_id) || this.devIDs.includes(this.user_id) || this.friendIDs.includes(this.user_id) || this.guestIDs.includes(this.user_id);
+      return this.studentIDs.includes(this.user_id) || this.devIDs.includes(this.user_id) || this.friendIDs.includes(this.user_id) || this.guestIDs.includes(this.user_id) || this.kfcIDs.includes(this.user_id);
     },
     isDevID(){
       return this.devIDs.includes(this.user_id)
@@ -353,12 +361,20 @@ export default {
         return this.friendPrompts
       } else if (this.guestIDs.includes(this.user_id)){
         return this.guestPrompts
+      } else if (this.kfcIDs.includes(this.user_id)){
+        return this.kfcPrompts
       } else {
         return []
       }
     },
     currentPrompt(){
-      return this.system_prompts[this.prompts_id].join("\n\n")
+      console.log(this.prompts_id)
+      if(this.prompts_id != undefined){
+        return this.system_prompts[this.prompts_id].join("\n\n")
+      }
+      else{
+        return ""
+      }
     },
   },
   mounted() {
