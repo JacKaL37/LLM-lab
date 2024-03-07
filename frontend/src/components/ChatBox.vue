@@ -258,8 +258,8 @@ export default {
       ],
 
       friendPrompts:[
-        "cogmate","raw","onramp","collab","promptwrangler","grug","sassmate",
-        "somaticoach","botermelon","cogbias","🧠🤖👉🌐✨🔮","translate","KFCPT","pirate"
+        "cogmate","raw","onramp","somaticoach","botermelon","tarot","collab","promptwrangler","grug","sassmate",
+        "cogbias","🧠🤖👉🌐✨🔮","translate","KFCPT","pirate"
       ],
 
       guestIDs:[
