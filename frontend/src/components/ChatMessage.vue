@@ -189,6 +189,16 @@ export default {
     color: #9500ff;
 }
 
+:deep code{
+    color: #F2058C
+}
+
+:deep img{
+    max-width: 100%;
+    height: auto;
+    max-height: 600px;
+}
+
 .message.human {
     align-self: flex-end;
     background-color: #0D0019;

@@ -219,6 +219,60 @@ export default {
         "Melodic Minor Scale (Asc)": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 5 / 3, 15 / 8],
         "Melodic Minor Scale (Desc)": [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 8 / 5, 9 / 5]
       },
+
+      parseableInserts: {
+        roll: (args) => {
+          const [diceInput] = args;
+          const [diceCount, diceFaces] = diceInput.split('d').map(Number);
+          const individualRolls = Array.from({ length: diceCount }, () => 
+            Math.floor(Math.random() * diceFaces) + 1
+          );
+          const totalResult = individualRolls.reduce((acc, curr) => acc + curr, 0);
+          return `${totalResult} (${individualRolls.join(', ')})`;
+        },
+        randInt: (args) => {
+          const [min, max] = args.map(Number); // Ensure both arguments are treated as Numbers
+          // Generate and return a random integer between min and max (inclusive)
+          return Math.floor(Math.random() * (max - min + 1)) + min;
+        }, 
+        drawCards: (args) => {
+          const [deckSize, numOfCards] = args.map(Number); // Deck size and number of cards to draw
+          const deck = Array.from({ length: deckSize }, (_, i) => i + 1); 
+          
+          const drawnCards = [];
+          for (let i = 0; i < numOfCards; i++) {
+            const cardIndex = Math.floor(Math.random() * deck.length);
+            drawnCards.push(deck[cardIndex]);
+            deck.splice(cardIndex, 1); 
+          }
+          
+          return drawnCards.join(', ');
+        },
+        drawTarot: (args) => {
+          const [numOfCards] = args.map(Number);
+          const deck = Array.from({ length: 78 }, (_, i) => i + 1);
+
+          const drawnCards = [];
+          for (let i = 0; i < numOfCards; i++) {
+            const cardIndex = Math.floor(Math.random() * deck.length);
+            const reversed = Math.random() < 0.5 ? 'R' : ''; // 50% chance to reverse
+            drawnCards.push(`${deck[cardIndex]}${reversed}`); // Append 'R' to indicate reversal if applicable
+            deck.splice(cardIndex, 1);
+          }
+          
+          return drawnCards.join(', ');
+        },
+        // rolls a number of d6s equal to the level of the skill passed as an arg
+        rollForShoes: (args) => {
+          const [skillLevel] = args.map(Number);
+          const individualRolls = Array.from({ length: skillLevel }, () => 
+            Math.floor(Math.random() * 6) + 1
+          );
+          const totalResult = individualRolls.reduce((acc, curr) => acc + curr, 0);
+          return `${totalResult} (${individualRolls.join(', ')})`;
+        },
+
+      },
       
       studentIDs:[
         //"805892463","805732331","806026611","805506406",
@@ -474,12 +528,14 @@ export default {
       if (this.userMessage.trim() !== '') {
         this.isSending = true;
 
+        this.userMessage = this.parseInserts(this.userMessage.trim());
+
         // Send the message over WebSocket
         await this.socket.send(JSON.stringify(this.get_payload()));
 
         this.conversation_histories[this.conversation_index].push({
           role: 'human',
-          content: this.userMessage.trim(),
+          content: this.userMessage,
           name: this.user_id
         });
         //localStorage.setItem('conversation_histories', JSON.stringify(this.conversation_histories));
@@ -494,6 +550,24 @@ export default {
         }
       }
     },
+    parseInserts(inputMessage) {
+      const pattern = /\?(\w+)\((.*?)\)/g;
+      const outputMessage = inputMessage.replace(pattern, (_, funcName, argsRaw) => {
+        const args = argsRaw.split(',').map(arg => arg.trim());
+        if (!this.parseableInserts[funcName]) {
+          return `\`?${funcName}=[ !ref_err ]\``; // Reference error for undefined funcs
+        }
+        try {
+          const result = this.parseableInserts[funcName](args);
+          return `\`?${funcName}(${argsRaw})=[ ${result} ]\``; // Success case
+        } catch (execError) {
+          console.error(execError);
+          return `\`?${funcName}(${argsRaw})=[ !exec_err ]\``; // Execution error
+        }
+      });
+      return outputMessage;
+    },
+
     setupSocket() {
       // Connect to the WebSocket server on port 3001
       //this.socket = new WebSocket('ws://104.229.89.14:3001');
