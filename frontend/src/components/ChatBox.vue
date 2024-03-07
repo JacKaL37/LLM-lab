@@ -263,13 +263,22 @@ export default {
           return drawnCards.join(', ');
         },
         // rolls a number of d6s equal to the level of the skill passed as an arg
-        rollForShoes: (args) => {
+        roll4shoes: (args) => {
           const [skillLevel] = args.map(Number);
-          const individualRolls = Array.from({ length: skillLevel }, () => 
+          const individualRolls = Array.from({ length: skillLevel }, () =>  // Add one roll to the initial skill level for the player
             Math.floor(Math.random() * 6) + 1
           );
+          const opposedRolls = Array.from({ length: 6 }, () =>  // Generate 6 opposed rolls
+            Math.floor(Math.random() * 6) + 1
+          );
+
+          // For the "AI's pick", assuming simplicity, just list the opposed rolls. 
+          // If you need a specific choice logic, you could implement it based on these rolls here.
+          const chosenOpposedRolls = opposedRolls.join(', ');
+
           const totalResult = individualRolls.reduce((acc, curr) => acc + curr, 0);
-          return `${totalResult} (${individualRolls.join(', ')})`;
+
+          return `${totalResult} (${individualRolls.join(', ')}) Opposed: ${chosenOpposedRolls}`;
         },
 
       },
@@ -551,7 +560,7 @@ export default {
       }
     },
     parseInserts(inputMessage) {
-      const pattern = /\?(\w+)\((.*?)\)/g;
+      const pattern = /[?/](\w+)\((.*?)\)/g;
       const outputMessage = inputMessage.replace(pattern, (_, funcName, argsRaw) => {
         const args = argsRaw.split(',').map(arg => arg.trim());
         if (!this.parseableInserts[funcName]) {
