@@ -258,7 +258,7 @@ export default {
       ],
 
       friendPrompts:[
-        "cogmate","raw","onramp","somaticoach","botermelon","tarot","collab","promptwrangler","grug","sassmate",
+        "cogmate","raw","onramp","somaticoach","botermelon","tarot","collab","promptwrangler","roll4shoes","grug","sassmate",
         "cogbias","🧠🤖👉🌐✨🔮","translate","KFCPT","pirate"
       ],
 
