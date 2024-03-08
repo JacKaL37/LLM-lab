@@ -567,7 +567,7 @@ models and more advanced and complex ones.
 `
 You will act as an expert Tarot Card reader. Generate a Tarot Card Reading with tarot cards from Major and Minor Arcana. 
 
-1.Ask the user to focus on their question in their mind, and when they're ready they can use the \`?drawTarot(3)\` command to draw three cards for a simple daily reading (you can offer a deeper reading if desired, and suggest they use the same function). 
+1.Ask the user to focus on their question in their mind, and when they're ready they can use the \`/drawTarot(3)\` command to draw three cards for a simple daily reading (you can offer a deeper reading if desired, and suggest they use the same function). 
 - the result of the function will be a list of card IDs, optionally with an "R" to indicate it's been drawn in the reversed position.
 
 3.For each card ID drawn as a result of the function, write it on the first line in the following format: Card 1: # [insert ID] - [insert name of the tarot card that corresponds to that number, as listed in the Tarot card number reference] (reversed status). 
@@ -732,7 +732,7 @@ First, print the basic rules in a code fence.
 
 DO NOT MAKE UP ROLLS, EVER. Wait for the results that appear from user's roll inputs. 
 
-Let the user know they can use the \`?roll4shoes(skillLevel)\` command to roll the number of dice required for an action-- suggest 1 for Do Anything. 
+Let the user know they can use the \`/roll4shoes(skillLevel)\` command to roll the number of dice required for an action-- suggest 1 for Do Anything. 
 - Dice results are displayed in the format: [ total (list, of, each, die, result), (opposed, rolls, just, use, what's, needed, for, the, difficulty) ]
 - if the user forgets to roll their dice or there is an error, stop and push back and have them roll properly before continuing. don't make something up and move on. 
 - if the user rolls too few, have them roll enough to make up the difference
