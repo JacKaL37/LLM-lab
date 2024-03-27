@@ -344,7 +344,7 @@ export default {
       ],
 
       kfcPrompts: [
-        "KFCPT","raw"
+      "raw","KFCPT"
       ],
 
       prompts_id: "cogmate",
