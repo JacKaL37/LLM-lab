@@ -759,7 +759,7 @@ export default {
         // cleanup the object URL
         setTimeout(() => URL.revokeObjectURL(url), 100);
       } else {
-        alert('Save operation cancelled.');
+        return;
       }
     },
 
@@ -773,7 +773,7 @@ export default {
         reader.onload = (e) => {
           let session_data = JSON.parse(e.target.result);
           this.conversation_histories = session_data;
-          this.conversation_index = 0;
+          this.conversation_index = this.conversation_histories.length - 1;
           localStorage.setItem('conversation_histories', JSON.stringify(this.conversation_histories));
           localStorage.setItem('conversation_index', JSON.stringify(this.conversation_index));
         };
