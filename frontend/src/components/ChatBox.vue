@@ -63,11 +63,14 @@
         </select>
         </div>
         <div class="top-panel-left">
-          <span style="width:auto; padding:5px;">📃chat data:</span>
-          <button title="download current conversation to text file" @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
-          <span style="width:5px;"></span>
-          <button title="delete current conversation" @click="clearCurrentHistory" class="clear-button" :disabled="isSending || !validID || emptyConversation">❌</button>
+          <span style="width:auto; padding:5px;">session:</span>
+          <button title="save all conversation histories to a .cogmate.json file" @click="saveSession" class="clear-button" :disabled="isSending || emptyConversation">💾</button>
+          <button title="load a .cogmate.json session file" @click="loadSession" class="clear-button" :disabled="isSending">📂</button>
           <button title="delete ALL conversation histories" @click="clearHistories" class="clear-button" :disabled="isSending || !validID">💥</button>
+
+          <span style="width:auto; padding:5px;">chat:</span>
+          <button title="download current conversation to text file" @click="downloadFile" class="clear-button" :disabled="isSending || emptyConversation">📥</button>
+          <button title="delete current conversation" @click="clearCurrentHistory" class="clear-button" :disabled="isSending || !validID || emptyConversation">❌</button>
 
         </div>
         <div class="top-panel-left" v-show="validID">
@@ -340,11 +343,11 @@ export default {
       ],
 
       kfcIDs:[
-        "HCI530"
+        // "HCI530"
       ],
 
       kfcPrompts: [
-      "raw","KFCPT"
+        // "raw","KFCPT"
       ],
 
       prompts_id: "cogmate",
@@ -731,6 +734,52 @@ export default {
       a.href = url;
       a.download = filename + extension;
       a.click();
+    },
+    saveSession() {
+      if (this.conversation_histories.length === 0) return;
+
+      const session_data = JSON.stringify(this.conversation_histories, null, 2);
+
+      // default filename without extension
+      const defaultFilename = `${this.user_id}_session_${Date.now()}`;
+      const extension = '.cogmate.json';
+
+      // prompt user for a filename, default suggestion without extension
+      const userFilename = prompt('Enter a filename:', defaultFilename);
+
+      if (userFilename !== null) {
+        const finalFilename = `${userFilename}${extension}`;
+        const blob = new Blob([session_data], {type: 'text/plain;charset=utf-8'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = finalFilename;
+        a.click();
+
+        // cleanup the object URL
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+      } else {
+        alert('Save operation cancelled.');
+      }
+    },
+
+    loadSession() {
+      let fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = '.cogmate.json';
+      fileInput.onchange = (e) => {
+        let file = e.target.files[0];
+        let reader = new FileReader();
+        reader.onload = (e) => {
+          let session_data = JSON.parse(e.target.result);
+          this.conversation_histories = session_data;
+          this.conversation_index = 0;
+          localStorage.setItem('conversation_histories', JSON.stringify(this.conversation_histories));
+          localStorage.setItem('conversation_index', JSON.stringify(this.conversation_index));
+        };
+        reader.readAsText(file);
+      };
+      fileInput.click();
     },
     async saveToServer(blob, filename, extension, path){
       console.log(blob, filename, extension, path)
