@@ -103,6 +103,12 @@
             target="_blank" style="text-decoration:none; padding-left: 5px; padding-right: 5px;">
             <button title="if you ever wanna kick me a fiver to help cover token costs" class="clear-button" style="text-decoration:none">💸</button>
           </a>
+          <span style="width:auto; padding:5px;">🎮discord:</span>
+          <a 
+            href="https://discord.gg/BVZG6qbTnP" 
+            target="_blank" style="text-decoration:none; padding-left: 5px; padding-right: 5px;">
+            <button title="join the cogmate discord server to collaborate and keep up with development">🎮</button>
+          </a>
         </div>
 
         
