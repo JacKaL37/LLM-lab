@@ -326,7 +326,7 @@ export default {
         "disobedientlib","titotequila","ninjateq","maveeah",
         "DustyJBoludos","brandon.ck","aehsoitgoes","amethystia",
         "snoelle","TinkaMaru","withwirth","solidagorae","colonelpanic",
-        "versine","catiedn","yotam",
+        "versine","catiedn","yotam","jacobraser","victoriahp"
       ],
 
       friendPrompts:[
