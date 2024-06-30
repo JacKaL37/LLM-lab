@@ -328,6 +328,7 @@ export default {
         "snoelle","TinkaMaru","withwirth","solidagorae","colonelpanic",
         "versine","catiedn","yotam","jacobraser","victoriahp",
         "lisawhicker","skywhicker","leahlion",
+        "echorequest","auroraelrick","linesarefuzzy","emusing",
       ],
 
       friendPrompts:[
