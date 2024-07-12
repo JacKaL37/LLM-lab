@@ -324,15 +324,19 @@ export default {
         "thecheat_ismyhero","avrocar","binderzfullofcats","jkl",
         "ezwuh","maikam","gonotquietly","ROSIEonFIRE",
         "disobedientlib","titotequila","ninjateq","maveeah",
-        "DustyJBoludos","brandon.ck","aehsoitgoes","amethystia",
+        "DustyJBoludos","brandon.ck","aehsoitgoes",
         "snoelle","TinkaMaru","withwirth","solidagorae","colonelpanic",
-        "versine","catiedn","yotam","jacobraser","victoriahp",
+        "versine","catiedn",
+        "amethystia","somaticoach-alpha-tester",
+        "yotam","jacobraser","victoriahp",
         "lisawhicker","skywhicker","leahlion",
         "echorequest","auroraelrick","linesarefuzzy","emusing",
+        "saraht", "tobbs", "jamtailor", "nickmo85",
       ],
 
       friendPrompts:[
-        "cogmate","raw","onramp","self-interview","somaticoach","botermelon","tarot","collab","promptwrangler","roll4shoes","grug","sassmate",
+        "cogmate","raw","onramp","self-interview","somaticoach",
+        "botermelon","tarot","collab","promptwrangler","roll4shoes","grug","sassmate",
         "cogbias","🧠🤖👉🌐✨🔮","translate","KFCPT","pirate"
       ],
 
